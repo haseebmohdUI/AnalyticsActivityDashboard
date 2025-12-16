@@ -1,0 +1,18 @@
+/* App styles - Tailwind handles most styling */
+
+/* Fix scroll behavior for Recharts */
+.recharts-wrapper {
+  pointer-events: none !important;
+}
+
+.recharts-wrapper > * {
+  pointer-events: auto !important;
+}
+
+.recharts-surface {
+  pointer-events: none !important;
+}
+
+.recharts-surface > * {
+  pointer-events: auto !important;
+}
