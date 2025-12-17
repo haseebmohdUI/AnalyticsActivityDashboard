@@ -1,13 +1,21 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Sidebar } from '@/components/Sidebar'
 import { Dashboard } from '@/components/Dashboard'
 import { Login } from '@/components/Login'
-import { ThemeProvider } from '@/context/ThemeContext'
+import { useAuthStore } from '@/store/authStore'
 import './App.css'
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false)
   const [isTransitioning, setIsTransitioning] = useState(false)
+  const { isAuthenticated: isAuthStoreAuthenticated } = useAuthStore()
+
+  // Check if user is already authenticated on mount
+  useEffect(() => {
+    if (isAuthStoreAuthenticated) {
+      setIsAuthenticated(true)
+    }
+  }, [isAuthStoreAuthenticated])
 
   const handleLogin = () => {
     setIsTransitioning(true)
@@ -19,36 +27,34 @@ function App() {
   }
 
   return (
-    <ThemeProvider>
-      <div className="relative w-full h-screen overflow-hidden">
-        {/* Login Page */}
-        <div
-          className={`absolute inset-0 transition-all duration-700 ease-in-out ${
-            isAuthenticated
-              ? 'opacity-0 scale-95 pointer-events-none -z-10'
-              : isTransitioning
-              ? 'opacity-0 scale-105 z-10'
-              : 'opacity-100 scale-100 z-10'
-          }`}
-        >
-          <Login onLogin={handleLogin} />
-        </div>
+    <div className="relative w-full h-screen overflow-hidden">
+      {/* Login Page */}
+      <div
+        className={`absolute inset-0 transition-all duration-700 ease-in-out ${
+          isAuthenticated
+            ? 'opacity-0 scale-95 pointer-events-none -z-10'
+            : isTransitioning
+            ? 'opacity-0 scale-105 z-10'
+            : 'opacity-100 scale-100 z-10'
+        }`}
+      >
+        <Login onLogin={handleLogin} />
+      </div>
 
-        {/* Dashboard */}
-        <div
-          className={`absolute inset-0 transition-all duration-700 ease-in-out ${
-            isAuthenticated
-              ? 'opacity-100 scale-100 z-10'
-              : 'opacity-0 scale-95 pointer-events-none -z-10'
-          }`}
-        >
-          <div className="flex h-screen overflow-hidden">
-            <Sidebar />
-            <Dashboard />
-          </div>
+      {/* Dashboard */}
+      <div
+        className={`absolute inset-0 transition-all duration-700 ease-in-out ${
+          isAuthenticated
+            ? 'opacity-100 scale-100 z-10'
+            : 'opacity-0 scale-95 pointer-events-none -z-10'
+        }`}
+      >
+        <div className="flex h-screen overflow-hidden">
+          <Sidebar />
+          <Dashboard />
         </div>
       </div>
-    </ThemeProvider>
+    </div>
   )
 }
 

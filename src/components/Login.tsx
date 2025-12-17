@@ -1,5 +1,6 @@
-import { useState } from 'react';
-import { LogIn, User, Lock, Eye, EyeOff } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { LogIn, User, Lock, Eye, EyeOff, AlertCircle } from 'lucide-react';
+import { useAuthStore } from '@/store/authStore';
 
 interface LoginProps {
   onLogin: () => void;
@@ -9,16 +10,25 @@ export function Login({ onLogin }: LoginProps) {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const { login, isLoading, error, clearError } = useAuthStore();
+
+  useEffect(() => {
+    // Clear error when component mounts
+    clearError();
+  }, [clearError]);
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setIsLoading(true);
 
-    // Simulate a brief loading state for smooth transition
-    setTimeout(() => {
-      onLogin();
-    }, 800);
+    const success = await login(username, password);
+
+    if (success) {
+      // Add a brief delay for smooth transition
+      setTimeout(() => {
+        onLogin();
+      }, 300);
+    }
   };
 
   return (
@@ -60,6 +70,21 @@ export function Login({ onLogin }: LoginProps) {
 
           {/* Form */}
           <form onSubmit={handleSubmit} className="p-8 space-y-6">
+            {/* Error Message */}
+            {error && (
+              <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-xl p-4 flex items-start gap-3">
+                <AlertCircle className="w-5 h-5 text-red-600 dark:text-red-400 flex-shrink-0 mt-0.5" />
+                <div className="flex-1">
+                  <p className="text-sm font-semibold text-red-800 dark:text-red-300 mb-1">
+                    Authentication Failed
+                  </p>
+                  <p className="text-sm text-red-700 dark:text-red-400">
+                    {error}
+                  </p>
+                </div>
+              </div>
+            )}
+
             {/* Username Field */}
             <div className="space-y-2">
               <label htmlFor="username" className="block text-sm font-semibold text-slate-700 dark:text-slate-300" style={{ fontFamily: "'Raleway', sans-serif" }}>
