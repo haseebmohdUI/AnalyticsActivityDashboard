@@ -5,6 +5,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Users, Activity, BarChart3, Calendar } from "lucide-react";
 import { UserProfile } from "./UserProfile";
 import { CompanyAnalysisChart } from "./CompanyAnalysisChart";
+import { TimeAnalysisChart } from "./TimeAnalysisChart";
 
 type TabKey =
   | "company-analysis"
@@ -80,17 +81,7 @@ export function Dashboard() {
         </div>
 
         {/* Tab Content */}
-        {activeTab === "time-analysis" && (
-          <Card>
-            <CardHeader>
-              <CardTitle>Time Analysis</CardTitle>
-              <CardDescription>Temporal trends</CardDescription>
-            </CardHeader>
-            <CardContent className="h-[400px] flex items-center justify-center">
-              Time Analysis Content
-            </CardContent>
-          </Card>
-        )}
+        {activeTab === "time-analysis" && <TimeAnalysisChart />}
          {activeTab === "user-analysis" && (
           <Card>
             <CardHeader>
