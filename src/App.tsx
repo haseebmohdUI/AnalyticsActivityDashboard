@@ -49,7 +49,7 @@ function App() {
             : 'opacity-0 scale-95 pointer-events-none -z-10'
         }`}
       >
-        <div className="flex h-screen overflow-hidden">
+        <div className="flex ">
           <Sidebar />
           <Dashboard />
         </div>
