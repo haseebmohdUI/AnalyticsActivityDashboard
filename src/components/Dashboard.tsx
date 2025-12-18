@@ -8,6 +8,7 @@ import { CompanyAnalysisChart } from "./CompanyAnalysisChart";
 import { TimeAnalysisChart } from "./TimeAnalysisChart";
 import { UserAnalysisChart } from "./UserAnalysisChart";
 import { DataTable } from "./DataTable";
+import { QueryAnalysisChart } from "./QueryAnalysisChart";
 
 type TabKey =
   | "company-analysis"
@@ -93,17 +94,7 @@ export function Dashboard() {
      
         {activeTab === "data-table" && <DataTable />}
 
-        {activeTab === "query-activity" && (
-          <Card>
-            <CardHeader>
-              <CardTitle>Query Activity</CardTitle>
-              <CardDescription>Query metrics</CardDescription>
-            </CardHeader>
-            <CardContent className="h-[400px] flex items-center justify-center">
-              Query Activity Content
-            </CardContent>
-          </Card>
-        )}
+        {activeTab === "query-activity" && <QueryAnalysisChart />}
 
         {activeTab === "all-licensees" && (
           <Card>

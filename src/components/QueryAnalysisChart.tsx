@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, Cell, PieChart, Pie } from 'recharts';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { Database, TrendingUp, Activity } from 'lucide-react';
+import { Database, TrendingUp, Activity, Users, Calendar } from 'lucide-react';
 
 interface QueryOperation {
   operation: string;
@@ -97,20 +97,52 @@ export function QueryAnalysisChart() {
 
   return (
     <div className="space-y-6">
+      {/* Page Heading */}
+      <div className="mb-4">
+        <h2 className="text-3xl font-bold text-slate-900 dark:text-white">Query Analysis</h2>
+      </div>
+
       {/* Summary Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div className="p-4 rounded-xl bg-gradient-to-br from-blue-50 to-blue-100/50 dark:from-blue-900/20 dark:to-blue-800/10 border border-blue-200 dark:border-blue-800">
-          <p className="text-sm font-semibold text-blue-900 dark:text-blue-300 mb-1">Total Operations</p>
-          <p className="text-2xl font-bold text-blue-600 dark:text-blue-400">{queryData.length}</p>
-        </div>
-        <div className="p-4 rounded-xl bg-gradient-to-br from-purple-50 to-purple-100/50 dark:from-purple-900/20 dark:to-purple-800/10 border border-purple-200 dark:border-purple-800">
-          <p className="text-sm font-semibold text-purple-900 dark:text-purple-300 mb-1">Total Queries</p>
-          <p className="text-2xl font-bold text-purple-600 dark:text-purple-400">{totalQueries.toLocaleString()}</p>
-        </div>
-        <div className="p-4 rounded-xl bg-gradient-to-br from-green-50 to-green-100/50 dark:from-green-900/20 dark:to-green-800/10 border border-green-200 dark:border-green-800">
-          <p className="text-sm font-semibold text-green-900 dark:text-green-300 mb-1">Avg Queries/Operation</p>
-          <p className="text-2xl font-bold text-green-600 dark:text-green-400">{Math.round(totalQueries / queryData.length)}</p>
-        </div>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        <Card className="hover:shadow-lg transition-all">
+          <CardHeader className="flex flex-row items-center justify-between pb-2">
+            <CardTitle className="text-xs uppercase">Total Queries</CardTitle>
+            <Activity className="w-5 h-5 text-slate-500" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{totalQueries.toLocaleString()}</div>
+          </CardContent>
+        </Card>
+
+        <Card className="hover:shadow-lg transition-all">
+          <CardHeader className="flex flex-row items-center justify-between pb-2">
+            <CardTitle className="text-xs uppercase">Unique Users</CardTitle>
+            <Users className="w-5 h-5 text-slate-500" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">298</div>
+          </CardContent>
+        </Card>
+
+        <Card className="hover:shadow-lg transition-all">
+          <CardHeader className="flex flex-row items-center justify-between pb-2">
+            <CardTitle className="text-xs uppercase">Unique Operations</CardTitle>
+            <Database className="w-5 h-5 text-slate-500" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{queryData.length}</div>
+          </CardContent>
+        </Card>
+
+        <Card className="hover:shadow-lg transition-all">
+          <CardHeader className="flex flex-row items-center justify-between pb-2">
+            <CardTitle className="text-xs uppercase">Days Span</CardTitle>
+            <Calendar className="w-5 h-5 text-slate-500" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">1,728</div>
+          </CardContent>
+        </Card>
       </div>
 
       {/* Charts Grid */}
@@ -137,6 +169,7 @@ export function QueryAnalysisChart() {
                   <CartesianGrid strokeDasharray="3 3" className="stroke-slate-200 dark:stroke-slate-700" />
                   <XAxis
                     type="number"
+                    domain={[0, 5000]}
                     tick={{ fill: 'currentColor' }}
                     className="text-slate-600 dark:text-slate-400"
                   />
