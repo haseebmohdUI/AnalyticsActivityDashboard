@@ -6,6 +6,8 @@ import { Users, Activity, BarChart3, Calendar } from "lucide-react";
 import { UserProfile } from "./UserProfile";
 import { CompanyAnalysisChart } from "./CompanyAnalysisChart";
 import { TimeAnalysisChart } from "./TimeAnalysisChart";
+import { UserAnalysisChart } from "./UserAnalysisChart";
+import { DataTable } from "./DataTable";
 
 type TabKey =
   | "company-analysis"
@@ -82,34 +84,14 @@ export function Dashboard() {
 
         {/* Tab Content */}
         {activeTab === "time-analysis" && <TimeAnalysisChart />}
-         {activeTab === "user-analysis" && (
-          <Card>
-            <CardHeader>
-              <CardTitle>User Analysis</CardTitle>
-              <CardDescription>User engagement metrics</CardDescription>
-            </CardHeader>
-            <CardContent className="h-[400px] flex items-center justify-center">
-              User Analysis Content
-            </CardContent>
-          </Card>
-        )}
+        {activeTab === "user-analysis" && <UserAnalysisChart />}
 
         {activeTab === "company-analysis" && <CompanyAnalysisChart />}
 
        
 
      
-        {activeTab === "data-table" && (
-          <Card>
-            <CardHeader>
-              <CardTitle>Data Table</CardTitle>
-              <CardDescription>Tabular data view</CardDescription>
-            </CardHeader>
-            <CardContent className="h-[400px] flex items-center justify-center">
-              Data Table Content
-            </CardContent>
-          </Card>
-        )}
+        {activeTab === "data-table" && <DataTable />}
 
         {activeTab === "query-activity" && (
           <Card>
