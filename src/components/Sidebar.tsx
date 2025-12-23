@@ -3,12 +3,20 @@
 import { LayoutDashboard } from "lucide-react";
 import { cn } from "@/lib/utils";
 import logoSvg from "@/assets/certLogoTaglineSM2optColor.svg";
+import { useAnalyticsStore } from "@/store/analyticsStore";
 
 interface SidebarProps {
   className?: string;
 }
 
 export function Sidebar({ className }: SidebarProps) {
+  const companyData = useAnalyticsStore(state => state.companyData);
+
+  // Sort companies alphabetically
+  const sortedCompanies = [...companyData].sort((a, b) =>
+    a.company.localeCompare(b.company)
+  );
+
   return (
     <aside
       className={cn(
@@ -85,10 +93,12 @@ export function Sidebar({ className }: SidebarProps) {
                          border border-slate-300 dark:border-slate-600
                          focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
-              <option value="overview">Overview</option>
-              <option value="detailed">Detailed</option>
-              <option value="summary">Summary</option>
-              <option value="comparison">Comparison</option>
+              <option value="">All Companies</option>
+              {sortedCompanies.map((company, index) => (
+                <option key={index} value={company.company}>
+                  {company.company}
+                </option>
+              ))}
             </select>
           </div>
 

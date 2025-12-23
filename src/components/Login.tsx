@@ -135,7 +135,7 @@ export function Login({ onLogin }: LoginProps) {
             </div>
 
             {/* Remember Me & Forgot Password */}
-            <div className="flex items-center justify-between text-sm">
+            {/* <div className="flex items-center justify-between text-sm">
               <label className="flex items-center gap-2 cursor-pointer">
                 <input
                   type="checkbox"
@@ -146,7 +146,7 @@ export function Login({ onLogin }: LoginProps) {
               <a href="#" className="font-semibold text-[#006aff] hover:text-[#0080ff] transition-colors">
                 Forgot password?
               </a>
-            </div>
+            </div> */}
 
             {/* Login Button */}
             <button
@@ -172,15 +172,7 @@ export function Login({ onLogin }: LoginProps) {
             </button>
           </form>
 
-          {/* Footer */}
-          <div className="px-8 py-6 bg-slate-50 dark:bg-slate-800/50 border-t border-slate-200 dark:border-slate-800 text-center">
-            <p className="text-sm text-slate-600 dark:text-slate-400">
-              Don't have an account?{' '}
-              <a href="#" className="font-semibold text-[#006aff] hover:text-[#0080ff] transition-colors">
-                Sign up
-              </a>
-            </p>
-          </div>
+      
         </div>
 
         {/* Version Info */}

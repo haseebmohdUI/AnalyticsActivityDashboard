@@ -6,26 +6,56 @@ import { Database, TrendingUp, Activity, Users, Calendar } from 'lucide-react';
 interface QueryOperation {
   operation: string;
   count: number;
+  uniqueUsers: number;
+  firstQuery: string;
+  lastQuery: string;
 }
 
 export function QueryAnalysisChart() {
-  // Generate mock query data based on realistic API/database operations
+  // Real query data from CSV
   const queryData: QueryOperation[] = useMemo(() => [
-    { operation: 'GET /api/users', count: 1250 },
-    { operation: 'POST /api/login', count: 1180 },
-    { operation: 'GET /api/dashboard', count: 980 },
-    { operation: 'GET /api/companies', count: 856 },
-    { operation: 'POST /api/logout', count: 742 },
-    { operation: 'GET /api/analytics', count: 628 },
-    { operation: 'PUT /api/users/profile', count: 485 },
-    { operation: 'GET /api/reports', count: 412 },
-    { operation: 'POST /api/data/export', count: 358 },
-    { operation: 'GET /api/settings', count: 294 },
-    { operation: 'DELETE /api/sessions', count: 246 },
-    { operation: 'GET /api/logs', count: 198 },
-    { operation: 'POST /api/notifications', count: 165 },
-    { operation: 'PUT /api/preferences', count: 124 },
-    { operation: 'GET /api/activity', count: 89 },
+    { operation: 'FirstTestSummary', count: 5268, uniqueUsers: 211, firstQuery: '2022-02-07 19:06', lastQuery: '2025-12-18 14:32' },
+    { operation: 'SelectionInfo', count: 4969, uniqueUsers: 62, firstQuery: '2022-02-08 22:35', lastQuery: '2025-12-18 02:54' },
+    { operation: 'FailRateHistory', count: 3904, uniqueUsers: 86, firstQuery: '2022-02-08 22:36', lastQuery: '2025-12-18 14:31' },
+    { operation: 'AuditQuery', count: 3900, uniqueUsers: 125, firstQuery: '2022-02-04 20:10', lastQuery: '2025-12-18 14:31' },
+    { operation: 'RatingRatioArr', count: 3508, uniqueUsers: 82, firstQuery: '2022-02-07 19:19', lastQuery: '2025-12-18 14:32' },
+    { operation: 'getRecordFromNextGenRenamed', count: 3035, uniqueUsers: 34, firstQuery: '2023-11-30 16:54', lastQuery: '2025-12-18 02:54' },
+    { operation: 'ResultReportType', count: 2712, uniqueUsers: 56, firstQuery: '2022-02-08 22:35', lastQuery: '2025-12-17 01:17' },
+    { operation: 'AllProgramFirstTestSummary', count: 2218, uniqueUsers: 201, firstQuery: '2022-02-07 19:06', lastQuery: '2025-12-18 02:52' },
+    { operation: 'LocationAllProgramFirstTestSummary', count: 1316, uniqueUsers: 162, firstQuery: '2022-02-07 19:06', lastQuery: '2025-12-18 02:52' },
+    { operation: 'getPublicNotification', count: 792, uniqueUsers: 115, firstQuery: '2022-03-02 19:19', lastQuery: '2025-12-18 16:06' },
+    { operation: 'getDirectoryFilerItems', count: 351, uniqueUsers: 91, firstQuery: '2022-02-08 22:34', lastQuery: '2025-12-18 14:33' },
+    { operation: 'DecisionSummary', count: 341, uniqueUsers: 76, firstQuery: '2022-02-07 19:16', lastQuery: '2025-12-18 14:32' },
+    { operation: 'singleVarRecordPaginated', count: 295, uniqueUsers: 45, firstQuery: '2022-02-08 22:37', lastQuery: '2025-10-06 14:30' },
+    { operation: 'getRecordSingleVarACS', count: 240, uniqueUsers: 45, firstQuery: '2022-02-08 22:37', lastQuery: '2025-10-06 14:30' },
+    { operation: 'getAllEmployeeWithCeoAccess', count: 232, uniqueUsers: 124, firstQuery: '2022-02-09 17:03', lastQuery: '2025-12-18 14:33' },
+    { operation: 'SelectedVariable', count: 185, uniqueUsers: 67, firstQuery: '2022-02-08 22:37', lastQuery: '2025-12-18 14:33' },
+    { operation: 'ushpHspfEnforcePrediction', count: 180, uniqueUsers: 19, firstQuery: '2022-02-09 17:10', lastQuery: '2025-12-18 02:54' },
+    { operation: 'ushpSeerEnforcePrediction', count: 176, uniqueUsers: 19, firstQuery: '2022-02-09 17:10', lastQuery: '2025-12-18 02:54' },
+    { operation: 'ushpHspfPrediction', count: 174, uniqueUsers: 19, firstQuery: '2022-02-09 17:10', lastQuery: '2025-12-18 02:54' },
+    { operation: 'ushpSeerPrediction', count: 174, uniqueUsers: 19, firstQuery: '2022-02-09 17:10', lastQuery: '2025-12-18 02:54' },
+    { operation: 'updateUserCompanyAccess', count: 150, uniqueUsers: 32, firstQuery: '2022-02-14 21:48', lastQuery: '2025-09-04 18:06' },
+    { operation: 'sendEmail', count: 150, uniqueUsers: 32, firstQuery: '2022-02-14 21:48', lastQuery: '2025-09-04 18:06' },
+    { operation: 'singleVarRecordPaginatedOthers', count: 136, uniqueUsers: 29, firstQuery: '2022-02-08 22:38', lastQuery: '2025-10-06 14:30' },
+    { operation: 'rwhUefenforcePrediction', count: 132, uniqueUsers: 12, firstQuery: '2022-02-08 22:35', lastQuery: '2025-08-06 15:46' },
+    { operation: 'rwhUefPrediction', count: 129, uniqueUsers: 12, firstQuery: '2022-02-08 22:35', lastQuery: '2025-08-06 15:46' },
+    { operation: 'getPageRecord', count: 123, uniqueUsers: 27, firstQuery: '2022-03-04 06:25', lastQuery: '2025-06-25 12:55' },
+    { operation: 'usacSeerEnforcePrediction', count: 120, uniqueUsers: 15, firstQuery: '2022-02-11 16:35', lastQuery: '2025-12-03 16:56' },
+    { operation: 'usacSeerPrediction', count: 120, uniqueUsers: 15, firstQuery: '2022-02-11 16:35', lastQuery: '2025-12-03 16:56' },
+    { operation: 'getPageRecordSingleVarOthersHistogram', count: 66, uniqueUsers: 1, firstQuery: '2025-05-12 14:16', lastQuery: '2025-05-13 14:19' },
+    { operation: 'rfrnAfueEnforcePrediction', count: 53, uniqueUsers: 13, firstQuery: '2022-02-09 17:18', lastQuery: '2025-12-05 15:20' },
+    { operation: 'rfrnAfuePrediction', count: 53, uniqueUsers: 13, firstQuery: '2022-02-09 17:18', lastQuery: '2025-12-05 15:20' },
+    { operation: 'AhriTestsWithDecisions', count: 41, uniqueUsers: 13, firstQuery: '2022-02-09 17:03', lastQuery: '2025-10-01 16:05' },
+    { operation: 'getCompanyInfo', count: 35, uniqueUsers: 2, firstQuery: '2023-08-29 18:01', lastQuery: '2024-01-05 17:09' },
+    { operation: 'getAllEmployeeInCompany', count: 30, uniqueUsers: 1, firstQuery: '2023-12-19 15:03', lastQuery: '2024-01-05 17:09' },
+    { operation: 'uleIeerEnforcePrediction', count: 22, uniqueUsers: 9, firstQuery: '2022-05-03 14:14', lastQuery: '2025-11-19 02:57' },
+    { operation: 'uleIeerPrediction', count: 22, uniqueUsers: 9, firstQuery: '2022-05-03 14:14', lastQuery: '2025-11-19 02:57' },
+    { operation: 'getCompanyHierarchyStructured', count: 14, uniqueUsers: 2, firstQuery: '2023-08-29 18:00', lastQuery: '2024-01-10 21:21' },
+    { operation: 'rblrAfuePrediction', count: 10, uniqueUsers: 6, firstQuery: '2022-06-29 17:06', lastQuery: '2025-05-23 12:53' },
+    { operation: 'rblrAfueEnforcePrediction', count: 10, uniqueUsers: 6, firstQuery: '2022-06-29 17:06', lastQuery: '2025-05-23 12:53' },
+    { operation: 'getPageRecordRange', count: 4, uniqueUsers: 3, firstQuery: '2022-02-08 22:39', lastQuery: '2022-04-08 21:04' },
+    { operation: 'getRecord', count: 2, uniqueUsers: 1, firstQuery: '2023-04-30 14:33', lastQuery: '2023-04-30 14:33' },
+    { operation: 'allParticipants', count: 1, uniqueUsers: 1, firstQuery: '2025-11-05 16:58', lastQuery: '2025-11-05 16:58' },
   ], []);
 
   const top15Operations = queryData.slice(0, 15);
@@ -84,8 +114,17 @@ export function QueryAnalysisChart() {
   };
 
   const totalQueries = queryData.reduce((sum, q) => sum + q.count, 0);
-  const top15Total = top15Operations.reduce((sum, q) => sum + q.count, 0);
   const top10Total = top10Operations.reduce((sum, q) => sum + q.count, 0);
+
+  // Calculate metrics from data
+  const uniqueOperations = queryData.length;
+  const uniqueUsers = 298; // Total unique users across all operations
+
+  // Calculate days span from earliest to latest query
+  const allDates = queryData.flatMap(q => [new Date(q.firstQuery), new Date(q.lastQuery)]);
+  const earliestDate = new Date(Math.min(...allDates.map(d => d.getTime())));
+  const latestDate = new Date(Math.max(...allDates.map(d => d.getTime())));
+  const daysSpan = Math.ceil((latestDate.getTime() - earliestDate.getTime()) / (1000 * 60 * 60 * 24));
 
   // Prepare pie chart data
   const pieData = top10Operations.map((item, index) => ({
@@ -120,7 +159,7 @@ export function QueryAnalysisChart() {
             <Users className="w-5 h-5 text-slate-500" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">298</div>
+            <div className="text-2xl font-bold">{uniqueUsers}</div>
           </CardContent>
         </Card>
 
@@ -130,7 +169,7 @@ export function QueryAnalysisChart() {
             <Database className="w-5 h-5 text-slate-500" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{queryData.length}</div>
+            <div className="text-2xl font-bold">{uniqueOperations}</div>
           </CardContent>
         </Card>
 
@@ -140,7 +179,7 @@ export function QueryAnalysisChart() {
             <Calendar className="w-5 h-5 text-slate-500" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">1,728</div>
+            <div className="text-2xl font-bold">{daysSpan.toLocaleString()}</div>
           </CardContent>
         </Card>
       </div>
@@ -164,7 +203,7 @@ export function QueryAnalysisChart() {
                 <BarChart
                   data={top15Operations}
                   layout="vertical"
-                  margin={{ top: 20, right: 30, left: 150, bottom: 20 }}
+                  margin={{ top: 20, right: 30, left: 210, bottom: 20 }}
                 >
                   <CartesianGrid strokeDasharray="3 3" className="stroke-slate-200 dark:stroke-slate-700" />
                   <XAxis
@@ -176,9 +215,9 @@ export function QueryAnalysisChart() {
                   <YAxis
                     type="category"
                     dataKey="operation"
-                    tick={{ fill: 'currentColor', fontSize: 11 }}
+                    tick={{ fill: 'currentColor', fontSize: 10 }}
                     className="text-slate-600 dark:text-slate-400"
-                    width={140}
+                    width={200}
                   />
                   <Tooltip content={<BarTooltip />} />
                   <Legend

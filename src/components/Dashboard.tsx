@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Users, Activity, BarChart3, Calendar } from "lucide-react";
 import { UserProfile } from "./UserProfile";
 import { CompanyAnalysisChart } from "./CompanyAnalysisChart";
@@ -9,6 +9,7 @@ import { TimeAnalysisChart } from "./TimeAnalysisChart";
 import { UserAnalysisChart } from "./UserAnalysisChart";
 import { DataTable } from "./DataTable";
 import { QueryAnalysisChart } from "./QueryAnalysisChart";
+import { AllLicenseesTable } from "./AllLicenseesTable";
 
 type TabKey =
   | "company-analysis"
@@ -96,17 +97,7 @@ export function Dashboard() {
 
         {activeTab === "query-activity" && <QueryAnalysisChart />}
 
-        {activeTab === "all-licensees" && (
-          <Card>
-            <CardHeader>
-              <CardTitle>All Licensees</CardTitle>
-              <CardDescription>Licensee directory</CardDescription>
-            </CardHeader>
-            <CardContent className="h-[400px] flex items-center justify-center">
-              All Licensees Content
-            </CardContent>
-          </Card>
-        )}
+        {activeTab === "all-licensees" && <AllLicenseesTable />}
       </div>
     </main>
   );
