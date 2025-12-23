@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Users, Activity, BarChart3, Calendar } from "lucide-react";
 import { UserProfile } from "./UserProfile";
@@ -10,6 +10,8 @@ import { UserAnalysisChart } from "./UserAnalysisChart";
 import { DataTable } from "./DataTable";
 import { QueryAnalysisChart } from "./QueryAnalysisChart";
 import { AllLicenseesTable } from "./AllLicenseesTable";
+import { useFilterStore } from "@/store/filterStore";
+import { filterRawData, aggregateCompanyData } from "@/utils/dataFilters";
 
 type TabKey =
   | "company-analysis"
@@ -40,7 +42,37 @@ function MetricCard({ title, value, icon }: MetricCardProps) {
 }
 
 export function Dashboard() {
-  const [activeTab, setActiveTab] = useState<TabKey>("company-analysis");
+  const [activeTab, setActiveTab] = useState<TabKey>("time-analysis");
+  const { startDate, endDate, selectedCompanies, searchUsername } = useFilterStore();
+
+  // Calculate metrics from filtered data
+  const metrics = useMemo(() => {
+    const filteredData = filterRawData(startDate, endDate, selectedCompanies, searchUsername);
+    const companyData = aggregateCompanyData(filteredData);
+    const uniqueUsers = new Set(filteredData.map(r => r.username));
+
+    // Calculate days span
+    if (filteredData.length === 0) {
+      return {
+        totalLogins: 0,
+        uniqueUsers: 0,
+        companies: 0,
+        daysSpan: 0
+      };
+    }
+
+    const dates = filteredData.map(r => new Date(r.datetime).getTime());
+    const minDate = Math.min(...dates);
+    const maxDate = Math.max(...dates);
+    const daysSpan = Math.ceil((maxDate - minDate) / (1000 * 60 * 60 * 24));
+
+    return {
+      totalLogins: filteredData.length,
+      uniqueUsers: uniqueUsers.size,
+      companies: companyData.length,
+      daysSpan: daysSpan
+    };
+  }, [startDate, endDate, selectedCompanies, searchUsername]);
 
   const tabButton = (key: TabKey, label: string) => (
     <button
@@ -68,17 +100,17 @@ export function Dashboard() {
       <div className="p-6">
         {/* Metrics */}
         <div className="mb-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-          <MetricCard title="Total Logins" value="4,060" icon={<Activity />} />
-          <MetricCard title="Unique Users" value="298" icon={<Users />} />
-          <MetricCard title="Companies" value="218" icon={<BarChart3 />} />
-          <MetricCard title="Days Span" value="1,728" icon={<Calendar />} />
+          <MetricCard title="Total Logins" value={metrics.totalLogins.toLocaleString()} icon={<Activity />} />
+          <MetricCard title="Unique Users" value={metrics.uniqueUsers.toLocaleString()} icon={<Users />} />
+          <MetricCard title="Companies" value={metrics.companies.toLocaleString()} icon={<BarChart3 />} />
+          <MetricCard title="Days Span" value={metrics.daysSpan.toLocaleString()} icon={<Calendar />} />
         </div>
 
         {/* Tab Buttons */}
         <div className="flex flex-wrap gap-2 mb-6">
-          {tabButton("company-analysis", "Company Analysis")}
-          {tabButton("user-analysis", "User Analysis")}
           {tabButton("time-analysis", "Time Analysis")}
+          {tabButton("user-analysis", "User Analysis")}
+          {tabButton("company-analysis", "Company Analysis")}
           {tabButton("data-table", "Data Table")}
           {tabButton("query-activity", "Query Activity")}
           {tabButton("all-licensees", "All Licensees")}
@@ -87,16 +119,9 @@ export function Dashboard() {
         {/* Tab Content */}
         {activeTab === "time-analysis" && <TimeAnalysisChart />}
         {activeTab === "user-analysis" && <UserAnalysisChart />}
-
         {activeTab === "company-analysis" && <CompanyAnalysisChart />}
-
-       
-
-     
         {activeTab === "data-table" && <DataTable />}
-
         {activeTab === "query-activity" && <QueryAnalysisChart />}
-
         {activeTab === "all-licensees" && <AllLicenseesTable />}
       </div>
     </main>

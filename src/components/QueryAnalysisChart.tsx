@@ -129,6 +129,7 @@ export function QueryAnalysisChart() {
   // Prepare pie chart data
   const pieData = top10Operations.map((item, index) => ({
     ...item,
+    name: item.operation, // Add name property for Legend
     value: item.count,
     percentage: ((item.count / top10Total) * 100).toFixed(1),
     fill: colors[index]
@@ -138,8 +139,9 @@ export function QueryAnalysisChart() {
     <div className="space-y-6">
       {/* Page Heading */}
       <div className="mb-4">
-        <h2 className="text-3xl font-bold text-slate-900 dark:text-white">Query Analysis</h2>
+        <h2 className="text-2xl font-bold bg-gradient-to-r from-slate-900 to-blue-600 dark:from-white dark:to-blue-400 bg-clip-text text-transparent" style={{ fontFamily: "'Raleway', sans-serif" }}>Query Analysis</h2>
       </div>
+      
 
       {/* Summary Stats */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -189,8 +191,8 @@ export function QueryAnalysisChart() {
         {/* Horizontal Bar Chart */}
         <Card className="bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800">
           <CardHeader>
-            <CardTitle className="text-xl flex items-center gap-2" style={{ fontFamily: "'Raleway', sans-serif" }}>
-              <Database className="w-5 h-5" />
+            <CardTitle className="text-2xl font-bold bg-gradient-to-r from-slate-900 to-blue-600 dark:from-white dark:to-blue-400 bg-clip-text text-transparent flex items-center gap-2" style={{ fontFamily: "'Raleway', sans-serif" }}>
+              <Database className="w-5 h-5 text-blue-600 dark:text-blue-400" />
               Top 15 Operations by Query Count
             </CardTitle>
             <CardDescription>
@@ -242,8 +244,8 @@ export function QueryAnalysisChart() {
         {/* Pie Chart */}
         <Card className="bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800">
           <CardHeader>
-            <CardTitle className="text-xl flex items-center gap-2" style={{ fontFamily: "'Raleway', sans-serif" }}>
-              <TrendingUp className="w-5 h-5" />
+            <CardTitle className="text-2xl font-bold bg-gradient-to-r from-slate-900 to-blue-600 dark:from-white dark:to-blue-400 bg-clip-text text-transparent flex items-center gap-2" style={{ fontFamily: "'Raleway', sans-serif" }}>
+              <TrendingUp className="w-5 h-5 text-blue-600 dark:text-blue-400" />
               Query Distribution (Top 10)
             </CardTitle>
             <CardDescription>
@@ -277,7 +279,16 @@ export function QueryAnalysisChart() {
                     align="right"
                     verticalAlign="middle"
                     iconType="circle"
-                    wrapperStyle={{ fontSize: '10px', maxHeight: '550px', overflowY: 'auto' }}
+                    wrapperStyle={{
+                      fontSize: '11px',
+                      maxHeight: '550px',
+                      overflowY: 'auto',
+                      paddingLeft: '10px'
+                    }}
+                    formatter={(value: string) => {
+                      // Truncate long operation names for legend
+                      return value.length > 30 ? value.substring(0, 30) + '...' : value;
+                    }}
                   />
                 </PieChart>
               </ResponsiveContainer>

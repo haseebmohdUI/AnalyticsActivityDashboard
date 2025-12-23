@@ -2,15 +2,8 @@ import { useMemo } from 'react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import { Card, CardContent } from '@/components/ui/card';
 import { TrendingUp, Users } from 'lucide-react';
-import rawData from '@/store/rawData.json';
-
-interface LoginRecord {
-  datetime: string;
-  username: string;
-  firstName: string;
-  lastName: string;
-  company: string;
-}
+import { useFilterStore } from '@/store/filterStore';
+import { filterRawData } from '@/utils/dataFilters';
 
 interface MonthlyData {
   month: string;
@@ -19,10 +12,13 @@ interface MonthlyData {
 }
 
 export function TimeAnalysisChart() {
+  const { startDate, endDate, selectedCompanies, searchUsername } = useFilterStore();
+
   const monthlyData = useMemo(() => {
+    const filteredData = filterRawData(startDate, endDate, selectedCompanies, searchUsername);
     const monthMap = new Map<string, { logins: number; users: Set<string> }>();
 
-    (rawData as LoginRecord[]).forEach((record) => {
+    filteredData.forEach((record) => {
       const date = new Date(record.datetime);
       const monthKey = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
 
@@ -44,7 +40,7 @@ export function TimeAnalysisChart() {
       .sort((a, b) => a.month.localeCompare(b.month));
 
     return sortedData;
-  }, []);
+  }, [startDate, endDate, selectedCompanies, searchUsername]);
 
   const formatMonthLabel = (monthStr: string) => {
     const [year, month] = monthStr.split('-');
@@ -104,9 +100,14 @@ export function TimeAnalysisChart() {
     return null;
   };
 
+  const filteredData = useMemo(() =>
+    filterRawData(startDate, endDate, selectedCompanies, searchUsername),
+    [startDate, endDate, selectedCompanies, searchUsername]
+  );
+
   const totalLogins = monthlyData.reduce((sum, d) => sum + d.loginCount, 0);
-  const avgLoginsPerMonth = Math.round(totalLogins / monthlyData.length);
-  const allUniqueUsers = new Set((rawData as LoginRecord[]).map(r => r.username));
+  const avgLoginsPerMonth = monthlyData.length > 0 ? Math.round(totalLogins / monthlyData.length) : 0;
+  const allUniqueUsers = new Set(filteredData.map(r => r.username));
 
   const blueColor = '#0080ff';
   const purpleColor = '#a855f7';
@@ -135,8 +136,8 @@ export function TimeAnalysisChart() {
         <CardContent className="space-y-6 mt-4">
           {/* Monthly Login Count Chart */}
           <div >
-            <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-2 flex items-center gap-2">
-              <TrendingUp className="w-4 h-4" />
+            <h3 className="text-2xl font-bold bg-gradient-to-r from-slate-900 to-blue-600 dark:from-white dark:to-blue-400 bg-clip-text text-transparent mb-2 flex items-center gap-2" style={{ fontFamily: "'Raleway', sans-serif" }}>
+              <TrendingUp className="w-4 h-4 text-blue-600 dark:text-blue-400" />
               Monthly Login Count
             </h3>
             <p className="text-sm text-slate-600 dark:text-slate-400 mb-3">
@@ -193,8 +194,8 @@ export function TimeAnalysisChart() {
 
           {/* Monthly Unique Users Chart */}
           <div>
-            <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-2 flex items-center gap-2">
-              <Users className="w-4 h-4" />
+            <h3 className="text-2xl font-bold bg-gradient-to-r from-slate-900 to-blue-600 dark:from-white dark:to-blue-400 bg-clip-text text-transparent mb-2 flex items-center gap-2" style={{ fontFamily: "'Raleway', sans-serif" }}>
+              <Users className="w-4 h-4 text-blue-600 dark:text-blue-400" />
               Monthly Unique Users
             </h3>
             <p className="text-sm text-slate-600 dark:text-slate-400 mb-3">

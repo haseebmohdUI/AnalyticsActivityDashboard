@@ -1,17 +1,24 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, Cell, PieChart, Pie } from 'recharts';
-import { useAnalyticsStore } from '@/store/analyticsStore';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { TrendingUp, Users, Building2 } from 'lucide-react';
+import { useFilterStore } from '@/store/filterStore';
+import { filterRawData, aggregateCompanyData } from '@/utils/dataFilters';
 
 export function CompanyAnalysisChart() {
   const [viewMode, setViewMode] = useState<'logins' | 'users'>('logins');
-  const getTopCompaniesByLogins = useAnalyticsStore(state => state.getTopCompaniesByLogins);
-  const getTopCompaniesByUsers = useAnalyticsStore(state => state.getTopCompaniesByUsers);
+  const { startDate, endDate, selectedCompanies, searchUsername } = useFilterStore();
 
-  const topCompanies = viewMode === 'logins'
-    ? getTopCompaniesByLogins(15)
-    : getTopCompaniesByUsers(15);
+  const topCompanies = useMemo(() => {
+    const filteredData = filterRawData(startDate, endDate, selectedCompanies, searchUsername);
+    const companyData = aggregateCompanyData(filteredData);
+
+    const sorted = viewMode === 'logins'
+      ? [...companyData].sort((a, b) => b.totalLogins - a.totalLogins)
+      : [...companyData].sort((a, b) => b.uniqueUsers - a.uniqueUsers);
+
+    return sorted.slice(0, 15);
+  }, [startDate, endDate, selectedCompanies, searchUsername, viewMode]);
 
   const chartData = topCompanies.map(company => ({
     name: company.company.length > 25 ? company.company.substring(0, 25) + '...' : company.company,

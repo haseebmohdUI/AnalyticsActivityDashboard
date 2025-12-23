@@ -1,7 +1,8 @@
 import { useState, useMemo } from 'react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Search, ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight } from 'lucide-react';
-import rawData from '@/store/rawData.json';
+import { useFilterStore } from '@/store/filterStore';
+import { filterRawData } from '@/utils/dataFilters';
 
 interface LoginRecord {
   datetime: string;
@@ -16,14 +17,16 @@ export function DataTable() {
   const [currentPage, setCurrentPage] = useState(1);
   const rowsPerPage = 20;
 
-  const allData = rawData as LoginRecord[];
+  const { startDate, endDate, selectedCompanies, searchUsername } = useFilterStore();
 
-  // Filter data based on search term
+  // First apply global filters, then local search
   const filteredData = useMemo(() => {
-    if (!searchTerm) return allData;
+    const globalFiltered = filterRawData(startDate, endDate, selectedCompanies, searchUsername);
+
+    if (!searchTerm) return globalFiltered;
 
     const lowerSearch = searchTerm.toLowerCase();
-    return allData.filter((record) => {
+    return globalFiltered.filter((record) => {
       const loginTime = new Date(record.datetime).toLocaleString();
       return (
         loginTime.toLowerCase().includes(lowerSearch) ||
@@ -33,7 +36,7 @@ export function DataTable() {
         record.company.toLowerCase().includes(lowerSearch)
       );
     });
-  }, [searchTerm, allData]);
+  }, [searchTerm, startDate, endDate, selectedCompanies, searchUsername]);
 
   // Calculate pagination
   const totalPages = Math.ceil(filteredData.length / rowsPerPage);
@@ -64,7 +67,7 @@ export function DataTable() {
       <CardHeader>
         <div className="flex items-center justify-between flex-wrap gap-4">
           <div>
-            <CardTitle className="text-xl" style={{ fontFamily: "'Raleway', sans-serif" }}>
+            <CardTitle className="text-2xl font-bold bg-gradient-to-r from-slate-900 to-blue-600 dark:from-white dark:to-blue-400 bg-clip-text text-transparent" style={{ fontFamily: "'Raleway', sans-serif" }}>
               Login Data Table
             </CardTitle>
             <CardDescription>

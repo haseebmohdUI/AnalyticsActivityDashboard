@@ -2,15 +2,8 @@ import { useMemo } from 'react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Users, TrendingUp } from 'lucide-react';
-import rawData from '@/store/rawData.json';
-
-interface LoginRecord {
-  datetime: string;
-  username: string;
-  firstName: string;
-  lastName: string;
-  company: string;
-}
+import { useFilterStore } from '@/store/filterStore';
+import { filterRawData } from '@/utils/dataFilters';
 
 interface UserData {
   username: string;
@@ -19,10 +12,13 @@ interface UserData {
 }
 
 export function UserAnalysisChart() {
+  const { startDate, endDate, selectedCompanies, searchUsername } = useFilterStore();
+
   const topUsers = useMemo(() => {
+    const filteredData = filterRawData(startDate, endDate, selectedCompanies, searchUsername);
     const userMap = new Map<string, { firstName: string; lastName: string; count: number }>();
 
-    (rawData as LoginRecord[]).forEach((record) => {
+    filteredData.forEach((record) => {
       if (!userMap.has(record.username)) {
         userMap.set(record.username, {
           firstName: record.firstName,
@@ -41,7 +37,7 @@ export function UserAnalysisChart() {
     }));
 
     return usersArray.sort((a, b) => b.loginCount - a.loginCount).slice(0, 10);
-  }, []);
+  }, [startDate, endDate, selectedCompanies, searchUsername]);
 
   const chartData = topUsers.map(user => ({
     username: user.username.length > 25 ? user.username.substring(0, 25) + '...' : user.username,
@@ -100,8 +96,8 @@ export function UserAnalysisChart() {
         {/* Horizontal Bar Chart */}
         <Card className="bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800">
           <CardHeader>
-            <CardTitle className="text-xl flex items-center gap-2" style={{ fontFamily: "'Raleway', sans-serif" }}>
-              <Users className="w-5 h-5" />
+            <CardTitle className="text-2xl font-bold bg-gradient-to-r from-slate-900 to-blue-600 dark:from-white dark:to-blue-400 bg-clip-text text-transparent flex items-center gap-2" style={{ fontFamily: "'Raleway', sans-serif" }}>
+              <Users className="w-5 h-5 text-blue-600 dark:text-blue-400" />
               Top 10 Users by Login Count
             </CardTitle>
             <CardDescription>
@@ -149,8 +145,8 @@ export function UserAnalysisChart() {
         {/* Table */}
         <Card className="bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800">
           <CardHeader>
-            <CardTitle className="text-xl flex items-center gap-2" style={{ fontFamily: "'Raleway', sans-serif" }}>
-              <TrendingUp className="w-5 h-5" />
+            <CardTitle className="text-2xl font-bold bg-gradient-to-r from-slate-900 to-blue-600 dark:from-white dark:to-blue-400 bg-clip-text text-transparent flex items-center gap-2" style={{ fontFamily: "'Raleway', sans-serif" }}>
+              <TrendingUp className="w-5 h-5 text-blue-600 dark:text-blue-400" />
               Top 10 Users Details
             </CardTitle>
             <CardDescription>
