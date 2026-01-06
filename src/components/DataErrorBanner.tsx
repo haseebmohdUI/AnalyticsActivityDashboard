@@ -38,20 +38,20 @@ export function DataErrorBanner({ errors, isFromFallback, onDismiss }: DataError
         <AlertCircle className="w-5 h-5 text-amber-600 dark:text-amber-400 flex-shrink-0 mt-0.5" />
         <div className="flex-1">
           <h4 className="font-semibold text-amber-900 dark:text-amber-100 mb-1">
-            Using Cached Data
+            No Data Available
           </h4>
           <p className="text-sm text-amber-800 dark:text-amber-200 mb-2">
-            We're experiencing issues connecting to the live data source. Displaying cached data instead.
+            We're experiencing issues connecting to the data source. Some sections may appear empty.
           </p>
           <ul className="text-xs text-amber-700 dark:text-amber-300 space-y-1">
             {isFromFallback.loginData && (
-              <li>• Login data: {errors.loginData?.message || 'Using fallback'}</li>
+              <li>• Login data: {errors.loginData?.message || 'Failed to load'}</li>
             )}
             {isFromFallback.queryActivity && (
-              <li>• Query activity: {errors.queryActivity?.message || 'Using fallback'}</li>
+              <li>• Query activity: {errors.queryActivity?.message || 'Failed to load'}</li>
             )}
             {isFromFallback.licenseeData && (
-              <li>• Licensee data: {errors.licenseeData?.message || 'Using fallback'}</li>
+              <li>• Licensee data: {errors.licenseeData?.message || 'Failed to load'}</li>
             )}
           </ul>
         </div>
