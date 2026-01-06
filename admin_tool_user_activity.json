@@ -1,0 +1,665 @@
+{
+	"info": {
+		"_postman_id": "41926836-3f5e-4ea0-988d-656b822ae591",
+		"name": "Analytics Admin Tool API",
+		"description": "API collection for Analytics Dashboard - includes login activity, query activity, OEM/PBM directory, ACS participant data, and licensee analytics.\n\n**Authentication:** All analytics endpoints require a Bearer jwt_token in the Authorization header.\n\n**Base URL:** http://localhost:8000",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "10893683"
+	},
+	"item": [
+		{
+			"name": "Health Check",
+			"item": [
+				{
+					"name": "Root Health Check",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url_admin_api}}/",
+							"host": [
+								"{{base_url_admin_api}}"
+							],
+							"path": [
+								""
+							]
+						},
+						"description": "API health check and metadata. Returns service status, name, version, and docs URL."
+					},
+					"response": [
+						{
+							"name": "Successful Response",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url_admin_api}}/",
+									"host": [
+										"{{base_url_admin_api}}"
+									],
+									"path": [
+										""
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [],
+							"cookie": [],
+							"body": "{\n  \"status\": \"healthy\",\n  \"service\": \"Analytics Dashboard API\",\n  \"version\": \"1.0.0\",\n  \"docs\": \"/docs\"\n}"
+						}
+					]
+				},
+				{
+					"name": "Health Check",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url_admin_api}}/health",
+							"host": [
+								"{{base_url_admin_api}}"
+							],
+							"path": [
+								"health"
+							]
+						},
+						"description": "Health check endpoint for monitoring."
+					},
+					"response": [
+						{
+							"name": "Successful Response",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url_admin_api}}/health",
+									"host": [
+										"{{base_url_admin_api}}"
+									],
+									"path": [
+										"health"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [],
+							"cookie": [],
+							"body": "{\n  \"status\": \"healthy\"\n}"
+						}
+					]
+				}
+			],
+			"description": "Health check endpoints - no authentication required."
+		},
+		{
+			"name": "Analytics",
+			"item": [
+				{
+					"name": "Get Login Activity Data",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url_admin_api}}/api/login-data?page=1&page_size=100",
+							"host": [
+								"{{base_url_admin_api}}"
+							],
+							"path": [
+								"api",
+								"login-data"
+							],
+							"query": [
+								{
+									"key": "start_date",
+									"value": "2024-01-01",
+									"description": "Start date filter (YYYY-MM-DD)",
+									"disabled": true
+								},
+								{
+									"key": "end_date",
+									"value": "2024-12-31",
+									"description": "End date filter (YYYY-MM-DD)",
+									"disabled": true
+								},
+								{
+									"key": "company",
+									"value": "",
+									"description": "Filter by company name",
+									"disabled": true
+								},
+								{
+									"key": "username",
+									"value": "",
+									"description": "Search username (partial match, case-insensitive)",
+									"disabled": true
+								},
+								{
+									"key": "page",
+									"value": "1",
+									"description": "Page number (default: 1, min: 1)"
+								},
+								{
+									"key": "page_size",
+									"value": "100",
+									"description": "Records per page (default: 100, range: 1-1000)"
+								}
+							]
+						},
+						"description": "Retrieve user login activity data with optional filtering and pagination.\n\n**Authentication Required:** Yes (Bearer Token)\n\n**Data Source:** MongoDB `userAccessLog` collection"
+					},
+					"response": [
+						{
+							"name": "Successful Response",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url_admin_api}}/api/login-data?page=1&page_size=100",
+									"host": [
+										"{{base_url_admin_api}}"
+									],
+									"path": [
+										"api",
+										"login-data"
+									],
+									"query": [
+										{
+											"key": "page",
+											"value": "1"
+										},
+										{
+											"key": "page_size",
+											"value": "100"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [],
+							"cookie": [],
+							"body": "{\n  \"success\": true,\n  \"total_records\": 100,\n  \"data\": [\n    {\n      \"_id\": \"507f1f77bcf86cd799439011\",\n      \"datetime\": \"2024-01-15T10:30:00\",\n      \"username\": \"john.doe@example.com\",\n      \"firstName\": \"John\",\n      \"lastName\": \"Doe\",\n      \"company\": \"Acme Corp\",\n      \"login\": true,\n      \"date\": \"2024-01-15\",\n      \"hour\": 10,\n      \"day_of_week\": \"Monday\",\n      \"year_month_str\": \"2024-01\"\n    }\n  ],\n  \"message\": \"Retrieved 100 records (page 1)\"\n}"
+						},
+						{
+							"name": "Unauthorized",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url_admin_api}}/api/login-data",
+									"host": [
+										"{{base_url_admin_api}}"
+									],
+									"path": [
+										"api",
+										"login-data"
+									]
+								}
+							},
+							"status": "Unauthorized",
+							"code": 401,
+							"_postman_previewlanguage": "json",
+							"header": [],
+							"cookie": [],
+							"body": "{\n  \"detail\": \"Not authenticated\"\n}"
+						}
+					]
+				},
+				{
+					"name": "Get Query Activity Data",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url_admin_api}}/api/query-activity?page=1&page_size=100",
+							"host": [
+								"{{base_url_admin_api}}"
+							],
+							"path": [
+								"api",
+								"query-activity"
+							],
+							"query": [
+								{
+									"key": "start_date",
+									"value": "2024-01-01",
+									"description": "Start date filter (YYYY-MM-DD)",
+									"disabled": true
+								},
+								{
+									"key": "end_date",
+									"value": "2024-12-31",
+									"description": "End date filter (YYYY-MM-DD)",
+									"disabled": true
+								},
+								{
+									"key": "operation_name",
+									"value": "",
+									"description": "Filter by GraphQL operation name",
+									"disabled": true
+								},
+								{
+									"key": "email",
+									"value": "",
+									"description": "Filter by user email (case-insensitive)",
+									"disabled": true
+								},
+								{
+									"key": "page",
+									"value": "1",
+									"description": "Page number (default: 1, min: 1)"
+								},
+								{
+									"key": "page_size",
+									"value": "100",
+									"description": "Records per page (default: 100, range: 1-1000)"
+								}
+							]
+						},
+						"description": "Retrieve GraphQL query activity data with optional filtering and pagination.\n\n**Authentication Required:** Yes (Bearer Token)\n\n**Data Source:** MongoDB `queryActivity` collection\n\n**Note:** Certain internal operations are automatically excluded from results."
+					},
+					"response": [
+						{
+							"name": "Successful Response",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url_admin_api}}/api/query-activity?page=1&page_size=100",
+									"host": [
+										"{{base_url_admin_api}}"
+									],
+									"path": [
+										"api",
+										"query-activity"
+									],
+									"query": [
+										{
+											"key": "page",
+											"value": "1"
+										},
+										{
+											"key": "page_size",
+											"value": "100"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [],
+							"cookie": [],
+							"body": "{\n  \"success\": true,\n  \"total_records\": 50,\n  \"data\": [\n    {\n      \"_id\": \"507f1f77bcf86cd799439012\",\n      \"email\": \"user@example.com\",\n      \"operationName\": \"getAllDirectoryOEMPBMRecordCount\",\n      \"timestamp\": \"2024-01-15T10:30:00\",\n      \"date\": \"2024-01-15\",\n      \"hour\": 10,\n      \"day_of_week\": \"Monday\",\n      \"year_month_str\": \"2024-01\"\n    }\n  ],\n  \"message\": \"Retrieved 50 records (page 1)\"\n}"
+						},
+						{
+							"name": "Unauthorized",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url_admin_api}}/api/query-activity",
+									"host": [
+										"{{base_url_admin_api}}"
+									],
+									"path": [
+										"api",
+										"query-activity"
+									]
+								}
+							},
+							"status": "Unauthorized",
+							"code": 401,
+							"_postman_previewlanguage": "json",
+							"header": [],
+							"cookie": [],
+							"body": "{\n  \"detail\": \"Not authenticated\"\n}"
+						}
+					]
+				},
+				{
+					"name": "Get OEM/PBM Directory Data",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url_admin_api}}/api/oem-pbm",
+							"host": [
+								"{{base_url_admin_api}}"
+							],
+							"path": [
+								"api",
+								"oem-pbm"
+							],
+							"query": [
+								{
+									"key": "program",
+									"value": "",
+									"description": "Filter by program name (e.g., PTACHP, VSMSAC)",
+									"disabled": true
+								},
+								{
+									"key": "oem_name",
+									"value": "",
+									"description": "Search OEM name (case-insensitive)",
+									"disabled": true
+								},
+								{
+									"key": "status",
+									"value": "",
+									"description": "Filter by status (e.g., Active, Production Stopped)",
+									"disabled": true
+								}
+							]
+						},
+						"description": "Retrieve OEM/PBM directory data from the external GraphQL API.\n\n**Authentication Required:** Yes (Bearer Token)\n\n**Data Source:** External GraphQL API\n\n**Note:** Records with status 'Applicant' are automatically excluded."
+					},
+					"response": [
+						{
+							"name": "Successful Response",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url_admin_api}}/api/oem-pbm",
+									"host": [
+										"{{base_url_admin_api}}"
+									],
+									"path": [
+										"api",
+										"oem-pbm"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [],
+							"cookie": [],
+							"body": "{\n  \"success\": true,\n  \"total_records\": 25,\n  \"data\": [\n    {\n      \"OEM Name\": \"Company A\",\n      \"OEM ORG ID\": \"12345\",\n      \"PBM Name\": \"Partner B\",\n      \"PBM ORG ID\": \"67890\",\n      \"Program\": \"PTACHP\",\n      \"Status\": \"Active\",\n      \"Total Active & PS\": 150,\n      \"Active\": 100,\n      \"Production Stopped\": 50,\n      \"Discontinued\": 0,\n      \"Obsolete (min and other)\": 0\n    }\n  ],\n  \"message\": \"Retrieved 25 OEM/PBM records\"\n}"
+						},
+						{
+							"name": "Unauthorized",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url_admin_api}}/api/oem-pbm",
+									"host": [
+										"{{base_url_admin_api}}"
+									],
+									"path": [
+										"api",
+										"oem-pbm"
+									]
+								}
+							},
+							"status": "Unauthorized",
+							"code": 401,
+							"_postman_previewlanguage": "json",
+							"header": [],
+							"cookie": [],
+							"body": "{\n  \"detail\": \"Not authenticated\"\n}"
+						}
+					]
+				},
+				{
+					"name": "Get ACS Participant Data",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url_admin_api}}/api/acs",
+							"host": [
+								"{{base_url_admin_api}}"
+							],
+							"path": [
+								"api",
+								"acs"
+							],
+							"query": [
+								{
+									"key": "year",
+									"value": "2024",
+									"description": "Program year filter (defaults to current year)",
+									"disabled": true
+								},
+								{
+									"key": "program",
+									"value": "",
+									"description": "Filter by program name (case-insensitive)",
+									"disabled": true
+								},
+								{
+									"key": "manufacturer",
+									"value": "",
+									"description": "Search manufacturer name (case-insensitive)",
+									"disabled": true
+								}
+							]
+						},
+						"description": "Retrieve ACS (Annual Compliance Summary) participant data.\n\n**Authentication Required:** Yes (Bearer Token)\n\n**Data Source:** MongoDB `ACS_participant` collection\n\n**Program Name Mapping:**\n- VMAC → VSMSAC\n- VMHP → VSMSHP\n- PTAC → PTACHP\n- PTHP → PTACHP"
+					},
+					"response": [
+						{
+							"name": "Successful Response",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url_admin_api}}/api/acs",
+									"host": [
+										"{{base_url_admin_api}}"
+									],
+									"path": [
+										"api",
+										"acs"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [],
+							"cookie": [],
+							"body": "{\n  \"success\": true,\n  \"total_records\": 30,\n  \"data\": [\n    {\n      \"manufacturernamerev\": \"Manufacturer XYZ\",\n      \"oemnetforumcompanyid\": \"org-123\",\n      \"programname\": \"VSMSAC\",\n      \"total_tests\": 45,\n      \"fail_rate\": 8.5\n    }\n  ],\n  \"message\": \"Retrieved 30 ACS summary records\"\n}"
+						},
+						{
+							"name": "Unauthorized",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url_admin_api}}/api/acs",
+									"host": [
+										"{{base_url_admin_api}}"
+									],
+									"path": [
+										"api",
+										"acs"
+									]
+								}
+							},
+							"status": "Unauthorized",
+							"code": 401,
+							"_postman_previewlanguage": "json",
+							"header": [],
+							"cookie": [],
+							"body": "{\n  \"detail\": \"Not authenticated\"\n}"
+						}
+					]
+				},
+				{
+					"name": "Get Licensee Data (Merged OEM/PBM + ACS)",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url_admin_api}}/api/licensee",
+							"host": [
+								"{{base_url_admin_api}}"
+							],
+							"path": [
+								"api",
+								"licensee"
+							],
+							"query": [
+								{
+									"key": "program",
+									"value": "",
+									"description": "Filter by program name (case-insensitive)",
+									"disabled": true
+								},
+								{
+									"key": "oem_name",
+									"value": "",
+									"description": "Search OEM name (case-insensitive)",
+									"disabled": true
+								},
+								{
+									"key": "status",
+									"value": "",
+									"description": "Filter by status (case-insensitive)",
+									"disabled": true
+								},
+								{
+									"key": "year",
+									"value": "2024",
+									"description": "ACS program year (defaults to current year)",
+									"disabled": true
+								}
+							]
+						},
+						"description": "Retrieve merged licensee data combining OEM/PBM directory with ACS statistics.\n\n**Authentication Required:** Yes (Bearer Token)\n\n**Data Sources:**\n- External GraphQL API (OEM/PBM data)\n- MongoDB `ACS_participant` collection (ACS data)\n\n**Processing:**\n- Merges OEM records with ACS statistics (left join on OEM ORG ID)\n- Includes test counts and fail rates from ACS data"
+					},
+					"response": [
+						{
+							"name": "Successful Response",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url_admin_api}}/api/licensee",
+									"host": [
+										"{{base_url_admin_api}}"
+									],
+									"path": [
+										"api",
+										"licensee"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [],
+							"cookie": [],
+							"body": "{\n  \"success\": true,\n  \"total_records\": 40,\n  \"data\": [\n    {\n      \"OEM Name\": \"Company A\",\n      \"OEM ORG ID\": \"12345\",\n      \"PBM Name\": \"Partner B\",\n      \"PBM ORG ID\": \"67890\",\n      \"Program\": \"PTACHP\",\n      \"Status\": \"Active\",\n      \"Total Active & PS\": 150,\n      \"Active\": 100,\n      \"Production Stopped\": 50,\n      \"Discontinued\": 0,\n      \"Obsolete (min and other)\": 0,\n      \"total_tests\": 45,\n      \"fail_rate\": 8.5\n    }\n  ],\n  \"message\": \"Retrieved 40 licensee records\"\n}"
+						},
+						{
+							"name": "Unauthorized",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url_admin_api}}/api/licensee",
+									"host": [
+										"{{base_url_admin_api}}"
+									],
+									"path": [
+										"api",
+										"licensee"
+									]
+								}
+							},
+							"status": "Unauthorized",
+							"code": 401,
+							"_postman_previewlanguage": "json",
+							"header": [],
+							"cookie": [],
+							"body": "{\n  \"detail\": \"Not authenticated\"\n}"
+						}
+					]
+				}
+			],
+			"description": "Analytics endpoints for user activity, query tracking, and licensee data. All endpoints require Bearer jwt_token authentication.",
+			"auth": {
+				"type": "bearer",
+				"bearer": [
+					{
+						"key": "jwt_token",
+						"value": "{{jwt_token}}",
+						"type": "string"
+					}
+				]
+			}
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "jwt_token",
+				"value": "{{jwt_token}}",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"requests": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"requests": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	]
+}

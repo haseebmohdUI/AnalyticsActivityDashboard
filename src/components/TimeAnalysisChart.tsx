@@ -3,6 +3,7 @@ import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, Responsive
 import { Card, CardContent } from '@/components/ui/card';
 import { TrendingUp, Users } from 'lucide-react';
 import { useFilterStore } from '@/store/filterStore';
+import { useDataStore } from '@/store/dataStore';
 import { filterRawData } from '@/utils/dataFilters';
 
 interface MonthlyData {
@@ -13,9 +14,10 @@ interface MonthlyData {
 
 export function TimeAnalysisChart() {
   const { startDate, endDate, selectedCompanies, searchUsername } = useFilterStore();
+  const { loginData } = useDataStore();
 
   const monthlyData = useMemo(() => {
-    const filteredData = filterRawData(startDate, endDate, selectedCompanies, searchUsername);
+    const filteredData = filterRawData(loginData, startDate, endDate, selectedCompanies, searchUsername);
     const monthMap = new Map<string, { logins: number; users: Set<string> }>();
 
     filteredData.forEach((record) => {
@@ -40,7 +42,7 @@ export function TimeAnalysisChart() {
       .sort((a, b) => a.month.localeCompare(b.month));
 
     return sortedData;
-  }, [startDate, endDate, selectedCompanies, searchUsername]);
+  }, [loginData, startDate, endDate, selectedCompanies, searchUsername]);
 
   const formatMonthLabel = (monthStr: string) => {
     const [year, month] = monthStr.split('-');
@@ -101,8 +103,8 @@ export function TimeAnalysisChart() {
   };
 
   const filteredData = useMemo(() =>
-    filterRawData(startDate, endDate, selectedCompanies, searchUsername),
-    [startDate, endDate, selectedCompanies, searchUsername]
+    filterRawData(loginData, startDate, endDate, selectedCompanies, searchUsername),
+    [loginData, startDate, endDate, selectedCompanies, searchUsername]
   );
 
   const totalLogins = monthlyData.reduce((sum, d) => sum + d.loginCount, 0);

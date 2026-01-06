@@ -10,7 +10,9 @@ import { UserAnalysisChart } from "./UserAnalysisChart";
 import { DataTable } from "./DataTable";
 import { QueryAnalysisChart } from "./QueryAnalysisChart";
 import { AllLicenseesTable } from "./AllLicenseesTable";
+import { DataErrorBanner } from "./DataErrorBanner";
 import { useFilterStore } from "@/store/filterStore";
+import { useDataStore } from "@/store/dataStore";
 import { filterRawData, aggregateCompanyData } from "@/utils/dataFilters";
 
 type TabKey =
@@ -45,9 +47,13 @@ export function Dashboard() {
   const [activeTab, setActiveTab] = useState<TabKey>("time-analysis");
   const { startDate, endDate, selectedCompanies, searchUsername } = useFilterStore();
 
+  // Get data from store
+  const { loginData, errors, isDataFromFallback, clearErrors } = useDataStore();
+
   // Calculate metrics from filtered data
   const metrics = useMemo(() => {
-    const filteredData = filterRawData(startDate, endDate, selectedCompanies, searchUsername);
+    // Pass loginData to filterRawData
+    const filteredData = filterRawData(loginData, startDate, endDate, selectedCompanies, searchUsername);
     const companyData = aggregateCompanyData(filteredData);
     const uniqueUsers = new Set(filteredData.map(r => r.username));
 
@@ -72,7 +78,7 @@ export function Dashboard() {
       companies: companyData.length,
       daysSpan: daysSpan
     };
-  }, [startDate, endDate, selectedCompanies, searchUsername]);
+  }, [loginData, startDate, endDate, selectedCompanies, searchUsername]);
 
   const tabButton = (key: TabKey, label: string) => (
     <button
@@ -98,6 +104,13 @@ export function Dashboard() {
       </header>
 
       <div className="p-6">
+        {/* Error Banner */}
+        <DataErrorBanner
+          errors={errors}
+          isFromFallback={isDataFromFallback}
+          onDismiss={clearErrors}
+        />
+
         {/* Metrics */}
         <div className="mb-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           <MetricCard title="Total Logins" value={metrics.totalLogins.toLocaleString()} icon={<Activity />} />

@@ -2,6 +2,7 @@ import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import axios from 'axios';
 import { jwtDecode } from 'jwt-decode';
+import { useDataStore } from './dataStore';
 
 interface DecodedToken {
   sub: string;
@@ -114,6 +115,9 @@ export const useAuthStore = create<AuthState>()(
       },
 
       logout: () => {
+        // Clear data store on logout
+        useDataStore.getState().clearData();
+
         set({
           token: null,
           user: null,

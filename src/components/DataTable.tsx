@@ -2,15 +2,8 @@ import { useState, useMemo } from 'react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Search, ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight } from 'lucide-react';
 import { useFilterStore } from '@/store/filterStore';
+import { useDataStore } from '@/store/dataStore';
 import { filterRawData } from '@/utils/dataFilters';
-
-interface LoginRecord {
-  datetime: string;
-  username: string;
-  firstName: string;
-  lastName: string;
-  company: string;
-}
 
 export function DataTable() {
   const [searchTerm, setSearchTerm] = useState('');
@@ -18,10 +11,11 @@ export function DataTable() {
   const rowsPerPage = 20;
 
   const { startDate, endDate, selectedCompanies, searchUsername } = useFilterStore();
+  const { loginData } = useDataStore();
 
   // First apply global filters, then local search
   const filteredData = useMemo(() => {
-    const globalFiltered = filterRawData(startDate, endDate, selectedCompanies, searchUsername);
+    const globalFiltered = filterRawData(loginData, startDate, endDate, selectedCompanies, searchUsername);
 
     if (!searchTerm) return globalFiltered;
 
@@ -36,7 +30,7 @@ export function DataTable() {
         record.company.toLowerCase().includes(lowerSearch)
       );
     });
-  }, [searchTerm, startDate, endDate, selectedCompanies, searchUsername]);
+  }, [loginData, searchTerm, startDate, endDate, selectedCompanies, searchUsername]);
 
   // Calculate pagination
   const totalPages = Math.ceil(filteredData.length / rowsPerPage);

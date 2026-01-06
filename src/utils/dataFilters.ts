@@ -1,5 +1,3 @@
-import rawData from '@/store/rawData.json';
-
 export interface RawDataEntry {
   datetime: string;
   username: string;
@@ -9,13 +7,12 @@ export interface RawDataEntry {
 }
 
 export function filterRawData(
+  data: RawDataEntry[],
   startDate: string,
   endDate: string,
   selectedCompanies: string[],
   searchUsername: string
 ): RawDataEntry[] {
-  const data = rawData as RawDataEntry[];
-
   return data.filter((entry) => {
     // Filter by date range
     if (startDate || endDate) {

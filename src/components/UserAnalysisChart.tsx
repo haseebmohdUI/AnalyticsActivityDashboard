@@ -3,6 +3,7 @@ import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, Responsive
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Users, TrendingUp } from 'lucide-react';
 import { useFilterStore } from '@/store/filterStore';
+import { useDataStore } from '@/store/dataStore';
 import { filterRawData } from '@/utils/dataFilters';
 
 interface UserData {
@@ -13,9 +14,10 @@ interface UserData {
 
 export function UserAnalysisChart() {
   const { startDate, endDate, selectedCompanies, searchUsername } = useFilterStore();
+  const { loginData } = useDataStore();
 
   const topUsers = useMemo(() => {
-    const filteredData = filterRawData(startDate, endDate, selectedCompanies, searchUsername);
+    const filteredData = filterRawData(loginData, startDate, endDate, selectedCompanies, searchUsername);
     const userMap = new Map<string, { firstName: string; lastName: string; count: number }>();
 
     filteredData.forEach((record) => {
@@ -37,7 +39,7 @@ export function UserAnalysisChart() {
     }));
 
     return usersArray.sort((a, b) => b.loginCount - a.loginCount).slice(0, 10);
-  }, [startDate, endDate, selectedCompanies, searchUsername]);
+  }, [loginData, startDate, endDate, selectedCompanies, searchUsername]);
 
   const chartData = topUsers.map(user => ({
     username: user.username.length > 25 ? user.username.substring(0, 25) + '...' : user.username,

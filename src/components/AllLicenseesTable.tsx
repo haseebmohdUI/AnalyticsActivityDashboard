@@ -3,48 +3,33 @@
 import { useState, useMemo } from "react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Filter, Building2, Award, CheckCircle, Database, FileText, ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight } from "lucide-react";
-import allLicenseesData from "@/store/AllLicenseesRawData.json";
-
-interface LicenseeData {
-  "OEM Name": string;
-  "OEM ORG ID": string;
-  "PBM Name": string;
-  "PBM ORG ID": string;
-  "Program": string;
-  "Status": string;
-  "Total Active & PS": number;
-  "Active": number;
-  "Production Stopped": number;
-  "Discontinued": number;
-  "Obsolete (min and other)": number;
-  "total_tests": string | number;
-  "fail_rate": string | number;
-}
+import { useDataStore } from "@/store/dataStore";
 
 export function AllLicenseesTable() {
+  // Get licensee data from store
+  const { licenseeData } = useDataStore();
+
   const [selectedOEM, setSelectedOEM] = useState<string>("");
   const [selectedProgram, setSelectedProgram] = useState<string>("");
   const [selectedStatus, setSelectedStatus] = useState<string>("");
   const [currentPage, setCurrentPage] = useState(1);
   const rowsPerPage = 20;
 
-  const licenseeData = allLicenseesData as LicenseeData[];
-
   // Extract unique values for filters
   const uniqueOEMs = useMemo(() => {
     const oems = Array.from(new Set(licenseeData.map(item => item["OEM Name"]))).filter(Boolean);
     return oems.sort();
-  }, []);
+  }, [licenseeData]);
 
   const uniquePrograms = useMemo(() => {
     const programs = Array.from(new Set(licenseeData.map(item => item.Program))).filter(Boolean);
     return programs.sort();
-  }, []);
+  }, [licenseeData]);
 
   const uniqueStatuses = useMemo(() => {
     const statuses = Array.from(new Set(licenseeData.map(item => item.Status))).filter(Boolean);
     return statuses.sort();
-  }, []);
+  }, [licenseeData]);
 
   // Filter data based on selected filters
   const filteredData = useMemo(() => {
@@ -57,7 +42,7 @@ export function AllLicenseesTable() {
     // Reset to page 1 when filters change
     setCurrentPage(1);
     return filtered;
-  }, [selectedOEM, selectedProgram, selectedStatus]);
+  }, [licenseeData, selectedOEM, selectedProgram, selectedStatus]);
 
   // Calculate pagination
   const totalPages = Math.ceil(filteredData.length / rowsPerPage);

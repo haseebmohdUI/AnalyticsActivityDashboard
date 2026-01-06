@@ -3,14 +3,16 @@ import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, Responsive
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { TrendingUp, Users, Building2 } from 'lucide-react';
 import { useFilterStore } from '@/store/filterStore';
+import { useDataStore } from '@/store/dataStore';
 import { filterRawData, aggregateCompanyData } from '@/utils/dataFilters';
 
 export function CompanyAnalysisChart() {
   const [viewMode, setViewMode] = useState<'logins' | 'users'>('logins');
   const { startDate, endDate, selectedCompanies, searchUsername } = useFilterStore();
+  const { loginData } = useDataStore();
 
   const topCompanies = useMemo(() => {
-    const filteredData = filterRawData(startDate, endDate, selectedCompanies, searchUsername);
+    const filteredData = filterRawData(loginData, startDate, endDate, selectedCompanies, searchUsername);
     const companyData = aggregateCompanyData(filteredData);
 
     const sorted = viewMode === 'logins'
@@ -18,7 +20,7 @@ export function CompanyAnalysisChart() {
       : [...companyData].sort((a, b) => b.uniqueUsers - a.uniqueUsers);
 
     return sorted.slice(0, 15);
-  }, [startDate, endDate, selectedCompanies, searchUsername, viewMode]);
+  }, [loginData, startDate, endDate, selectedCompanies, searchUsername, viewMode]);
 
   const chartData = topCompanies.map(company => ({
     name: company.company.length > 25 ? company.company.substring(0, 25) + '...' : company.company,
