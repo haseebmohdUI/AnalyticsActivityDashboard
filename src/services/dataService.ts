@@ -9,6 +9,20 @@ export interface LoginDataResponse {
   company: string;
 }
 
+// Raw query log from API
+export interface RawQueryLog {
+  _id: string;
+  email: string;
+  timestamp: string;
+  operationName: string;
+  timestamp_parsed: string;
+  date: string;
+  hour: number;
+  day_of_week: string;
+  year_month_str: string;
+}
+
+// Aggregated query activity (what components expect)
 export interface QueryActivityResponse {
   operation: string;
   count: number;
@@ -77,6 +91,54 @@ export const fetchLoginData = async (): Promise<{
 };
 
 /**
+ * Aggregate raw query logs into operation summaries
+ */
+function aggregateQueryLogs(rawLogs: RawQueryLog[]): QueryActivityResponse[] {
+  const operationMap = new Map<string, {
+    count: number;
+    users: Set<string>;
+    firstTimestamp: Date;
+    lastTimestamp: Date;
+  }>();
+
+  rawLogs.forEach((log) => {
+    const operation = log.operationName;
+    const timestamp = new Date(log.timestamp_parsed || log.timestamp);
+
+    if (!operationMap.has(operation)) {
+      operationMap.set(operation, {
+        count: 0,
+        users: new Set(),
+        firstTimestamp: timestamp,
+        lastTimestamp: timestamp
+      });
+    }
+
+    const opData = operationMap.get(operation)!;
+    opData.count++;
+    opData.users.add(log.email);
+
+    if (timestamp < opData.firstTimestamp) {
+      opData.firstTimestamp = timestamp;
+    }
+    if (timestamp > opData.lastTimestamp) {
+      opData.lastTimestamp = timestamp;
+    }
+  });
+
+  // Convert to array and sort by count descending
+  return Array.from(operationMap.entries())
+    .map(([operation, data]) => ({
+      operation,
+      count: data.count,
+      uniqueUsers: data.users.size,
+      firstQuery: data.firstTimestamp.toISOString().slice(0, 16).replace('T', ' '),
+      lastQuery: data.lastTimestamp.toISOString().slice(0, 16).replace('T', ' ')
+    }))
+    .sort((a, b) => b.count - a.count);
+}
+
+/**
  * Fetch query activity data
  * Endpoint: /api/query-activity
  * Returns empty array on failure
@@ -87,11 +149,14 @@ export const fetchQueryActivity = async (): Promise<{
   isFromFallback: boolean;
 }> => {
   try {
-    const response = await apiClient.get<ApiResponse<QueryActivityResponse[]>>('/api/query-activity');
+    const response = await apiClient.get<ApiResponse<RawQueryLog[]>>('/api/query-activity');
 
     if (response.data.success && response.data.data) {
+      // Aggregate the raw logs into operation summaries
+      const aggregatedData = aggregateQueryLogs(response.data.data);
+
       return {
-        data: response.data.data,
+        data: aggregatedData,
         error: null,
         isFromFallback: false,
       };
