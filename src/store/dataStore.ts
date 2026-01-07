@@ -1,10 +1,13 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import {
-  fetchAllData as fetchAllDataService,
+  fetchLoginData,
+  fetchQueryActivity,
+  fetchLicenseeData,
   type LoginDataResponse,
   type QueryActivityResponse,
-  type LicenseeDataResponse
+  type LicenseeDataResponse,
+  type LoginDataParams
 } from '@/services/dataService';
 import type { ApiError } from '@/services/api';
 
@@ -19,6 +22,14 @@ interface DataStore {
   loginData: LoginDataEntry[];
   queryActivityData: QueryActivityEntry[];
   licenseeData: LicenseeDataEntry[];
+
+  // Pagination state for login data
+  loginDataPagination: {
+    currentPage: number;
+    pageSize: number;
+    totalRecords: number;
+    loadedRecords: number;
+  };
 
   // Loading states
   isLoading: boolean;
@@ -43,6 +54,8 @@ interface DataStore {
 
   // Actions
   fetchAllData: () => Promise<void>;
+  fetchLoginDataPaginated: (params?: LoginDataParams, append?: boolean) => Promise<void>;
+  loadMoreLoginData: () => Promise<void>;
   clearData: () => void;
   clearErrors: () => void;
   isDataStale: () => boolean;
@@ -64,6 +77,13 @@ export const useDataStore = create<DataStore>()(
       queryActivityData: [],
       licenseeData: [],
 
+      loginDataPagination: {
+        currentPage: 1,
+        pageSize: 100,
+        totalRecords: 0,
+        loadedRecords: 0,
+      },
+
       isLoading: false,
       isLoginDataLoading: false,
       isQueryActivityLoading: false,
@@ -82,7 +102,7 @@ export const useDataStore = create<DataStore>()(
         licenseeData: false,
       },
 
-      // Fetch all data
+      // Fetch all data (uses pagination for login data)
       fetchAllData: async () => {
         set({
           isLoading: true,
@@ -92,52 +112,63 @@ export const useDataStore = create<DataStore>()(
         });
 
         try {
-          const result = await fetchAllDataService();
+          // Fetch all data concurrently with pagination for login data
+          const [loginDataResult, queryActivityResult, licenseeDataResult] = await Promise.allSettled([
+            fetchLoginData({ page: 1, page_size: 100 }), // Default pagination
+            fetchQueryActivity(),
+            fetchLicenseeData(),
+          ]);
 
-          // Update login data
-          if (result.loginData) {
+          // Update login data with pagination
+          if (loginDataResult.status === 'fulfilled') {
             set({
-              loginData: result.loginData.data,
+              loginData: loginDataResult.value.data,
+              loginDataPagination: {
+                currentPage: 1,
+                pageSize: 100,
+                totalRecords: loginDataResult.value.totalRecords,
+                loadedRecords: loginDataResult.value.data.length,
+              },
               isLoginDataLoading: false,
               errors: {
                 ...get().errors,
-                loginData: result.loginData.error,
+                loginData: loginDataResult.value.error,
               },
               isDataFromFallback: {
                 ...get().isDataFromFallback,
-                loginData: result.loginData.isFromFallback,
+                loginData: loginDataResult.value.isFromFallback,
               },
             });
           }
 
           // Update query activity data
-          if (result.queryActivity) {
+          if (queryActivityResult.status === 'fulfilled') {
             set({
-              queryActivityData: result.queryActivity.data,
+              queryActivityData: queryActivityResult.value.data,
               isQueryActivityLoading: false,
               errors: {
                 ...get().errors,
-                queryActivity: result.queryActivity.error,
+                queryActivity: queryActivityResult.value.error,
               },
               isDataFromFallback: {
                 ...get().isDataFromFallback,
-                queryActivity: result.queryActivity.isFromFallback,
+                queryActivity: queryActivityResult.value.isFromFallback,
               },
             });
           }
 
           // Update licensee data
-          if (result.licenseeData) {
+          if (licenseeDataResult.status === 'fulfilled') {
             set({
-              licenseeData: result.licenseeData.data,
+              licenseeData: licenseeDataResult.value.data,
               isLicenseeDataLoading: false,
               errors: {
                 ...get().errors,
-                licenseeData: result.licenseeData.error,
+                licenseeData: licenseeDataResult.value.error,
               },
               isDataFromFallback: {
                 ...get().isDataFromFallback,
-                licenseeData: result.licenseeData.isFromFallback,
+                licenseeData: licenseeDataResult.value.isFromFallback,
               },
             });
           }
@@ -157,12 +188,67 @@ export const useDataStore = create<DataStore>()(
         }
       },
 
+      // Fetch login data with pagination
+      fetchLoginDataPaginated: async (params?: LoginDataParams, append = false) => {
+        set({ isLoginDataLoading: true });
+
+        try {
+          const result = await fetchLoginData(params);
+
+          const currentData = get().loginData;
+          const newData = append ? [...currentData, ...result.data] : result.data;
+
+          set({
+            loginData: newData,
+            isLoginDataLoading: false,
+            loginDataPagination: {
+              currentPage: params?.page || 1,
+              pageSize: params?.page_size || 100,
+              totalRecords: result.totalRecords,
+              loadedRecords: newData.length,
+            },
+            errors: {
+              ...get().errors,
+              loginData: result.error,
+            },
+            isDataFromFallback: {
+              ...get().isDataFromFallback,
+              loginData: result.isFromFallback,
+            },
+            lastFetchTime: Date.now(),
+          });
+        } catch (error) {
+          console.error('Error fetching paginated login data:', error);
+          set({ isLoginDataLoading: false });
+        }
+      },
+
+      // Load more login data (incremental pagination)
+      loadMoreLoginData: async () => {
+        const { loginDataPagination } = get();
+        const nextPage = loginDataPagination.currentPage + 1;
+
+        await get().fetchLoginDataPaginated(
+          {
+            page: nextPage,
+            page_size: loginDataPagination.pageSize,
+          },
+          true // append = true
+        );
+      },
+
       // Clear all data (called on logout)
       clearData: () => {
         set({
           loginData: [],
           queryActivityData: [],
           licenseeData: [],
+          loginDataPagination: {
+            currentPage: 1,
+            pageSize: 100,
+            totalRecords: 0,
+            loadedRecords: 0,
+          },
           errors: {
             loginData: null,
             queryActivity: null,
@@ -207,6 +293,7 @@ export const useDataStore = create<DataStore>()(
         loginData: state.loginData,
         queryActivityData: state.queryActivityData,
         licenseeData: state.licenseeData,
+        loginDataPagination: state.loginDataPagination,
         lastFetchTime: state.lastFetchTime,
         isDataFromFallback: state.isDataFromFallback,
       }),

@@ -48,21 +48,47 @@ export interface LicenseeDataResponse {
 }
 
 /**
+ * Pagination and filter parameters for login data
+ */
+export interface LoginDataParams {
+  page?: number;
+  page_size?: number;
+  start_date?: string;
+  end_date?: string;
+  company?: string;
+  username?: string;
+}
+
+/**
  * Fetch login activity data
  * Endpoint: /api/login-data
  * Returns empty array on failure
  */
-export const fetchLoginData = async (): Promise<{
+export const fetchLoginData = async (params: LoginDataParams = {}): Promise<{
   data: LoginDataResponse[];
+  totalRecords: number;
   error: ApiError | null;
   isFromFallback: boolean;
 }> => {
   try {
-    const response = await apiClient.get<ApiResponse<LoginDataResponse[]>>('/api/login-data');
+    // Build query params, only include defined values
+    const queryParams: Record<string, string> = {};
+
+    if (params.page !== undefined) queryParams.page = String(params.page);
+    if (params.page_size !== undefined) queryParams.page_size = String(params.page_size);
+    if (params.start_date) queryParams.start_date = params.start_date;
+    if (params.end_date) queryParams.end_date = params.end_date;
+    if (params.company) queryParams.company = params.company;
+    if (params.username) queryParams.username = params.username;
+
+    const response = await apiClient.get<ApiResponse<LoginDataResponse[]>>('/api/login-data', {
+      params: queryParams
+    });
 
     if (response.data.success && response.data.data) {
       return {
         data: response.data.data,
+        totalRecords: response.data.total_records || 0,
         error: null,
         isFromFallback: false,
       };
@@ -72,6 +98,7 @@ export const fetchLoginData = async (): Promise<{
     console.warn('API returned unsuccessful response, no data available');
     return {
       data: [],
+      totalRecords: 0,
       error: { message: response.data.message || 'Unsuccessful API response' },
       isFromFallback: true,
     };
@@ -81,6 +108,7 @@ export const fetchLoginData = async (): Promise<{
     // Return empty array on error
     return {
       data: [],
+      totalRecords: 0,
       error: {
         message: error.response?.data?.message || error.message || 'Failed to fetch login data',
         status: error.response?.status,

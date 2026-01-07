@@ -48,7 +48,7 @@ export function Dashboard() {
   const { startDate, endDate, selectedCompanies, searchUsername } = useFilterStore();
 
   // Get data from store
-  const { loginData, errors, isDataFromFallback, clearErrors } = useDataStore();
+  const { loginData, loginDataPagination, errors, isDataFromFallback, clearErrors } = useDataStore();
 
   // Calculate metrics from filtered data
   const metrics = useMemo(() => {
@@ -60,7 +60,7 @@ export function Dashboard() {
     // Calculate days span
     if (filteredData.length === 0) {
       return {
-        totalLogins: 0,
+        totalLogins: loginDataPagination.totalRecords, // Use total records from API
         uniqueUsers: 0,
         companies: 0,
         daysSpan: 0
@@ -73,12 +73,12 @@ export function Dashboard() {
     const daysSpan = Math.ceil((maxDate - minDate) / (1000 * 60 * 60 * 24));
 
     return {
-      totalLogins: filteredData.length,
+      totalLogins: loginDataPagination.totalRecords, // Use total records from API
       uniqueUsers: uniqueUsers.size,
       companies: companyData.length,
       daysSpan: daysSpan
     };
-  }, [loginData, startDate, endDate, selectedCompanies, searchUsername]);
+  }, [loginData, loginDataPagination.totalRecords, startDate, endDate, selectedCompanies, searchUsername]);
 
   const tabButton = (key: TabKey, label: string) => (
     <button
