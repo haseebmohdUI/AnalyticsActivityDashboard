@@ -86,94 +86,84 @@ export function QueryAnalysisChart() {
   }));
 
   return (
-    <div className="space-y-6">
-      {/* Page Heading */}
-      {/* <div className="mb-4">
-        <h2 className="text-2xl font-bold bg-gradient-to-r from-slate-900 to-blue-600 dark:from-white dark:to-blue-400 bg-clip-text text-transparent" style={{ fontFamily: "'Raleway', sans-serif" }}>Query Analysis</h2>
-      </div> */}
-      
-
+    <div className="space-y-3">
       {/* Summary Stats */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        <Card className="hover:shadow-lg transition-all">
-          <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-xs uppercase">Total Queries</CardTitle>
-            <Activity className="w-5 h-5 text-slate-500" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{totalQueries.toLocaleString()}</div>
-          </CardContent>
-        </Card>
+        <div className="group relative p-4 rounded-xl bg-gradient-to-br from-blue-50 via-blue-100/50 to-cyan-50 dark:from-blue-900/30 dark:via-blue-800/20 dark:to-cyan-900/20 border border-blue-200/50 dark:border-blue-700/50 hover:border-blue-400 dark:hover:border-blue-500 transition-all shadow hover:shadow-md hover:scale-[1.02] transform duration-300">
+          <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-blue-400/0 to-blue-600/0 group-hover:from-blue-400/5 group-hover:to-blue-600/10 transition-all duration-300"></div>
+          <div className="relative flex items-center gap-2 mb-1">
+            <Activity className="w-5 h-5 text-blue-600 dark:text-blue-400" />
+            <p className="text-xs font-semibold text-blue-900 dark:text-blue-300">Total Queries</p>
+          </div>
+          <p className="relative text-3xl font-bold text-blue-600 dark:text-blue-400">{totalQueries.toLocaleString()}</p>
+        </div>
 
-        <Card className="hover:shadow-lg transition-all">
-          <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-xs uppercase">Unique Users</CardTitle>
-            <Users className="w-5 h-5 text-slate-500" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{uniqueUsers}</div>
-          </CardContent>
-        </Card>
+        <div className="group relative p-4 rounded-xl bg-gradient-to-br from-purple-50 via-purple-100/50 to-pink-50 dark:from-purple-900/30 dark:via-purple-800/20 dark:to-pink-900/20 border border-purple-200/50 dark:border-purple-700/50 hover:border-purple-400 dark:hover:border-purple-500 transition-all shadow hover:shadow-md hover:scale-[1.02] transform duration-300">
+          <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-purple-400/0 to-purple-600/0 group-hover:from-purple-400/5 group-hover:to-purple-600/10 transition-all duration-300"></div>
+          <div className="relative flex items-center gap-2 mb-1">
+            <Users className="w-5 h-5 text-purple-600 dark:text-purple-400" />
+            <p className="text-xs font-semibold text-purple-900 dark:text-purple-300">Unique Users</p>
+          </div>
+          <p className="relative text-3xl font-bold text-purple-600 dark:text-purple-400">{uniqueUsers}</p>
+        </div>
 
-        <Card className="hover:shadow-lg transition-all">
-          <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-xs uppercase">Unique Operations</CardTitle>
-            <Database className="w-5 h-5 text-slate-500" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{uniqueOperations}</div>
-          </CardContent>
-        </Card>
+        <div className="group relative p-4 rounded-xl bg-gradient-to-br from-green-50 via-green-100/50 to-emerald-50 dark:from-green-900/30 dark:via-green-800/20 dark:to-emerald-900/20 border border-green-200/50 dark:border-green-700/50 hover:border-green-400 dark:hover:border-green-500 transition-all shadow hover:shadow-md hover:scale-[1.02] transform duration-300">
+          <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-green-400/0 to-green-600/0 group-hover:from-green-400/5 group-hover:to-green-600/10 transition-all duration-300"></div>
+          <div className="relative flex items-center gap-2 mb-1">
+            <Database className="w-5 h-5 text-green-600 dark:text-green-400" />
+            <p className="text-xs font-semibold text-green-900 dark:text-green-300">Unique Operations</p>
+          </div>
+          <p className="relative text-3xl font-bold text-green-600 dark:text-green-400">{uniqueOperations}</p>
+        </div>
 
-        <Card className="hover:shadow-lg transition-all">
-          <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-xs uppercase">Days Span</CardTitle>
-            <Calendar className="w-5 h-5 text-slate-500" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{daysSpan.toLocaleString()}</div>
-          </CardContent>
-        </Card>
+        <div className="group relative p-4 rounded-xl bg-gradient-to-br from-orange-50 via-orange-100/50 to-amber-50 dark:from-orange-900/30 dark:via-orange-800/20 dark:to-amber-900/20 border border-orange-200/50 dark:border-orange-700/50 hover:border-orange-400 dark:hover:border-orange-500 transition-all shadow hover:shadow-md hover:scale-[1.02] transform duration-300">
+          <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-orange-400/0 to-orange-600/0 group-hover:from-orange-400/5 group-hover:to-orange-600/10 transition-all duration-300"></div>
+          <div className="relative flex items-center gap-2 mb-1">
+            <Calendar className="w-5 h-5 text-orange-600 dark:text-orange-400" />
+            <p className="text-xs font-semibold text-orange-900 dark:text-orange-300">Days Span</p>
+          </div>
+          <p className="relative text-3xl font-bold text-orange-600 dark:text-orange-400">{daysSpan.toLocaleString()}</p>
+        </div>
       </div>
 
       {/* Charts Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
         {/* Horizontal Bar Chart */}
         <Card className="bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800">
-          <CardHeader>
-            <CardTitle className="text-2xl font-bold bg-gradient-to-r from-slate-900 to-blue-600 dark:from-white dark:to-blue-400 bg-clip-text text-transparent flex items-center gap-2" style={{ fontFamily: "'Raleway', sans-serif" }}>
-              <Database className="w-5 h-5 text-blue-600 dark:text-blue-400" />
+          <CardHeader className="pb-2 pt-3">
+            <CardTitle className="text-lg font-bold bg-gradient-to-r from-slate-900 to-blue-600 dark:from-white dark:to-blue-400 bg-clip-text text-transparent flex items-center gap-2" style={{ fontFamily: "'Raleway', sans-serif" }}>
+              <Database className="w-4 h-4 text-blue-600 dark:text-blue-400" />
               Top 15 Operations by Query Count
             </CardTitle>
-            <CardDescription>
+            <CardDescription className="text-xs">
               Most frequently executed operations
             </CardDescription>
           </CardHeader>
-          <CardContent>
-            <div className="h-[600px] w-full">
+          <CardContent className="pb-3">
+            <div className="h-[630px] w-full">
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart
                   data={top15Operations}
                   layout="vertical"
-                  margin={{ top: 20, right: 30, left: 210, bottom: 20 }}
+                  margin={{ top: 10, right: 30, left: 0, bottom: 10 }}
                 >
                   <CartesianGrid strokeDasharray="3 3" className="stroke-slate-200 dark:stroke-slate-700" />
                   <XAxis
                     type="number"
                     domain={[0, 5000]}
-                    tick={{ fill: 'currentColor' }}
+                    tick={{ fill: 'currentColor', fontSize: 11 }}
                     className="text-slate-600 dark:text-slate-400"
                   />
                   <YAxis
                     type="category"
                     dataKey="operation"
-                    tick={{ fill: 'currentColor', fontSize: 10 }}
+                    tick={{ fill: 'currentColor', fontSize: 9 }}
                     className="text-slate-600 dark:text-slate-400"
                     width={200}
                   />
                   <Tooltip content={<BarTooltip />} />
                   <Legend
-                    wrapperStyle={{ paddingTop: '20px' }}
+                    wrapperStyle={{ paddingTop: '10px' }}
                     iconType="circle"
                   />
                   <Bar
@@ -193,17 +183,17 @@ export function QueryAnalysisChart() {
 
         {/* Pie Chart */}
         <Card className="bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800">
-          <CardHeader>
-            <CardTitle className="text-2xl font-bold bg-gradient-to-r from-slate-900 to-blue-600 dark:from-white dark:to-blue-400 bg-clip-text text-transparent flex items-center gap-2" style={{ fontFamily: "'Raleway', sans-serif" }}>
-              <TrendingUp className="w-5 h-5 text-blue-600 dark:text-blue-400" />
+          <CardHeader className="pb-2 pt-3">
+            <CardTitle className="text-lg font-bold bg-gradient-to-r from-slate-900 to-blue-600 dark:from-white dark:to-blue-400 bg-clip-text text-transparent flex items-center gap-2" style={{ fontFamily: "'Raleway', sans-serif" }}>
+              <TrendingUp className="w-4 h-4 text-blue-600 dark:text-blue-400" />
               Query Distribution (Top 10)
             </CardTitle>
-            <CardDescription>
+            <CardDescription className="text-xs">
               Distribution of queries across top 10 operations
             </CardDescription>
           </CardHeader>
-          <CardContent>
-            <div className="h-[600px] w-full">
+          <CardContent className="pb-3">
+            <div className="h-[480px] w-full">
               <ResponsiveContainer width="100%" height="100%">
                 <PieChart>
                   <Pie
@@ -212,8 +202,8 @@ export function QueryAnalysisChart() {
                     cy="50%"
                     labelLine={false}
                     label={(entry: any) => `${entry.percentage}%`}
-                    outerRadius={180}
-                    innerRadius={80}
+                    outerRadius={150}
+                    innerRadius={70}
                     fill="#8884d8"
                     dataKey="value"
                     animationDuration={800}
@@ -230,8 +220,8 @@ export function QueryAnalysisChart() {
                     verticalAlign="middle"
                     iconType="circle"
                     wrapperStyle={{
-                      fontSize: '11px',
-                      maxHeight: '550px',
+                      fontSize: '10px',
+                      maxHeight: '440px',
                       overflowY: 'auto',
                       paddingLeft: '10px'
                     }}

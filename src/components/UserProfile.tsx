@@ -84,16 +84,16 @@ export function UserProfile() {
                     <Mail className="w-3.5 h-3.5" />
                     <span className="truncate">{user?.email || 'N/A'}</span>
                   </div>
-                  <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm px-3 py-2 rounded-lg">
+                  {/* <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm px-3 py-2 rounded-lg">
                     <User className="w-3.5 h-3.5" />
                     <span>ID: #{user?.indId || 'N/A'}</span>
-                  </div>
-                  {user?.company && user.company.length > 0 && (
+                  </div> */}
+                  {/* {user?.company && user.company.length > 0 && (
                     <div className="flex items-start gap-2 bg-white/10 backdrop-blur-sm px-3 py-2 rounded-lg">
                       <Building className="w-3.5 h-3.5 flex-shrink-0 mt-0.5" />
                       <span className="text-[11px] leading-tight">{user.company[0]}</span>
                     </div>
-                  )}
+                  )} */}
                 </div>
               </div>
 

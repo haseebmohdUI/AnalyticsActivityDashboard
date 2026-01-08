@@ -115,20 +115,32 @@ export function TimeAnalysisChart() {
   const purpleColor = '#a855f7';
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-3">
       {/* Summary Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-        <div className="p-3 rounded-xl bg-gradient-to-br from-blue-50 to-blue-100/50 dark:from-blue-900/20 dark:to-blue-800/10 border border-blue-200 dark:border-blue-800">
-          <p className="text-xs font-semibold text-blue-900 dark:text-blue-300 mb-1">Total Logins</p>
-          <p className="text-xl font-bold text-blue-600 dark:text-blue-400">{totalLogins.toLocaleString()}</p>
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="group relative p-4 rounded-xl bg-gradient-to-br from-blue-50 via-blue-100/50 to-cyan-50 dark:from-blue-900/30 dark:via-blue-800/20 dark:to-cyan-900/20 border border-blue-200/50 dark:border-blue-700/50 hover:border-blue-400 dark:hover:border-blue-500 transition-all shadow hover:shadow-md hover:scale-[1.02] transform duration-300">
+          <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-blue-400/0 to-blue-600/0 group-hover:from-blue-400/5 group-hover:to-blue-600/10 transition-all duration-300"></div>
+          <div className="relative flex items-center gap-2 mb-1">
+            <TrendingUp className="w-5 h-5 text-blue-600 dark:text-blue-400" />
+            <p className="text-xs font-semibold text-blue-900 dark:text-blue-300">Total Logins</p>
+          </div>
+          <p className="relative text-3xl font-bold text-blue-600 dark:text-blue-400">{totalLogins.toLocaleString()}</p>
         </div>
-        <div className="p-3 rounded-xl bg-gradient-to-br from-purple-50 to-purple-100/50 dark:from-purple-900/20 dark:to-purple-800/10 border border-purple-200 dark:border-purple-800">
-          <p className="text-xs font-semibold text-purple-900 dark:text-purple-300 mb-1">Avg Logins/Month</p>
-          <p className="text-xl font-bold text-purple-600 dark:text-purple-400">{avgLoginsPerMonth}</p>
+        <div className="group relative p-4 rounded-xl bg-gradient-to-br from-purple-50 via-purple-100/50 to-pink-50 dark:from-purple-900/30 dark:via-purple-800/20 dark:to-pink-900/20 border border-purple-200/50 dark:border-purple-700/50 hover:border-purple-400 dark:hover:border-purple-500 transition-all shadow hover:shadow-md hover:scale-[1.02] transform duration-300">
+          <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-purple-400/0 to-purple-600/0 group-hover:from-purple-400/5 group-hover:to-purple-600/10 transition-all duration-300"></div>
+          <div className="relative flex items-center gap-2 mb-1">
+            <TrendingUp className="w-5 h-5 text-purple-600 dark:text-purple-400" />
+            <p className="text-xs font-semibold text-purple-900 dark:text-purple-300">Avg Logins/Month</p>
+          </div>
+          <p className="relative text-3xl font-bold text-purple-600 dark:text-purple-400">{avgLoginsPerMonth}</p>
         </div>
-        <div className="p-3 rounded-xl bg-gradient-to-br from-green-50 to-green-100/50 dark:from-green-900/20 dark:to-green-800/10 border border-green-200 dark:border-green-800">
-          <p className="text-xs font-semibold text-green-900 dark:text-green-300 mb-1">Total Unique Users</p>
-          <p className="text-xl font-bold text-green-600 dark:text-green-400">{allUniqueUsers.size}</p>
+        <div className="group relative p-4 rounded-xl bg-gradient-to-br from-green-50 via-green-100/50 to-emerald-50 dark:from-green-900/30 dark:via-green-800/20 dark:to-emerald-900/20 border border-green-200/50 dark:border-green-700/50 hover:border-green-400 dark:hover:border-green-500 transition-all shadow hover:shadow-md hover:scale-[1.02] transform duration-300">
+          <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-green-400/0 to-green-600/0 group-hover:from-green-400/5 group-hover:to-green-600/10 transition-all duration-300"></div>
+          <div className="relative flex items-center gap-2 mb-1">
+            <Users className="w-5 h-5 text-green-600 dark:text-green-400" />
+            <p className="text-xs font-semibold text-green-900 dark:text-green-300">Total Unique Users</p>
+          </div>
+          <p className="relative text-3xl font-bold text-green-600 dark:text-green-400">{allUniqueUsers.size}</p>
         </div>
       </div>
 
@@ -145,7 +157,7 @@ export function TimeAnalysisChart() {
             <p className="text-xs text-slate-600 dark:text-slate-400 mb-2">
               Number of logins per month (0-250 range)
             </p>
-            <div className="h-[280px] w-full">
+            <div className="h-[260px] w-full">
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart
                   data={monthlyData}

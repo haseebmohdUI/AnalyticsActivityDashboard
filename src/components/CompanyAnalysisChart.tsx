@@ -107,89 +107,54 @@ export function CompanyAnalysisChart() {
   }));
 
   return (
-    <Card className="bg-gradient-to-br from-white to-slate-50/50 dark:from-slate-900 dark:to-slate-800/50 border-slate-200 dark:border-slate-800 shadow-xl">
-      {/* <CardHeader className="border-b border-slate-200 dark:border-slate-800 bg-gradient-to-r from-slate-50 to-blue-50/30 dark:from-slate-900/50 dark:to-blue-900/10">
-        <div className="flex items-center justify-between flex-wrap gap-4">
-          <div>
-            <CardTitle className="text-2xl font-bold bg-gradient-to-r from-slate-900 to-blue-600 dark:from-white dark:to-blue-400 bg-clip-text text-transparent" style={{ fontFamily: "'Raleway', sans-serif" }}>
-              Company Analysis
-            </CardTitle>
-            <CardDescription className="mt-1 text-sm">
-              Top 15 companies by {viewMode === 'logins' ? 'total logins' : 'unique users'}
-            </CardDescription>
+    <div className="space-y-3">
+      {/* Summary Stats */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="group relative p-4 rounded-xl bg-gradient-to-br from-blue-50 via-blue-100/50 to-cyan-50 dark:from-blue-900/30 dark:via-blue-800/20 dark:to-cyan-900/20 border border-blue-200/50 dark:border-blue-700/50 hover:border-blue-400 dark:hover:border-blue-500 transition-all shadow hover:shadow-md hover:scale-[1.02] transform duration-300">
+          <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-blue-400/0 to-blue-600/0 group-hover:from-blue-400/5 group-hover:to-blue-600/10 transition-all duration-300"></div>
+          <div className="relative flex items-center gap-2 mb-1">
+            <Building2 className="w-5 h-5 text-blue-600 dark:text-blue-400" />
+            <p className="text-xs font-semibold text-blue-900 dark:text-blue-300">Total Companies</p>
           </div>
-          <div className="flex gap-2">
-            <button
-              onClick={() => setViewMode('logins')}
-              className={`px-5 py-2.5 rounded-xl text-sm font-semibold transition-all transform hover:scale-105 active:scale-95 ${
-                viewMode === 'logins'
-                  ? 'text-white shadow-lg shadow-blue-500/30'
-                  : 'text-slate-600 dark:text-slate-400 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 hover:border-blue-400 dark:hover:border-blue-600 hover:shadow-md'
-              }`}
-              style={viewMode === 'logins' ? {
-                background: 'linear-gradient(135deg, #475569 0%, #006aff 60%, #0080ff 100%)'
-              } : undefined}
-            >
-              <TrendingUp className="w-4 h-4 inline mr-2" />
-              Total Logins
-            </button>
-            <button
-              onClick={() => setViewMode('users')}
-              className={`px-5 py-2.5 rounded-xl text-sm font-semibold transition-all transform hover:scale-105 active:scale-95 ${
-                viewMode === 'users'
-                  ? 'text-white shadow-lg shadow-blue-500/30'
-                  : 'text-slate-600 dark:text-slate-400 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 hover:border-blue-400 dark:hover:border-blue-600 hover:shadow-md'
-              }`}
-              style={viewMode === 'users' ? {
-                background: 'linear-gradient(135deg, #475569 0%, #006aff 60%, #0080ff 100%)'
-              } : undefined}
-            >
-              <Users className="w-4 h-4 inline mr-2" />
-              Unique Users
-            </button>
-          </div>
+          <p className="relative text-3xl font-bold text-blue-600 dark:text-blue-400">{topCompanies.length}</p>
         </div>
-      </CardHeader> */}
-      <CardContent>
-           {/* Summary Stats */}
-           <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mb-6 mt-6">
-          <div className="group relative p-3 rounded-xl bg-gradient-to-br from-blue-50 via-blue-100/50 to-cyan-50 dark:from-blue-900/30 dark:via-blue-800/20 dark:to-cyan-900/20 border border-blue-200/50 dark:border-blue-700/50 hover:border-blue-400 dark:hover:border-blue-500 transition-all shadow hover:shadow-md hover:scale-[1.02] transform duration-300">
-            <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-blue-400/0 to-blue-600/0 group-hover:from-blue-400/5 group-hover:to-blue-600/10 transition-all duration-300"></div>
-            <div className="relative flex items-center gap-2 mb-1">
+        <div className="group relative p-4 rounded-xl bg-gradient-to-br from-purple-50 via-purple-100/50 to-pink-50 dark:from-purple-900/30 dark:via-purple-800/20 dark:to-pink-900/20 border border-purple-200/50 dark:border-purple-700/50 hover:border-purple-400 dark:hover:border-purple-500 transition-all shadow hover:shadow-md hover:scale-[1.02] transform duration-300">
+          <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-purple-400/0 to-purple-600/0 group-hover:from-purple-400/5 group-hover:to-purple-600/10 transition-all duration-300"></div>
+          <div className="relative flex items-center gap-2 mb-1">
+            <TrendingUp className="w-5 h-5 text-purple-600 dark:text-purple-400" />
+            <p className="text-xs font-semibold text-purple-900 dark:text-purple-300">Total Logins</p>
+          </div>
+          <p className="relative text-3xl font-bold text-purple-600 dark:text-purple-400">
+            {topCompanies.reduce((sum, company) => sum + company.totalLogins, 0).toLocaleString()}
+          </p>
+        </div>
+        <div className="group relative p-4 rounded-xl bg-gradient-to-br from-green-50 via-green-100/50 to-emerald-50 dark:from-green-900/30 dark:via-green-800/20 dark:to-emerald-900/20 border border-green-200/50 dark:border-green-700/50 hover:border-green-400 dark:hover:border-green-500 transition-all shadow hover:shadow-md hover:scale-[1.02] transform duration-300">
+          <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-green-400/0 to-green-600/0 group-hover:from-green-400/5 group-hover:to-green-600/10 transition-all duration-300"></div>
+          <div className="relative flex items-center gap-2 mb-1">
+            <Users className="w-5 h-5 text-green-600 dark:text-green-400" />
+            <p className="text-xs font-semibold text-green-900 dark:text-green-300">Total Users</p>
+          </div>
+          <p className="relative text-3xl font-bold text-green-600 dark:text-green-400">
+            {topCompanies.reduce((sum, company) => sum + company.uniqueUsers, 0).toLocaleString()}
+          </p>
+        </div>
+      </div>
+
+      {/* Charts Grid */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {/* Bar Chart Card */}
+        <Card className="bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800">
+          <CardHeader className="pb-2 pt-3">
+            <CardTitle className="text-lg font-bold bg-gradient-to-r from-slate-900 to-blue-600 dark:from-white dark:to-blue-400 bg-clip-text text-transparent flex items-center gap-2" style={{ fontFamily: "'Raleway', sans-serif" }}>
               <Building2 className="w-4 h-4 text-blue-600 dark:text-blue-400" />
-              <p className="text-xs font-semibold text-blue-900 dark:text-blue-300">Total Companies</p>
-            </div>
-            <p className="relative text-2xl font-bold text-blue-600 dark:text-blue-400">{topCompanies.length}</p>
-          </div>
-          <div className="group relative p-3 rounded-xl bg-gradient-to-br from-purple-50 via-purple-100/50 to-pink-50 dark:from-purple-900/30 dark:via-purple-800/20 dark:to-pink-900/20 border border-purple-200/50 dark:border-purple-700/50 hover:border-purple-400 dark:hover:border-purple-500 transition-all shadow hover:shadow-md hover:scale-[1.02] transform duration-300">
-            <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-purple-400/0 to-purple-600/0 group-hover:from-purple-400/5 group-hover:to-purple-600/10 transition-all duration-300"></div>
-            <div className="relative flex items-center gap-2 mb-1">
-              <TrendingUp className="w-4 h-4 text-purple-600 dark:text-purple-400" />
-              <p className="text-xs font-semibold text-purple-900 dark:text-purple-300">Total Logins</p>
-            </div>
-            <p className="relative text-2xl font-bold text-purple-600 dark:text-purple-400">
-              {topCompanies.reduce((sum, company) => sum + company.totalLogins, 0).toLocaleString()}
-            </p>
-          </div>
-          <div className="group relative p-3 rounded-xl bg-gradient-to-br from-green-50 via-green-100/50 to-emerald-50 dark:from-green-900/30 dark:via-green-800/20 dark:to-emerald-900/20 border border-green-200/50 dark:border-green-700/50 hover:border-green-400 dark:hover:border-green-500 transition-all shadow hover:shadow-md hover:scale-[1.02] transform duration-300">
-            <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-green-400/0 to-green-600/0 group-hover:from-green-400/5 group-hover:to-green-600/10 transition-all duration-300"></div>
-            <div className="relative flex items-center gap-2 mb-1">
-              <Users className="w-4 h-4 text-green-600 dark:text-green-400" />
-              <p className="text-xs font-semibold text-green-900 dark:text-green-300">Total Users</p>
-            </div>
-            <p className="relative text-2xl font-bold text-green-600 dark:text-green-400">
-              {topCompanies.reduce((sum, company) => sum + company.uniqueUsers, 0).toLocaleString()}
-            </p>
-          </div>
-        </div>
-        {/* Charts Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          {/* Bar Chart */}
-          <div className="h-[600px] w-full relative p-4 rounded-2xl bg-gradient-to-br from-slate-50/50 to-white dark:from-slate-900/50 dark:to-slate-800/30">
-            <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-4 text-center">
               Top 15 Companies
-            </h3>
-            <div className="h-[calc(100%-2rem)]">
+            </CardTitle>
+            <CardDescription className="text-xs">
+              {viewMode === 'logins' ? 'Companies ranked by total logins' : 'Companies ranked by unique users'}
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="pb-3">
+            <div className="h-[630px] w-full">
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart
                   data={chartData}
@@ -248,14 +213,22 @@ export function CompanyAnalysisChart() {
                 </BarChart>
               </ResponsiveContainer>
             </div>
-          </div>
+          </CardContent>
+        </Card>
 
-          {/* Pie Chart */}
-          <div className="h-[600px] w-full relative p-4 rounded-2xl bg-gradient-to-br from-slate-50/50 to-white dark:from-slate-900/50 dark:to-slate-800/30">
-            <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-4 text-center">
+        {/* Pie Chart Card */}
+        <Card className="bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800">
+          <CardHeader className="pb-2 pt-3">
+            <CardTitle className="text-lg font-bold bg-gradient-to-r from-slate-900 to-blue-600 dark:from-white dark:to-blue-400 bg-clip-text text-transparent flex items-center gap-2" style={{ fontFamily: "'Raleway', sans-serif" }}>
+              <TrendingUp className="w-4 h-4 text-blue-600 dark:text-blue-400" />
               Login Distribution
-            </h3>
-            <div className="h-[calc(100%-2rem)]">
+            </CardTitle>
+            <CardDescription className="text-xs">
+              Percentage distribution of logins across companies
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="pb-3">
+            <div className="h-[600px] w-full">
               <ResponsiveContainer width="100%" height="100%">
                 <PieChart>
                   <Pie
@@ -286,11 +259,9 @@ export function CompanyAnalysisChart() {
                 </PieChart>
               </ResponsiveContainer>
             </div>
-          </div>
-        </div>
-
-     
-      </CardContent>
-    </Card>
+          </CardContent>
+        </Card>
+      </div>
+    </div>
   );
 }
