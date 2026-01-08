@@ -115,41 +115,41 @@ export function TimeAnalysisChart() {
   const purpleColor = '#a855f7';
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4">
       {/* Summary Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div className="p-4 rounded-xl bg-gradient-to-br from-blue-50 to-blue-100/50 dark:from-blue-900/20 dark:to-blue-800/10 border border-blue-200 dark:border-blue-800">
-          <p className="text-sm font-semibold text-blue-900 dark:text-blue-300 mb-1">Total Logins</p>
-          <p className="text-2xl font-bold text-blue-600 dark:text-blue-400">{totalLogins.toLocaleString()}</p>
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+        <div className="p-3 rounded-xl bg-gradient-to-br from-blue-50 to-blue-100/50 dark:from-blue-900/20 dark:to-blue-800/10 border border-blue-200 dark:border-blue-800">
+          <p className="text-xs font-semibold text-blue-900 dark:text-blue-300 mb-1">Total Logins</p>
+          <p className="text-xl font-bold text-blue-600 dark:text-blue-400">{totalLogins.toLocaleString()}</p>
         </div>
-        <div className="p-4 rounded-xl bg-gradient-to-br from-purple-50 to-purple-100/50 dark:from-purple-900/20 dark:to-purple-800/10 border border-purple-200 dark:border-purple-800">
-          <p className="text-sm font-semibold text-purple-900 dark:text-purple-300 mb-1">Avg Logins/Month</p>
-          <p className="text-2xl font-bold text-purple-600 dark:text-purple-400">{avgLoginsPerMonth}</p>
+        <div className="p-3 rounded-xl bg-gradient-to-br from-purple-50 to-purple-100/50 dark:from-purple-900/20 dark:to-purple-800/10 border border-purple-200 dark:border-purple-800">
+          <p className="text-xs font-semibold text-purple-900 dark:text-purple-300 mb-1">Avg Logins/Month</p>
+          <p className="text-xl font-bold text-purple-600 dark:text-purple-400">{avgLoginsPerMonth}</p>
         </div>
-        <div className="p-4 rounded-xl bg-gradient-to-br from-green-50 to-green-100/50 dark:from-green-900/20 dark:to-green-800/10 border border-green-200 dark:border-green-800">
-          <p className="text-sm font-semibold text-green-900 dark:text-green-300 mb-1">Total Unique Users</p>
-          <p className="text-2xl font-bold text-green-600 dark:text-green-400">{allUniqueUsers.size}</p>
+        <div className="p-3 rounded-xl bg-gradient-to-br from-green-50 to-green-100/50 dark:from-green-900/20 dark:to-green-800/10 border border-green-200 dark:border-green-800">
+          <p className="text-xs font-semibold text-green-900 dark:text-green-300 mb-1">Total Unique Users</p>
+          <p className="text-xl font-bold text-green-600 dark:text-green-400">{allUniqueUsers.size}</p>
         </div>
       </div>
 
       {/* Monthly Analysis Charts */}
       <Card className="bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 ">
- 
-        <CardContent className="space-y-6 mt-4">
+
+        <CardContent className="space-y-4 mt-3">
           {/* Monthly Login Count Chart */}
           <div >
-            <h3 className="text-2xl font-bold bg-gradient-to-r from-slate-900 to-blue-600 dark:from-white dark:to-blue-400 bg-clip-text text-transparent mb-2 flex items-center gap-2" style={{ fontFamily: "'Raleway', sans-serif" }}>
+            <h3 className="text-xl font-bold bg-gradient-to-r from-slate-900 to-blue-600 dark:from-white dark:to-blue-400 bg-clip-text text-transparent mb-1 flex items-center gap-2" style={{ fontFamily: "'Raleway', sans-serif" }}>
               <TrendingUp className="w-4 h-4 text-blue-600 dark:text-blue-400" />
               Monthly Login Count
             </h3>
-            <p className="text-sm text-slate-600 dark:text-slate-400 mb-3">
+            <p className="text-xs text-slate-600 dark:text-slate-400 mb-2">
               Number of logins per month (0-250 range)
             </p>
-            <div className="h-[350px] w-full">
+            <div className="h-[280px] w-full">
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart
                   data={monthlyData}
-                  margin={{ top: 30, right: 30, left: 20, bottom: 5 }}
+                  margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
                   barCategoryGap="10%"
                 >
                   <CartesianGrid strokeDasharray="3 3" className="stroke-slate-200 dark:stroke-slate-700" />
@@ -177,7 +177,7 @@ export function TimeAnalysisChart() {
                   />
                   <Tooltip content={<LoginCountTooltip />} />
                   <Legend
-                    wrapperStyle={{ paddingTop: '20px' }}
+                    wrapperStyle={{ paddingTop: '10px' }}
                     iconType="circle"
                   />
                   <Bar
@@ -192,22 +192,22 @@ export function TimeAnalysisChart() {
           </div>
 
           {/* Divider */}
-          <div className="border-t border-slate-200 dark:border-slate-700 my-4"></div>
+          <div className="border-t border-slate-200 dark:border-slate-700 my-2"></div>
 
           {/* Monthly Unique Users Chart */}
           <div>
-            <h3 className="text-2xl font-bold bg-gradient-to-r from-slate-900 to-blue-600 dark:from-white dark:to-blue-400 bg-clip-text text-transparent mb-2 flex items-center gap-2" style={{ fontFamily: "'Raleway', sans-serif" }}>
+            <h3 className="text-xl font-bold bg-gradient-to-r from-slate-900 to-blue-600 dark:from-white dark:to-blue-400 bg-clip-text text-transparent mb-1 flex items-center gap-2" style={{ fontFamily: "'Raleway', sans-serif" }}>
               <Users className="w-4 h-4 text-blue-600 dark:text-blue-400" />
               Monthly Unique Users
             </h3>
-            <p className="text-sm text-slate-600 dark:text-slate-400 mb-3">
+            <p className="text-xs text-slate-600 dark:text-slate-400 mb-2">
               Number of unique users per month
             </p>
-            <div className="h-[350px] w-full">
+            <div className="h-[280px] w-full">
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart
                   data={monthlyData}
-                  margin={{ top: 30, right: 30, left: 20, bottom: 5 }}
+                  margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
                   barCategoryGap="10%"
                 >
                   <CartesianGrid strokeDasharray="3 3" className="stroke-slate-200 dark:stroke-slate-700" />
@@ -234,7 +234,7 @@ export function TimeAnalysisChart() {
                   />
                   <Tooltip content={<UniqueUsersTooltip />} />
                   <Legend
-                    wrapperStyle={{ paddingTop: '20px' }}
+                    wrapperStyle={{ paddingTop: '10px' }}
                     iconType="circle"
                   />
                   <Bar

@@ -60,6 +60,17 @@ export interface LoginDataParams {
 }
 
 /**
+ * Pagination and filter parameters for query activity data
+ */
+export interface QueryActivityParams {
+  page_size?: number;
+  start_date?: string;
+  end_date?: string;
+  operation_name?: string;
+  email?: string;
+}
+
+/**
  * Fetch login activity data
  * Endpoint: /api/login-data
  * Returns empty array on failure
@@ -171,13 +182,24 @@ function aggregateQueryLogs(rawLogs: RawQueryLog[]): QueryActivityResponse[] {
  * Endpoint: /api/query-activity
  * Returns empty array on failure
  */
-export const fetchQueryActivity = async (): Promise<{
+export const fetchQueryActivity = async (params: QueryActivityParams = {}): Promise<{
   data: QueryActivityResponse[];
   error: ApiError | null;
   isFromFallback: boolean;
 }> => {
   try {
-    const response = await apiClient.get<ApiResponse<RawQueryLog[]>>('/api/query-activity');
+    // Build query params, only include defined values
+    const queryParams: Record<string, string> = {};
+
+    if (params.page_size !== undefined) queryParams.page_size = String(params.page_size);
+    if (params.start_date) queryParams.start_date = params.start_date;
+    if (params.end_date) queryParams.end_date = params.end_date;
+    if (params.operation_name) queryParams.operation_name = params.operation_name;
+    if (params.email) queryParams.email = params.email;
+
+    const response = await apiClient.get<ApiResponse<RawQueryLog[]>>('/api/query-activity', {
+      params: queryParams
+    });
 
     if (response.data.success && response.data.data) {
       // Aggregate the raw logs into operation summaries

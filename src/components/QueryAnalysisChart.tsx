@@ -88,9 +88,9 @@ export function QueryAnalysisChart() {
   return (
     <div className="space-y-6">
       {/* Page Heading */}
-      <div className="mb-4">
+      {/* <div className="mb-4">
         <h2 className="text-2xl font-bold bg-gradient-to-r from-slate-900 to-blue-600 dark:from-white dark:to-blue-400 bg-clip-text text-transparent" style={{ fontFamily: "'Raleway', sans-serif" }}>Query Analysis</h2>
-      </div>
+      </div> */}
       
 
       {/* Summary Stats */}

@@ -115,7 +115,7 @@ export const useDataStore = create<DataStore>()(
           // Fetch all data concurrently with pagination for login data
           const [loginDataResult, queryActivityResult, licenseeDataResult] = await Promise.allSettled([
             fetchLoginData({ page: 1, page_size: 9999 }), // Fetch all records
-            fetchQueryActivity(),
+            fetchQueryActivity({ page_size: 9999 }), // Fetch all records
             fetchLicenseeData(),
           ]);
 
