@@ -173,11 +173,11 @@ export function CompanyAnalysisChart() {
                   />
                   <XAxis
                     dataKey="name"
-                    angle={-45}
+                    angle={-50}
                     textAnchor="end"
                     height={100}
                     interval={0}
-                    tick={{ fill: 'currentColor', fontSize: 11, fontWeight: 500 }}
+                    tick={{ fill: 'currentColor', fontSize: 12, fontWeight: 500 }}
                     className="text-slate-700 dark:text-slate-300"
                     stroke="#94a3b8"
                   />

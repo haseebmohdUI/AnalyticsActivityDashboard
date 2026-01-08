@@ -10,11 +10,16 @@ interface FilterStore {
   pageSize: number;
 
   // Data Table filters
+  firstName: string;
+  lastName: string;
+  company: string;
+  username: string;
+
+  // Shared filter (used by All Licensees)
   year: string;
-  program: string;
-  manufacturer: string;
 
   // All Licensees filters
+  program: string;
   oemName: string;
   status: string;
 
@@ -30,9 +35,12 @@ interface FilterStore {
   setSearchUsername: (username: string) => void;
   setPage: (page: number) => void;
   setPageSize: (pageSize: number) => void;
+  setFirstName: (firstName: string) => void;
+  setLastName: (lastName: string) => void;
+  setCompany: (company: string) => void;
+  setUsername: (username: string) => void;
   setYear: (year: string) => void;
   setProgram: (program: string) => void;
-  setManufacturer: (manufacturer: string) => void;
   setOemName: (oemName: string) => void;
   setStatus: (status: string) => void;
   setOperationName: (operationName: string) => void;
@@ -50,11 +58,16 @@ export const useFilterStore = create<FilterStore>((set, get) => ({
   pageSize: 9999,
 
   // Data Table filters
+  firstName: '',
+  lastName: '',
+  company: '',
+  username: '',
+
+  // Shared filter (used by All Licensees)
   year: '',
-  program: '',
-  manufacturer: '',
 
   // All Licensees filters
+  program: '',
   oemName: '',
   status: '',
 
@@ -79,11 +92,14 @@ export const useFilterStore = create<FilterStore>((set, get) => ({
   setPageSize: (pageSize) => set({ pageSize, page: 1 }),
 
   // Data Table actions
+  setFirstName: (firstName) => set({ firstName, page: 1 }),
+  setLastName: (lastName) => set({ lastName, page: 1 }),
+  setCompany: (company) => set({ company, page: 1 }),
+  setUsername: (username) => set({ username, page: 1 }),
   setYear: (year) => set({ year, page: 1 }),
-  setProgram: (program) => set({ program, page: 1 }),
-  setManufacturer: (manufacturer) => set({ manufacturer, page: 1 }),
 
   // All Licensees actions
+  setProgram: (program) => set({ program, page: 1 }),
   setOemName: (oemName) => set({ oemName, page: 1 }),
   setStatus: (status) => set({ status, page: 1 }),
 
@@ -96,9 +112,12 @@ export const useFilterStore = create<FilterStore>((set, get) => ({
     endDate: '',
     selectedCompanies: [],
     searchUsername: '',
+    firstName: '',
+    lastName: '',
+    company: '',
+    username: '',
     year: '',
     program: '',
-    manufacturer: '',
     oemName: '',
     status: '',
     operationName: '',

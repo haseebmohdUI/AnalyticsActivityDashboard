@@ -157,9 +157,9 @@ export function QueryAnalysisChart() {
                   <YAxis
                     type="category"
                     dataKey="operation"
-                    tick={{ fill: 'currentColor', fontSize: 9 }}
+                    tick={{ fill: 'currentColor', fontSize: 12 }}
                     className="text-slate-600 dark:text-slate-400"
-                    width={200}
+                    width={220}
                   />
                   <Tooltip content={<BarTooltip />} />
                   <Legend
