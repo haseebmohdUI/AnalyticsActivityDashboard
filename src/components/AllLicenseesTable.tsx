@@ -76,12 +76,12 @@ export function AllLicenseesTable() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div>
+      {/* <div>
         <h2 className="text-3xl font-bold text-slate-900 dark:text-white">All Licensees</h2>
         <p className="text-sm text-slate-600 dark:text-slate-400 mt-1">
           Showing {filteredData.length} of {licenseeData.length} licensees
         </p>
-      </div>
+      </div> */}
 
       {/* Metrics Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">

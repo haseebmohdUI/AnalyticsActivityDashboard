@@ -108,7 +108,7 @@ export function CompanyAnalysisChart() {
 
   return (
     <Card className="bg-gradient-to-br from-white to-slate-50/50 dark:from-slate-900 dark:to-slate-800/50 border-slate-200 dark:border-slate-800 shadow-xl">
-      <CardHeader className="border-b border-slate-200 dark:border-slate-800 bg-gradient-to-r from-slate-50 to-blue-50/30 dark:from-slate-900/50 dark:to-blue-900/10">
+      {/* <CardHeader className="border-b border-slate-200 dark:border-slate-800 bg-gradient-to-r from-slate-50 to-blue-50/30 dark:from-slate-900/50 dark:to-blue-900/10">
         <div className="flex items-center justify-between flex-wrap gap-4">
           <div>
             <CardTitle className="text-2xl font-bold bg-gradient-to-r from-slate-900 to-blue-600 dark:from-white dark:to-blue-400 bg-clip-text text-transparent" style={{ fontFamily: "'Raleway', sans-serif" }}>
@@ -149,10 +149,10 @@ export function CompanyAnalysisChart() {
             </button>
           </div>
         </div>
-      </CardHeader>
+      </CardHeader> */}
       <CardContent>
            {/* Summary Stats */}
-           <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mb-6">
+           <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mb-6 mt-6">
           <div className="group relative p-3 rounded-xl bg-gradient-to-br from-blue-50 via-blue-100/50 to-cyan-50 dark:from-blue-900/30 dark:via-blue-800/20 dark:to-cyan-900/20 border border-blue-200/50 dark:border-blue-700/50 hover:border-blue-400 dark:hover:border-blue-500 transition-all shadow hover:shadow-md hover:scale-[1.02] transform duration-300">
             <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-blue-400/0 to-blue-600/0 group-hover:from-blue-400/5 group-hover:to-blue-600/10 transition-all duration-300"></div>
             <div className="relative flex items-center gap-2 mb-1">
