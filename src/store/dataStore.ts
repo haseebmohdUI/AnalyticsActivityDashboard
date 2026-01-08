@@ -79,7 +79,7 @@ export const useDataStore = create<DataStore>()(
 
       loginDataPagination: {
         currentPage: 1,
-        pageSize: 100,
+        pageSize: 9999,
         totalRecords: 0,
         loadedRecords: 0,
       },
@@ -114,7 +114,7 @@ export const useDataStore = create<DataStore>()(
         try {
           // Fetch all data concurrently with pagination for login data
           const [loginDataResult, queryActivityResult, licenseeDataResult] = await Promise.allSettled([
-            fetchLoginData({ page: 1, page_size: 100 }), // Default pagination
+            fetchLoginData({ page: 1, page_size: 9999 }), // Fetch all records
             fetchQueryActivity(),
             fetchLicenseeData(),
           ]);
@@ -125,7 +125,7 @@ export const useDataStore = create<DataStore>()(
               loginData: loginDataResult.value.data,
               loginDataPagination: {
                 currentPage: 1,
-                pageSize: 100,
+                pageSize: 9999,
                 totalRecords: loginDataResult.value.totalRecords,
                 loadedRecords: loginDataResult.value.data.length,
               },
@@ -203,7 +203,7 @@ export const useDataStore = create<DataStore>()(
             isLoginDataLoading: false,
             loginDataPagination: {
               currentPage: params?.page || 1,
-              pageSize: params?.page_size || 100,
+              pageSize: params?.page_size || 9999,
               totalRecords: result.totalRecords,
               loadedRecords: newData.length,
             },
@@ -245,7 +245,7 @@ export const useDataStore = create<DataStore>()(
           licenseeData: [],
           loginDataPagination: {
             currentPage: 1,
-            pageSize: 100,
+            pageSize: 9999,
             totalRecords: 0,
             loadedRecords: 0,
           },

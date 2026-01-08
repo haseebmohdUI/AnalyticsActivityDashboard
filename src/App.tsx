@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react'
-import { Sidebar } from '@/components/Sidebar'
 import { Dashboard } from '@/components/Dashboard'
 import { Login } from '@/components/Login'
 import { GlobalLoader } from '@/components/GlobalLoader'
@@ -68,10 +67,7 @@ function App() {
             : 'opacity-0 scale-95 pointer-events-none -z-10'
         }`}
       >
-        <div className="flex ">
-          <Sidebar />
-          <Dashboard />
-        </div>
+        <Dashboard />
       </div>
     </div>
   )

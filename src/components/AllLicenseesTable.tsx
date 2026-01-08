@@ -2,16 +2,17 @@
 
 import { useState, useMemo } from "react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { Filter, Building2, Award, CheckCircle, Database, FileText, ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight } from "lucide-react";
+import { Building2, Award, Database, FileText, ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight } from "lucide-react";
 import { useDataStore } from "@/store/dataStore";
+import { useFilterStore } from "@/store/filterStore";
 
 export function AllLicenseesTable() {
   // Get licensee data from store
   const { licenseeData } = useDataStore();
 
-  const [selectedOEM, setSelectedOEM] = useState<string>("");
-  const [selectedProgram, setSelectedProgram] = useState<string>("");
-  const [selectedStatus, setSelectedStatus] = useState<string>("");
+  // Get filters from filter store
+  const { oemName, program, status } = useFilterStore();
+
   const [currentPage, setCurrentPage] = useState(1);
   const rowsPerPage = 20;
 
@@ -31,18 +32,18 @@ export function AllLicenseesTable() {
     return statuses.sort();
   }, [licenseeData]);
 
-  // Filter data based on selected filters
+  // Filter data based on selected filters from sidebar
   const filteredData = useMemo(() => {
     const filtered = licenseeData.filter(item => {
-      const matchesOEM = !selectedOEM || item["OEM Name"] === selectedOEM;
-      const matchesProgram = !selectedProgram || item.Program === selectedProgram;
-      const matchesStatus = !selectedStatus || item.Status === selectedStatus;
+      const matchesOEM = !oemName || item["OEM Name"]?.toLowerCase().includes(oemName.toLowerCase());
+      const matchesProgram = !program || item.Program?.toLowerCase().includes(program.toLowerCase());
+      const matchesStatus = !status || item.Status?.toLowerCase().includes(status.toLowerCase());
       return matchesOEM && matchesProgram && matchesStatus;
     });
     // Reset to page 1 when filters change
     setCurrentPage(1);
     return filtered;
-  }, [licenseeData, selectedOEM, selectedProgram, selectedStatus]);
+  }, [licenseeData, oemName, program, status]);
 
   // Calculate pagination
   const totalPages = Math.ceil(filteredData.length / rowsPerPage);
@@ -50,12 +51,6 @@ export function AllLicenseesTable() {
   const endIndex = startIndex + rowsPerPage;
   const paginatedData = filteredData.slice(startIndex, endIndex);
 
-  const resetFilters = () => {
-    setSelectedOEM("");
-    setSelectedProgram("");
-    setSelectedStatus("");
-    setCurrentPage(1);
-  };
 
   // Calculate metrics
   const metrics = useMemo(() => {
@@ -126,105 +121,6 @@ export function AllLicenseesTable() {
           <p className="relative text-3xl font-bold text-orange-600 dark:text-orange-400">{metrics.totalTests.toLocaleString()}</p>
         </div>
       </div>
-
-      {/* Filters */}
-      <Card className="bg-gradient-to-br from-white to-slate-50/50 dark:from-slate-900 dark:to-slate-800/50 border-slate-200 dark:border-slate-800 shadow-xl">
-        <CardHeader className="border-b border-slate-200 dark:border-slate-800 bg-gradient-to-r from-slate-50 to-blue-50/30 dark:from-slate-900/50 dark:to-blue-900/10">
-          <CardTitle className="text-2xl font-bold bg-gradient-to-r from-slate-900 to-blue-600 dark:from-white dark:to-blue-400 bg-clip-text text-transparent flex items-center gap-2" style={{ fontFamily: "'Raleway', sans-serif" }}>
-            <Filter className="w-5 h-5 text-blue-600 dark:text-blue-400" />
-            Filters
-          </CardTitle>
-          <CardDescription className="mt-1 text-sm">Filter the licensee data by OEM, Program, and Status</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4">
-            {/* Filter by OEM */}
-            <div>
-              <label className="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-2">
-                <Building2 className="w-3 h-3 inline mr-1" />
-                Filter by OEM
-              </label>
-              <select
-                value={selectedOEM}
-                onChange={(e) => setSelectedOEM(e.target.value)}
-                className="w-full px-3 py-2 text-sm rounded-lg
-                           bg-white dark:bg-slate-900
-                           border border-slate-300 dark:border-slate-600
-                           focus:outline-none focus:ring-2 focus:ring-blue-500"
-              >
-                <option value="">All OEMs</option>
-                {uniqueOEMs.map((oem, index) => (
-                  <option key={index} value={oem}>
-                    {oem}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            {/* Filter by Program */}
-            <div>
-              <label className="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-2">
-                <Award className="w-3 h-3 inline mr-1" />
-                Filter by Program
-              </label>
-              <select
-                value={selectedProgram}
-                onChange={(e) => setSelectedProgram(e.target.value)}
-                className="w-full px-3 py-2 text-sm rounded-lg
-                           bg-white dark:bg-slate-900
-                           border border-slate-300 dark:border-slate-600
-                           focus:outline-none focus:ring-2 focus:ring-blue-500"
-              >
-                <option value="">All Programs</option>
-                {uniquePrograms.map((program, index) => (
-                  <option key={index} value={program}>
-                    {program}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            {/* Filter by Status */}
-            <div>
-              <label className="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-2">
-                <CheckCircle className="w-3 h-3 inline mr-1" />
-                Filter by Status
-              </label>
-              <select
-                value={selectedStatus}
-                onChange={(e) => setSelectedStatus(e.target.value)}
-                className="w-full px-3 py-2 text-sm rounded-lg
-                           bg-white dark:bg-slate-900
-                           border border-slate-300 dark:border-slate-600
-                           focus:outline-none focus:ring-2 focus:ring-blue-500"
-              >
-                <option value="">All Statuses</option>
-                {uniqueStatuses.map((status, index) => (
-                  <option key={index} value={status}>
-                    {status}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            {/* Reset Button */}
-            <div className="flex items-end">
-              <button
-                onClick={resetFilters}
-                className="w-full px-4 py-2 text-sm font-medium rounded-lg
-                           bg-slate-100 dark:bg-slate-800
-                           text-slate-700 dark:text-slate-300
-                           border border-slate-300 dark:border-slate-600
-                           hover:bg-slate-200 dark:hover:bg-slate-700
-                           focus:outline-none focus:ring-2 focus:ring-blue-500
-                           transition-colors"
-              >
-                Reset Filters
-              </button>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
 
       {/* Table */}
       <Card className="bg-gradient-to-br from-white to-slate-50/50 dark:from-slate-900 dark:to-slate-800/50 border-slate-200 dark:border-slate-800 shadow-xl">

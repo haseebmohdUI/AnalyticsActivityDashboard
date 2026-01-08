@@ -4,7 +4,6 @@ import { Search, ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight } from '
 import { useFilterStore } from '@/store/filterStore';
 import { useDataStore } from '@/store/dataStore';
 import { filterRawData } from '@/utils/dataFilters';
-import { PaginationControls } from './PaginationControls';
 
 export function DataTable() {
   const [searchTerm, setSearchTerm] = useState('');
@@ -85,11 +84,6 @@ export function DataTable() {
       </CardHeader>
 
       <CardContent>
-        {/* API Pagination Controls */}
-        <div className="mb-4">
-          <PaginationControls />
-        </div>
-
         {/* Table */}
         <div className="overflow-x-auto rounded-lg border border-slate-200 dark:border-slate-700">
           <table className="w-full border-collapse">

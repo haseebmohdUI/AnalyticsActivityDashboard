@@ -4,6 +4,7 @@ import { useState, useMemo } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Users, Activity, BarChart3, Calendar } from "lucide-react";
 import { UserProfile } from "./UserProfile";
+import { Sidebar } from "./Sidebar";
 import { CompanyAnalysisChart } from "./CompanyAnalysisChart";
 import { TimeAnalysisChart } from "./TimeAnalysisChart";
 import { UserAnalysisChart } from "./UserAnalysisChart";
@@ -95,13 +96,15 @@ export function Dashboard() {
   );
 
   return (
-    <main className="flex-1 h-screen overflow-auto bg-slate-50 dark:bg-slate-950">
-      {/* Header */}
-      <header className="sticky top-0 z-10 bg-white dark:bg-slate-900 border-b px-6 py-2">
-        <div className="flex justify-end">
-          <UserProfile />
-        </div>
-      </header>
+    <div className="flex">
+      <Sidebar activeTab={activeTab} />
+      <main className="flex-1 h-screen overflow-auto bg-slate-50 dark:bg-slate-950">
+        {/* Header */}
+        <header className="sticky top-0 z-10 bg-white dark:bg-slate-900 border-b px-6 py-2">
+          <div className="flex justify-end">
+            <UserProfile />
+          </div>
+        </header>
 
       <div className="p-6">
         {/* Error Banner */}
@@ -138,5 +141,6 @@ export function Dashboard() {
         {activeTab === "all-licensees" && <AllLicenseesTable />}
       </div>
     </main>
+    </div>
   );
 }
