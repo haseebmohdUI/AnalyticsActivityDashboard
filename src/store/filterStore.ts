@@ -55,7 +55,7 @@ export const useFilterStore = create<FilterStore>((set, get) => ({
   selectedCompanies: [],
   searchUsername: '',
   page: 1,
-  pageSize: 9999,
+  pageSize: 99999,
 
   // Data Table filters
   firstName: '',
@@ -123,6 +123,6 @@ export const useFilterStore = create<FilterStore>((set, get) => ({
     operationName: '',
     email: '',
     page: 1,
-    pageSize: 9999
+    pageSize: 99999
   })
 }));

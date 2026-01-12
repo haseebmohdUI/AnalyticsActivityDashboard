@@ -89,7 +89,7 @@ export const useDataStore = create<DataStore>()(
 
       loginDataPagination: {
         currentPage: 1,
-        pageSize: 9999,
+        pageSize: 99999,
         totalRecords: 0,
         loadedRecords: 0,
       },
@@ -128,8 +128,8 @@ export const useDataStore = create<DataStore>()(
         try {
           // Fetch all data concurrently with pagination for login data
           const [loginDataResult, queryActivityResult, licenseeDataResult, acsParticipantDataResult] = await Promise.allSettled([
-            fetchLoginData({ page: 1, page_size: 9999 }), // Fetch all records
-            fetchQueryActivity({ page_size: 9999 }), // Fetch all records
+            fetchLoginData({ page: 1, page_size: 99999 }), // Fetch all records
+            fetchQueryActivity({ page_size: 99999 }), // Fetch all records
             fetchLicenseeData(),
             fetchACSParticipantData(),
           ]);
@@ -140,7 +140,7 @@ export const useDataStore = create<DataStore>()(
               loginData: loginDataResult.value.data,
               loginDataPagination: {
                 currentPage: 1,
-                pageSize: 9999,
+                pageSize: 99999,
                 totalRecords: loginDataResult.value.totalRecords,
                 loadedRecords: loginDataResult.value.data.length,
               },
@@ -242,7 +242,7 @@ export const useDataStore = create<DataStore>()(
             isLoginDataLoading: false,
             loginDataPagination: {
               currentPage: params?.page || 1,
-              pageSize: params?.page_size || 9999,
+              pageSize: params?.page_size || 99999,
               totalRecords: result.totalRecords,
               loadedRecords: newData.length,
             },
@@ -312,7 +312,7 @@ export const useDataStore = create<DataStore>()(
           acsParticipantData: [],
           loginDataPagination: {
             currentPage: 1,
-            pageSize: 9999,
+            pageSize: 99999,
             totalRecords: 0,
             loadedRecords: 0,
           },

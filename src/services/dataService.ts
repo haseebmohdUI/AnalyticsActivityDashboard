@@ -224,7 +224,7 @@ export const fetchQueryActivity = async (params: QueryActivityParams = {}): Prom
     const allRawLogs: RawQueryLog[] = [];
     let currentPage = 1;
     let hasMoreData = true;
-    const pageSize = params.page_size || 9999;
+    const pageSize = params.page_size || 99999;
 
     console.log('Starting query activity fetch with pagination...');
 
