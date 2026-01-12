@@ -63,6 +63,7 @@ export interface LoginDataParams {
  * Pagination and filter parameters for query activity data
  */
 export interface QueryActivityParams {
+  page?: number;
   page_size?: number;
   start_date?: string;
   end_date?: string;
@@ -178,8 +179,9 @@ function aggregateQueryLogs(rawLogs: RawQueryLog[]): QueryActivityResponse[] {
 }
 
 /**
- * Fetch query activity data
+ * Fetch query activity data with automatic pagination
  * Endpoint: /api/query-activity
+ * Fetches all pages until data array is empty, then aggregates
  * Returns empty array on failure
  */
 export const fetchQueryActivity = async (params: QueryActivityParams = {}): Promise<{
@@ -188,35 +190,61 @@ export const fetchQueryActivity = async (params: QueryActivityParams = {}): Prom
   isFromFallback: boolean;
 }> => {
   try {
-    // Build query params, only include defined values
-    const queryParams: Record<string, string> = {};
+    const allRawLogs: RawQueryLog[] = [];
+    let currentPage = 1;
+    let hasMoreData = true;
+    const pageSize = params.page_size || 9999;
 
-    if (params.page_size !== undefined) queryParams.page_size = String(params.page_size);
-    if (params.start_date) queryParams.start_date = params.start_date;
-    if (params.end_date) queryParams.end_date = params.end_date;
-    if (params.operation_name) queryParams.operation_name = params.operation_name;
-    if (params.email) queryParams.email = params.email;
+    console.log('Starting query activity fetch with pagination...');
 
-    const response = await apiClient.get<ApiResponse<RawQueryLog[]>>('/api/query-activity', {
-      params: queryParams
-    });
-
-    if (response.data.success && response.data.data) {
-      // Aggregate the raw logs into operation summaries
-      const aggregatedData = aggregateQueryLogs(response.data.data);
-
-      return {
-        data: aggregatedData,
-        error: null,
-        isFromFallback: false,
+    // Loop through pages until data is empty
+    while (hasMoreData) {
+      // Build query params for current page
+      const queryParams: Record<string, string> = {
+        page: String(currentPage),
+        page_size: String(pageSize),
       };
+
+      if (params.start_date) queryParams.start_date = params.start_date;
+      if (params.end_date) queryParams.end_date = params.end_date;
+      if (params.operation_name) queryParams.operation_name = params.operation_name;
+      if (params.email) queryParams.email = params.email;
+
+      console.log(`Fetching page ${currentPage}...`);
+
+      const response = await apiClient.get<ApiResponse<RawQueryLog[]>>('/api/query-activity', {
+        params: queryParams
+      });
+
+      if (response.data.success) {
+        const pageData = response.data.data || [];
+
+        console.log(`Page ${currentPage}: Retrieved ${pageData.length} records. Total so far: ${allRawLogs.length + pageData.length}`);
+
+        // Check if data array is empty (no more pages)
+        if (pageData.length === 0) {
+          hasMoreData = false;
+          console.log('No more data, stopping pagination');
+        } else {
+          // Accumulate the data
+          allRawLogs.push(...pageData);
+          currentPage++;
+        }
+      } else {
+        console.warn(`API returned unsuccessful response on page ${currentPage}`);
+        hasMoreData = false;
+      }
     }
 
-    console.warn('API returned unsuccessful response, no data available');
+    console.log(`Pagination complete. Total records fetched: ${allRawLogs.length}`);
+
+    // Aggregate all accumulated logs
+    const aggregatedData = aggregateQueryLogs(allRawLogs);
+
     return {
-      data: [],
-      error: { message: response.data.message || 'Unsuccessful API response' },
-      isFromFallback: true,
+      data: aggregatedData,
+      error: null,
+      isFromFallback: false,
     };
   } catch (error: any) {
     console.error('Error fetching query activity data:', error);

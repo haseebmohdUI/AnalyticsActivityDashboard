@@ -173,7 +173,7 @@ export function CompanyAnalysisChart() {
                   />
                   <XAxis
                     dataKey="name"
-                    angle={-50}
+                    angle={-60}
                     textAnchor="end"
                     height={100}
                     interval={0}
