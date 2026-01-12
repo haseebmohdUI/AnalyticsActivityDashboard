@@ -4,6 +4,7 @@ import { Building2, Package, TrendingUp, AlertCircle } from 'lucide-react';
 import { useDataStore } from '@/store/dataStore';
 import { useFilterStore } from '@/store/filterStore';
 import { useMemo } from 'react';
+import { generateChartColors } from '@/utils/chartColors';
 
 export function OEMPMBAnalysisChart() {
   const { licenseeData } = useDataStore();
@@ -99,16 +100,9 @@ export function OEMPMBAnalysisChart() {
     ];
   }, [filteredLicenseeData]);
 
-  // Generate colors for program chart
-  const generateColors = (count: number) => {
-    return Array.from({ length: count }, (_, i) => {
-      const hue = 210 + (i * 25) % 120;
-      return `hsl(${hue}, 75%, 55%)`;
-    });
-  };
-
-  const programColors = generateColors(programData.length);
-  const oemColors = generateColors(10);
+  // Generate colors from shared palette
+  const programColors = generateChartColors(programData.length);
+  const oemColors = generateChartColors(10);
 
   const ProgramTooltip = ({ active, payload }: any) => {
     if (active && payload && payload.length) {

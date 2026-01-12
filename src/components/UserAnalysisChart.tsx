@@ -5,6 +5,7 @@ import { Users, TrendingUp } from 'lucide-react';
 import { useFilterStore } from '@/store/filterStore';
 import { useDataStore } from '@/store/dataStore';
 import { filterRawData } from '@/utils/dataFilters';
+import { getChartColor } from '@/utils/chartColors';
 
 interface UserData {
   username: string;
@@ -48,7 +49,7 @@ export function UserAnalysisChart() {
     loginCount: user.loginCount,
   }));
 
-  const blueColor = '#0080ff';
+  const blueColor = getChartColor(0); // Blue from palette
 
   const CustomTooltip = ({ active, payload }: any) => {
     if (active && payload && payload.length) {

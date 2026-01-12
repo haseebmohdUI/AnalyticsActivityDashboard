@@ -5,6 +5,7 @@ import { TrendingUp, Users } from 'lucide-react';
 import { useFilterStore } from '@/store/filterStore';
 import { useDataStore } from '@/store/dataStore';
 import { filterRawData } from '@/utils/dataFilters';
+import { getChartColor } from '@/utils/chartColors';
 
 interface MonthlyData {
   month: string;
@@ -111,8 +112,8 @@ export function TimeAnalysisChart() {
   const avgLoginsPerMonth = monthlyData.length > 0 ? Math.round(totalLogins / monthlyData.length) : 0;
   const allUniqueUsers = new Set(filteredData.map(r => r.username));
 
-  const blueColor = '#0080ff';
-  const purpleColor = '#a855f7';
+  const blueColor = getChartColor(0); // Blue from palette
+  const purpleColor = getChartColor(4); // Purple from palette
 
   return (
     <div className="space-y-3">

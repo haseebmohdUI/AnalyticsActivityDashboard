@@ -2,6 +2,7 @@ import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, Responsive
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Database, TrendingUp, Activity, Users, Calendar } from 'lucide-react';
 import { useDataStore } from '@/store/dataStore';
+import { generateChartColors } from '@/utils/chartColors';
 
 export function QueryAnalysisChart() {
   // Get query activity data from store
@@ -11,15 +12,8 @@ export function QueryAnalysisChart() {
   const top15Operations = queryData.slice(0, 15);
   const top10Operations = queryData.slice(0, 10);
 
-  // Generate colors
-  const generateColors = (count: number) => {
-    return Array.from({ length: count }, (_, i) => {
-      const hue = 210 + (i * 20) % 120;
-      return `hsl(${hue}, 75%, 55%)`;
-    });
-  };
-
-  const colors = generateColors(15);
+  // Generate colors from shared palette
+  const colors = generateChartColors(15);
 
   const BarTooltip = ({ active, payload }: any) => {
     if (active && payload && payload.length) {

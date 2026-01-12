@@ -5,6 +5,7 @@ import { TrendingUp, Users, Building2 } from 'lucide-react';
 import { useFilterStore } from '@/store/filterStore';
 import { useDataStore } from '@/store/dataStore';
 import { filterRawData, aggregateCompanyData } from '@/utils/dataFilters';
+import { generateChartColors } from '@/utils/chartColors';
 
 export function CompanyAnalysisChart() {
   const [viewMode, setViewMode] = useState<'logins' | 'users'>('logins');
@@ -29,15 +30,8 @@ export function CompanyAnalysisChart() {
     uniqueUsers: company.uniqueUsers,
   }));
 
-  // Generate gradient colors for bars
-  const generateGradientColors = (count: number) => {
-    return Array.from({ length: count }, (_, i) => {
-      const hue = 210 + (i * 15) % 60; // Blue to cyan gradient
-      return `hsl(${hue}, 85%, 55%)`;
-    });
-  };
-
-  const barColors = generateGradientColors(chartData.length);
+  // Generate colors from shared palette
+  const barColors = generateChartColors(chartData.length);
 
   const CustomTooltip = ({ active, payload }: any) => {
     if (active && payload && payload.length) {

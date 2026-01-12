@@ -63,8 +63,8 @@ export const useFilterStore = create<FilterStore>((set, get) => ({
   company: '',
   username: '',
 
-  // Shared filter (used by All Licensees)
-  year: '',
+  // Shared filter (used by All Licensees and ACS Participant Analysis)
+  year: '2025',
 
   // All Licensees filters
   program: '',
@@ -116,7 +116,7 @@ export const useFilterStore = create<FilterStore>((set, get) => ({
     lastName: '',
     company: '',
     username: '',
-    year: '',
+    year: '2025',
     program: '',
     oemName: '',
     status: '',

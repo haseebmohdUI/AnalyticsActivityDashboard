@@ -4,6 +4,7 @@ import { Building2, Package, Activity, AlertTriangle } from 'lucide-react';
 import { useDataStore } from '@/store/dataStore';
 import { useFilterStore } from '@/store/filterStore';
 import { useMemo, useEffect, useRef } from 'react';
+import { generateChartColors } from '@/utils/chartColors';
 
 export function ACSParticipantAnalysisChart() {
   const { acsParticipantData, isACSParticipantDataLoading, fetchACSParticipantDataFiltered } = useDataStore();
@@ -75,13 +76,14 @@ export function ACSParticipantAnalysisChart() {
   const top10ManufacturersForPie = useMemo(() => {
     const top10 = top15Manufacturers.slice(0, 10);
     const totalTests = top10.reduce((sum, item) => sum + item.total_tests, 0);
+    const colors = generateChartColors(10);
 
     return top10.map((item, index) => ({
       ...item,
       name: item.manufacturer,
       value: item.total_tests,
       percentage: ((item.total_tests / totalTests) * 100).toFixed(1),
-      fill: `hsl(${210 + (index * 25) % 120}, 75%, 55%)`
+      fill: colors[index]
     }));
   }, [top15Manufacturers]);
 
@@ -131,17 +133,10 @@ export function ACSParticipantAnalysisChart() {
       }));
   }, [acsParticipantData]);
 
-  // Generate colors
-  const generateColors = (count: number) => {
-    return Array.from({ length: count }, (_, i) => {
-      const hue = 210 + (i * 20) % 120;
-      return `hsl(${hue}, 75%, 55%)`;
-    });
-  };
-
-  const mfrColors = generateColors(15);
-  const programColors = generateColors(programFailRates.length);
-  const failRateColors = generateColors(10);
+  // Generate colors for all charts
+  const mfrColors = generateChartColors(15);
+  const programColors = generateChartColors(programFailRates.length);
+  const failRateColors = generateChartColors(10);
 
   const ManufacturerTooltip = ({ active, payload }: any) => {
     if (active && payload && payload.length) {
