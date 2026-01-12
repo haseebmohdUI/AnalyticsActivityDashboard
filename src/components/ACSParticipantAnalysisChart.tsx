@@ -3,21 +3,32 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/com
 import { Building2, Package, Activity, AlertTriangle } from 'lucide-react';
 import { useDataStore } from '@/store/dataStore';
 import { useFilterStore } from '@/store/filterStore';
-import { useMemo, useEffect } from 'react';
+import { useMemo, useEffect, useRef } from 'react';
 
 export function ACSParticipantAnalysisChart() {
   const { acsParticipantData, isACSParticipantDataLoading, fetchACSParticipantDataFiltered } = useDataStore();
   const { year } = useFilterStore();
+  const hasFetchedRef = useRef(false);
 
-  // Fetch data when year filter changes (only when user enters a year)
+  // Fetch data when year filter changes
   useEffect(() => {
-    // Only fetch if year has a value (user actively filtered)
+    // Prevent double fetch on mount
+    if (!hasFetchedRef.current) {
+      hasFetchedRef.current = true;
+      // Only fetch if there's no data already loaded
+      if (!acsParticipantData || acsParticipantData.length === 0) {
+        console.log('Initial load - fetching all years...');
+        fetchACSParticipantDataFiltered({});
+      }
+      return;
+    }
+
+    // User changed the year filter
     if (year) {
       console.log('Year filter changed to:', year);
       fetchACSParticipantDataFiltered({ year });
-    } else if (!acsParticipantData || (acsParticipantData.length === 0 && !isACSParticipantDataLoading)) {
-      // If no data loaded yet and not loading, fetch all data
-      console.log('No data loaded, fetching all ACS data...');
+    } else {
+      console.log('Fetching all years...');
       fetchACSParticipantDataFiltered({});
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -26,32 +37,7 @@ export function ACSParticipantAnalysisChart() {
   // Debug logging
   console.log('ACS Participant Chart - Data length:', acsParticipantData?.length || 0, 'Loading:', isACSParticipantDataLoading);
 
-  // Show loading state
-  if (isACSParticipantDataLoading) {
-    return (
-      <div className="flex items-center justify-center h-96">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
-          <p className="text-slate-600 dark:text-slate-400">Loading ACS Participant data...</p>
-        </div>
-      </div>
-    );
-  }
-
-  // Show empty state
-  if (!acsParticipantData || acsParticipantData.length === 0) {
-    return (
-      <div className="flex items-center justify-center h-96">
-        <div className="text-center">
-          <AlertTriangle className="w-16 h-16 text-slate-400 mx-auto mb-4" />
-          <p className="text-xl font-semibold text-slate-700 dark:text-slate-300 mb-2">No ACS Participant Data Available</p>
-          <p className="text-slate-500 dark:text-slate-400">No data has been loaded yet. Please try refreshing the page.</p>
-        </div>
-      </div>
-    );
-  }
-
-  // Calculate summary metrics
+  // Calculate summary metrics - MUST be before any conditional returns
   const metrics = useMemo(() => {
     if (!acsParticipantData || acsParticipantData.length === 0) {
       return { uniqueManufacturers: 0, uniquePrograms: 0, totalTests: 0, avgFailRate: '0.0' };

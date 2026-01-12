@@ -471,21 +471,25 @@ export function Sidebar({ className, activeTab = "time-analysis" }: SidebarProps
                   Year
                 </label>
                 <div className="relative">
-                  <input
-                    type="text"
+                  <select
                     value={year}
                     onChange={(e) => setYear(e.target.value)}
-                    placeholder="Enter year (e.g. 2024)"
-                    className="w-full px-4 py-2.5 text-sm rounded-lg
+                    className="w-full px-4 py-2.5 text-sm rounded-lg appearance-none
                                bg-white dark:bg-slate-800
                                border-2 border-slate-300 dark:border-slate-600
                                focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500
                                hover:border-slate-400 dark:hover:border-slate-500
                                transition-all duration-200
-                               placeholder:text-slate-400 dark:placeholder:text-slate-500"
-                  />
+                               cursor-pointer"
+                  >
+                    <option value="">All Years</option>
+                    {Array.from({ length: 13 }, (_, i) => 2025 - i).map((yearOption) => (
+                      <option key={yearOption} value={yearOption}>{yearOption}</option>
+                    ))}
+                  </select>
+                  <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500 pointer-events-none" />
                   {year && (
-                    <div className="absolute right-3 top-1/2 -translate-y-1/2 w-2 h-2 bg-blue-500 rounded-full"></div>
+                    <div className="absolute right-10 top-1/2 -translate-y-1/2 w-2 h-2 bg-blue-500 rounded-full"></div>
                   )}
                 </div>
               </div>
