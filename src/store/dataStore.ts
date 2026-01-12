@@ -4,9 +4,11 @@ import {
   fetchLoginData,
   fetchQueryActivity,
   fetchLicenseeData,
+  fetchACSParticipantData,
   type LoginDataResponse,
   type QueryActivityResponse,
   type LicenseeDataResponse,
+  type ACSParticipantDataResponse,
   type LoginDataParams
 } from '@/services/dataService';
 import type { ApiError } from '@/services/api';
@@ -15,6 +17,7 @@ import type { ApiError } from '@/services/api';
 export type LoginDataEntry = LoginDataResponse;
 export type QueryActivityEntry = QueryActivityResponse;
 export type LicenseeDataEntry = LicenseeDataResponse;
+export type ACSParticipantDataEntry = ACSParticipantDataResponse;
 
 // Store state interface
 interface DataStore {
@@ -22,6 +25,7 @@ interface DataStore {
   loginData: LoginDataEntry[];
   queryActivityData: QueryActivityEntry[];
   licenseeData: LicenseeDataEntry[];
+  acsParticipantData: ACSParticipantDataEntry[];
 
   // Pagination state for login data
   loginDataPagination: {
@@ -36,12 +40,14 @@ interface DataStore {
   isLoginDataLoading: boolean;
   isQueryActivityLoading: boolean;
   isLicenseeDataLoading: boolean;
+  isACSParticipantDataLoading: boolean;
 
   // Error states
   errors: {
     loginData: ApiError | null;
     queryActivity: ApiError | null;
     licenseeData: ApiError | null;
+    acsParticipantData: ApiError | null;
   };
 
   // Metadata
@@ -50,6 +56,7 @@ interface DataStore {
     loginData: boolean;
     queryActivity: boolean;
     licenseeData: boolean;
+    acsParticipantData: boolean;
   };
 
   // Actions
@@ -76,6 +83,7 @@ export const useDataStore = create<DataStore>()(
       loginData: [],
       queryActivityData: [],
       licenseeData: [],
+      acsParticipantData: [],
 
       loginDataPagination: {
         currentPage: 1,
@@ -88,11 +96,13 @@ export const useDataStore = create<DataStore>()(
       isLoginDataLoading: false,
       isQueryActivityLoading: false,
       isLicenseeDataLoading: false,
+      isACSParticipantDataLoading: false,
 
       errors: {
         loginData: null,
         queryActivity: null,
         licenseeData: null,
+        acsParticipantData: null,
       },
 
       lastFetchTime: null,
@@ -100,6 +110,7 @@ export const useDataStore = create<DataStore>()(
         loginData: false,
         queryActivity: false,
         licenseeData: false,
+        acsParticipantData: false,
       },
 
       // Fetch all data (uses pagination for login data)
@@ -109,14 +120,16 @@ export const useDataStore = create<DataStore>()(
           isLoginDataLoading: true,
           isQueryActivityLoading: true,
           isLicenseeDataLoading: true,
+          isACSParticipantDataLoading: true,
         });
 
         try {
           // Fetch all data concurrently with pagination for login data
-          const [loginDataResult, queryActivityResult, licenseeDataResult] = await Promise.allSettled([
+          const [loginDataResult, queryActivityResult, licenseeDataResult, acsParticipantDataResult] = await Promise.allSettled([
             fetchLoginData({ page: 1, page_size: 9999 }), // Fetch all records
             fetchQueryActivity({ page_size: 9999 }), // Fetch all records
             fetchLicenseeData(),
+            fetchACSParticipantData(),
           ]);
 
           // Update login data with pagination
@@ -173,6 +186,29 @@ export const useDataStore = create<DataStore>()(
             });
           }
 
+          // Update ACS participant data
+          if (acsParticipantDataResult.status === 'fulfilled') {
+            console.log('Setting ACS participant data in store:', {
+              dataLength: acsParticipantDataResult.value.data.length,
+              isFromFallback: acsParticipantDataResult.value.isFromFallback,
+              error: acsParticipantDataResult.value.error
+            });
+            set({
+              acsParticipantData: acsParticipantDataResult.value.data,
+              isACSParticipantDataLoading: false,
+              errors: {
+                ...get().errors,
+                acsParticipantData: acsParticipantDataResult.value.error,
+              },
+              isDataFromFallback: {
+                ...get().isDataFromFallback,
+                acsParticipantData: acsParticipantDataResult.value.isFromFallback,
+              },
+            });
+          } else {
+            console.error('ACS participant data fetch failed:', acsParticipantDataResult);
+          }
+
           set({
             isLoading: false,
             lastFetchTime: Date.now(),
@@ -184,6 +220,7 @@ export const useDataStore = create<DataStore>()(
             isLoginDataLoading: false,
             isQueryActivityLoading: false,
             isLicenseeDataLoading: false,
+            isACSParticipantDataLoading: false,
           });
         }
       },
@@ -243,6 +280,7 @@ export const useDataStore = create<DataStore>()(
           loginData: [],
           queryActivityData: [],
           licenseeData: [],
+          acsParticipantData: [],
           loginDataPagination: {
             currentPage: 1,
             pageSize: 9999,
@@ -253,12 +291,14 @@ export const useDataStore = create<DataStore>()(
             loginData: null,
             queryActivity: null,
             licenseeData: null,
+            acsParticipantData: null,
           },
           lastFetchTime: null,
           isDataFromFallback: {
             loginData: false,
             queryActivity: false,
             licenseeData: false,
+            acsParticipantData: false,
           },
         });
       },
@@ -270,6 +310,7 @@ export const useDataStore = create<DataStore>()(
             loginData: null,
             queryActivity: null,
             licenseeData: null,
+            acsParticipantData: null,
           },
         });
       },
@@ -293,6 +334,7 @@ export const useDataStore = create<DataStore>()(
         loginData: state.loginData,
         queryActivityData: state.queryActivityData,
         licenseeData: state.licenseeData,
+        acsParticipantData: state.acsParticipantData,
         loginDataPagination: state.loginDataPagination,
         lastFetchTime: state.lastFetchTime,
         isDataFromFallback: state.isDataFromFallback,

@@ -9,6 +9,8 @@ import { UserAnalysisChart } from "./UserAnalysisChart";
 import { DataTable } from "./DataTable";
 import { QueryAnalysisChart } from "./QueryAnalysisChart";
 import { AllLicenseesTable } from "./AllLicenseesTable";
+import { OEMPMBAnalysisChart } from "./OEMPMBAnalysisChart";
+import { ACSParticipantAnalysisChart } from "./ACSParticipantAnalysisChart";
 import { DataErrorBanner } from "./DataErrorBanner";
 import { useDataStore } from "@/store/dataStore";
 
@@ -18,7 +20,9 @@ type TabKey =
   | "time-analysis"
   | "data-table"
   | "query-activity"
-  | "all-licensees";
+  | "all-licensees"
+  | "oem-pmb-analysis"
+  | "acs-participant-analysis";
 
 export function Dashboard() {
   const [activeTab, setActiveTab] = useState<TabKey>("time-analysis");
@@ -70,6 +74,8 @@ export function Dashboard() {
           {tabButton("data-table", "Data Table")}
           {tabButton("query-activity", "Query Activity")}
           {tabButton("all-licensees", "All Licensees")}
+          {tabButton("oem-pmb-analysis", "OEM/PMB Analysis")}
+          {tabButton("acs-participant-analysis", "ACS Participant Analysis")}
         </div>
 
         {/* Tab Content */}
@@ -79,6 +85,8 @@ export function Dashboard() {
         {activeTab === "data-table" && <DataTable />}
         {activeTab === "query-activity" && <QueryAnalysisChart />}
         {activeTab === "all-licensees" && <AllLicenseesTable />}
+        {activeTab === "oem-pmb-analysis" && <OEMPMBAnalysisChart />}
+        {activeTab === "acs-participant-analysis" && <ACSParticipantAnalysisChart />}
       </div>
     </main>
     </div>

@@ -47,6 +47,28 @@ export interface LicenseeDataResponse {
   "fail_rate": string | number;
 }
 
+export interface OEMPMBDataResponse {
+  "OEM Name": string;
+  "OEM ORG ID": string;
+  "PBM Name": string | null;
+  "PBM ORG ID": string | null;
+  "Program": string;
+  "Status": string;
+  "Total Active & PS": number;
+  "Active": number;
+  "Production Stopped": number;
+  "Discontinued": number;
+  "Obsolete (min and other)": number;
+}
+
+export interface ACSParticipantDataResponse {
+  manufacturernamerev: string;
+  oemnetforumcompanyid: string;
+  programname: string;
+  total_tests: number;
+  fail_rate: number;
+}
+
 /**
  * Pagination and filter parameters for login data
  */
@@ -302,19 +324,70 @@ export const fetchLicenseeData = async (): Promise<{
 };
 
 /**
+ * Fetch ACS participant data
+ * Endpoint: /api/acs
+ * Returns empty array on failure
+ */
+export const fetchACSParticipantData = async (): Promise<{
+  data: ACSParticipantDataResponse[];
+  error: ApiError | null;
+  isFromFallback: boolean;
+}> => {
+  try {
+    console.log('Fetching ACS participant data from /api/acs...');
+    const response = await apiClient.get<ApiResponse<ACSParticipantDataResponse[]>>('/api/acs');
+
+    console.log('ACS participant API response:', {
+      success: response.data.success,
+      totalRecords: response.data.total_records,
+      dataLength: response.data.data?.length || 0
+    });
+
+    if (response.data.success && response.data.data) {
+      console.log(`Successfully fetched ${response.data.data.length} ACS participant records`);
+      return {
+        data: response.data.data,
+        error: null,
+        isFromFallback: false,
+      };
+    }
+
+    console.warn('API returned unsuccessful response, no data available');
+    return {
+      data: [],
+      error: { message: response.data.message || 'Unsuccessful API response' },
+      isFromFallback: true,
+    };
+  } catch (error: any) {
+    console.error('Error fetching ACS participant data:', error);
+
+    return {
+      data: [],
+      error: {
+        message: error.response?.data?.message || error.message || 'Failed to fetch ACS participant data',
+        status: error.response?.status,
+      },
+      isFromFallback: true,
+    };
+  }
+};
+
+/**
  * Fetch all data concurrently
  * This is the main function to be called after login
  */
 export const fetchAllData = async () => {
-  const [loginData, queryActivity, licenseeData] = await Promise.allSettled([
+  const [loginData, queryActivity, licenseeData, acsParticipantData] = await Promise.allSettled([
     fetchLoginData(),
     fetchQueryActivity(),
     fetchLicenseeData(),
+    fetchACSParticipantData(),
   ]);
 
   return {
     loginData: loginData.status === 'fulfilled' ? loginData.value : null,
     queryActivity: queryActivity.status === 'fulfilled' ? queryActivity.value : null,
     licenseeData: licenseeData.status === 'fulfilled' ? licenseeData.value : null,
+    acsParticipantData: acsParticipantData.status === 'fulfilled' ? acsParticipantData.value : null,
   };
 };
