@@ -95,7 +95,7 @@ export function Sidebar({ className, activeTab = "time-analysis" }: SidebarProps
             <img
               src={ahriLogo}
               alt="AHRI Logo"
-              className="h-16 w-50"
+              className="h-22 w-65"
             />
           </div>
         </div>
