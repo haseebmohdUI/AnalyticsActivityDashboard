@@ -2,20 +2,31 @@ import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, Responsive
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Building2, Package, TrendingUp, AlertCircle } from 'lucide-react';
 import { useDataStore } from '@/store/dataStore';
+import { useFilterStore } from '@/store/filterStore';
 import { useMemo } from 'react';
 
 export function OEMPMBAnalysisChart() {
   const { licenseeData } = useDataStore();
+  const { program, status } = useFilterStore();
+
+  // Apply filters
+  const filteredLicenseeData = useMemo(() => {
+    return licenseeData.filter((item) => {
+      const matchesProgram = !program || item.Program === program;
+      const matchesStatus = !status || item.Status === status;
+      return matchesProgram && matchesStatus;
+    });
+  }, [licenseeData, program, status]);
 
   // Calculate summary metrics
   const metrics = useMemo(() => {
-    const uniqueOEMs = new Set(licenseeData.map(item => item["OEM Name"])).size;
-    const uniquePrograms = new Set(licenseeData.map(item => item.Program)).size;
-    const totalActive = licenseeData.reduce((sum, item) => sum + item.Active, 0);
-    const totalProductionStopped = licenseeData.reduce((sum, item) => sum + item["Production Stopped"], 0);
+    const uniqueOEMs = new Set(filteredLicenseeData.map(item => item["OEM Name"])).size;
+    const uniquePrograms = new Set(filteredLicenseeData.map(item => item.Program)).size;
+    const totalActive = filteredLicenseeData.reduce((sum, item) => sum + item.Active, 0);
+    const totalProductionStopped = filteredLicenseeData.reduce((sum, item) => sum + item["Production Stopped"], 0);
 
     return { uniqueOEMs, uniquePrograms, totalActive, totalProductionStopped };
-  }, [licenseeData]);
+  }, [filteredLicenseeData]);
 
   // Group by Program
   const programData = useMemo(() => {
@@ -27,7 +38,7 @@ export function OEMPMBAnalysisChart() {
       total: number;
     }>();
 
-    licenseeData.forEach(item => {
+    filteredLicenseeData.forEach(item => {
       const program = item.Program;
       if (!programMap.has(program)) {
         programMap.set(program, {
@@ -53,13 +64,13 @@ export function OEMPMBAnalysisChart() {
         ...data
       }))
       .sort((a, b) => b.total - a.total);
-  }, [licenseeData]);
+  }, [filteredLicenseeData]);
 
   // Top 10 OEMs by total active units
   const top10OEMs = useMemo(() => {
     const oemMap = new Map<string, number>();
 
-    licenseeData.forEach(item => {
+    filteredLicenseeData.forEach(item => {
       const oem = item["OEM Name"];
       const current = oemMap.get(oem) || 0;
       oemMap.set(oem, current + item["Total Active & PS"]);
@@ -69,15 +80,15 @@ export function OEMPMBAnalysisChart() {
       .map(([oem, total]) => ({ oem, total }))
       .sort((a, b) => b.total - a.total)
       .slice(0, 10);
-  }, [licenseeData]);
+  }, [filteredLicenseeData]);
 
   // Status breakdown across all data
   const statusData = useMemo(() => {
     const total = {
-      active: licenseeData.reduce((sum, item) => sum + item.Active, 0),
-      productionStopped: licenseeData.reduce((sum, item) => sum + item["Production Stopped"], 0),
-      discontinued: licenseeData.reduce((sum, item) => sum + item.Discontinued, 0),
-      obsolete: licenseeData.reduce((sum, item) => sum + item["Obsolete (min and other)"], 0)
+      active: filteredLicenseeData.reduce((sum, item) => sum + item.Active, 0),
+      productionStopped: filteredLicenseeData.reduce((sum, item) => sum + item["Production Stopped"], 0),
+      discontinued: filteredLicenseeData.reduce((sum, item) => sum + item.Discontinued, 0),
+      obsolete: filteredLicenseeData.reduce((sum, item) => sum + item["Obsolete (min and other)"], 0)
     };
 
     return [
@@ -86,7 +97,7 @@ export function OEMPMBAnalysisChart() {
       { status: 'Discontinued', count: total.discontinued, color: '#ef4444' },
       { status: 'Obsolete', count: total.obsolete, color: '#6b7280' }
     ];
-  }, [licenseeData]);
+  }, [filteredLicenseeData]);
 
   // Generate colors for program chart
   const generateColors = (count: number) => {

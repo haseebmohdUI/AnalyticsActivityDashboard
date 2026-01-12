@@ -70,6 +70,15 @@ export interface ACSParticipantDataResponse {
 }
 
 /**
+ * Filter parameters for ACS participant data
+ */
+export interface ACSParticipantParams {
+  year?: string;
+  program?: string;
+  manufacturer?: string;
+}
+
+/**
  * Pagination and filter parameters for login data
  */
 export interface LoginDataParams {
@@ -328,14 +337,23 @@ export const fetchLicenseeData = async (): Promise<{
  * Endpoint: /api/acs
  * Returns empty array on failure
  */
-export const fetchACSParticipantData = async (): Promise<{
+export const fetchACSParticipantData = async (params: ACSParticipantParams = {}): Promise<{
   data: ACSParticipantDataResponse[];
   error: ApiError | null;
   isFromFallback: boolean;
 }> => {
   try {
-    console.log('Fetching ACS participant data from /api/acs...');
-    const response = await apiClient.get<ApiResponse<ACSParticipantDataResponse[]>>('/api/acs');
+    // Build query params, only include defined values
+    const queryParams: Record<string, string> = {};
+
+    if (params.year) queryParams.year = params.year;
+    if (params.program) queryParams.program = params.program;
+    if (params.manufacturer) queryParams.manufacturer = params.manufacturer;
+
+    console.log('Fetching ACS participant data from /api/acs...', queryParams);
+    const response = await apiClient.get<ApiResponse<ACSParticipantDataResponse[]>>('/api/acs', {
+      params: queryParams
+    });
 
     console.log('ACS participant API response:', {
       success: response.data.success,

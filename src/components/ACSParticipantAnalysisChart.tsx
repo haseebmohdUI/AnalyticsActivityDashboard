@@ -2,10 +2,26 @@ import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, Responsive
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Building2, Package, Activity, AlertTriangle } from 'lucide-react';
 import { useDataStore } from '@/store/dataStore';
-import { useMemo } from 'react';
+import { useFilterStore } from '@/store/filterStore';
+import { useMemo, useEffect } from 'react';
 
 export function ACSParticipantAnalysisChart() {
-  const { acsParticipantData, isACSParticipantDataLoading } = useDataStore();
+  const { acsParticipantData, isACSParticipantDataLoading, fetchACSParticipantDataFiltered } = useDataStore();
+  const { year } = useFilterStore();
+
+  // Fetch data when year filter changes (only when user enters a year)
+  useEffect(() => {
+    // Only fetch if year has a value (user actively filtered)
+    if (year) {
+      console.log('Year filter changed to:', year);
+      fetchACSParticipantDataFiltered({ year });
+    } else if (!acsParticipantData || (acsParticipantData.length === 0 && !isACSParticipantDataLoading)) {
+      // If no data loaded yet and not loading, fetch all data
+      console.log('No data loaded, fetching all ACS data...');
+      fetchACSParticipantDataFiltered({});
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [year]);
 
   // Debug logging
   console.log('ACS Participant Chart - Data length:', acsParticipantData?.length || 0, 'Loading:', isACSParticipantDataLoading);
@@ -37,18 +53,24 @@ export function ACSParticipantAnalysisChart() {
 
   // Calculate summary metrics
   const metrics = useMemo(() => {
+    if (!acsParticipantData || acsParticipantData.length === 0) {
+      return { uniqueManufacturers: 0, uniquePrograms: 0, totalTests: 0, avgFailRate: '0.0' };
+    }
+
     const uniqueManufacturers = new Set(acsParticipantData.map(item => item.manufacturernamerev)).size;
     const uniquePrograms = new Set(acsParticipantData.map(item => item.programname)).size;
     const totalTests = acsParticipantData.reduce((sum, item) => sum + item.total_tests, 0);
-    const avgFailRate = acsParticipantData.length > 0
-      ? (acsParticipantData.reduce((sum, item) => sum + item.fail_rate, 0) / acsParticipantData.length).toFixed(1)
-      : '0.0';
+    const avgFailRate = (acsParticipantData.reduce((sum, item) => sum + item.fail_rate, 0) / acsParticipantData.length).toFixed(1);
 
     return { uniqueManufacturers, uniquePrograms, totalTests, avgFailRate };
   }, [acsParticipantData]);
 
   // Top 15 manufacturers by total tests
   const top15Manufacturers = useMemo(() => {
+    if (!acsParticipantData || acsParticipantData.length === 0) {
+      return [];
+    }
+
     const manufacturerMap = new Map<string, number>();
 
     acsParticipantData.forEach(item => {
@@ -79,6 +101,10 @@ export function ACSParticipantAnalysisChart() {
 
   // Fail rate by program
   const programFailRates = useMemo(() => {
+    if (!acsParticipantData || acsParticipantData.length === 0) {
+      return [];
+    }
+
     const programMap = new Map<string, { totalTests: number; totalFailRate: number; count: number }>();
 
     acsParticipantData.forEach(item => {
@@ -104,6 +130,10 @@ export function ACSParticipantAnalysisChart() {
 
   // Top 10 manufacturers by fail rate (with minimum 5 tests)
   const top10ByFailRate = useMemo(() => {
+    if (!acsParticipantData || acsParticipantData.length === 0) {
+      return [];
+    }
+
     return acsParticipantData
       .filter(item => item.total_tests >= 5) // Only include manufacturers with at least 5 tests
       .sort((a, b) => b.fail_rate - a.fail_rate)

@@ -15,7 +15,9 @@ type TabKey =
   | "time-analysis"
   | "data-table"
   | "query-activity"
-  | "all-licensees";
+  | "all-licensees"
+  | "oem-pmb-analysis"
+  | "acs-participant-analysis";
 
 interface SidebarProps {
   className?: string;
@@ -113,8 +115,10 @@ export function Sidebar({ className, activeTab = "time-analysis" }: SidebarProps
             <h4 className="text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400">
               {activeTab === "data-table" && "User Data Filters"}
               {activeTab === "all-licensees" && "Licensee Filters"}
+              {activeTab === "oem-pmb-analysis" && "OEM/PMB Filters"}
               {activeTab === "query-activity" && "Query Filters"}
-              {!["data-table", "all-licensees", "query-activity"].includes(activeTab) && "Analysis Filters"}
+              {activeTab === "acs-participant-analysis" && "ACS Filters"}
+              {!["data-table", "all-licensees", "oem-pmb-analysis", "query-activity", "acs-participant-analysis"].includes(activeTab) && "Analysis Filters"}
             </h4>
           </div>
           <div className="h-px bg-gradient-to-r from-blue-400/50 via-blue-600/50 to-transparent dark:from-blue-600/50 dark:via-blue-400/50"></div>
@@ -395,8 +399,101 @@ export function Sidebar({ className, activeTab = "time-analysis" }: SidebarProps
             </>
           )}
 
+          {/* OEM/PMB Analysis Filters */}
+          {activeTab === "oem-pmb-analysis" && (
+            <>
+              {/* Program */}
+              <div className="group">
+                <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-2 ml-1">
+                  Program
+                </label>
+                <div className="relative">
+                  <select
+                    value={program}
+                    onChange={(e) => setProgram(e.target.value)}
+                    className="w-full px-4 py-2.5 text-sm rounded-lg appearance-none
+                               bg-white dark:bg-slate-800
+                               border-2 border-slate-300 dark:border-slate-600
+                               focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500
+                               hover:border-slate-400 dark:hover:border-slate-500
+                               transition-all duration-200
+                               cursor-pointer"
+                  >
+                    <option value="">All Programs</option>
+                    {uniquePrograms.map((prog, index) => (
+                      <option key={index} value={prog}>{prog}</option>
+                    ))}
+                  </select>
+                  <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500 pointer-events-none" />
+                  {program && (
+                    <div className="absolute right-10 top-1/2 -translate-y-1/2 w-2 h-2 bg-blue-500 rounded-full"></div>
+                  )}
+                </div>
+              </div>
+
+              {/* Status */}
+              <div className="group">
+                <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-2 ml-1">
+                  Status
+                </label>
+                <div className="relative">
+                  <select
+                    value={status}
+                    onChange={(e) => setStatus(e.target.value)}
+                    className="w-full px-4 py-2.5 text-sm rounded-lg appearance-none
+                               bg-white dark:bg-slate-800
+                               border-2 border-slate-300 dark:border-slate-600
+                               focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500
+                               hover:border-slate-400 dark:hover:border-slate-500
+                               transition-all duration-200
+                               cursor-pointer"
+                  >
+                    <option value="">All Statuses</option>
+                    {uniqueStatuses.map((stat, index) => (
+                      <option key={index} value={stat}>{stat}</option>
+                    ))}
+                  </select>
+                  <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500 pointer-events-none" />
+                  {status && (
+                    <div className="absolute right-10 top-1/2 -translate-y-1/2 w-2 h-2 bg-blue-500 rounded-full"></div>
+                  )}
+                </div>
+              </div>
+            </>
+          )}
+
+          {/* ACS Participant Analysis Filters */}
+          {activeTab === "acs-participant-analysis" && (
+            <>
+              {/* Year */}
+              <div className="group">
+                <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-2 ml-1">
+                  Year
+                </label>
+                <div className="relative">
+                  <input
+                    type="text"
+                    value={year}
+                    onChange={(e) => setYear(e.target.value)}
+                    placeholder="Enter year (e.g. 2024)"
+                    className="w-full px-4 py-2.5 text-sm rounded-lg
+                               bg-white dark:bg-slate-800
+                               border-2 border-slate-300 dark:border-slate-600
+                               focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500
+                               hover:border-slate-400 dark:hover:border-slate-500
+                               transition-all duration-200
+                               placeholder:text-slate-400 dark:placeholder:text-slate-500"
+                  />
+                  {year && (
+                    <div className="absolute right-3 top-1/2 -translate-y-1/2 w-2 h-2 bg-blue-500 rounded-full"></div>
+                  )}
+                </div>
+              </div>
+            </>
+          )}
+
           {/* Default Filters (for other tabs) */}
-          {!["data-table", "all-licensees", "query-activity"].includes(activeTab) && (
+          {!["data-table", "all-licensees", "query-activity", "acs-participant-analysis", "oem-pmb-analysis"].includes(activeTab) && (
             <>
               {/* Date Range */}
               <div>

@@ -9,7 +9,8 @@ import {
   type QueryActivityResponse,
   type LicenseeDataResponse,
   type ACSParticipantDataResponse,
-  type LoginDataParams
+  type LoginDataParams,
+  type ACSParticipantParams
 } from '@/services/dataService';
 import type { ApiError } from '@/services/api';
 
@@ -63,6 +64,7 @@ interface DataStore {
   fetchAllData: () => Promise<void>;
   fetchLoginDataPaginated: (params?: LoginDataParams, append?: boolean) => Promise<void>;
   loadMoreLoginData: () => Promise<void>;
+  fetchACSParticipantDataFiltered: (params?: ACSParticipantParams) => Promise<void>;
   clearData: () => void;
   clearErrors: () => void;
   isDataStale: () => boolean;
@@ -272,6 +274,33 @@ export const useDataStore = create<DataStore>()(
           },
           true // append = true
         );
+      },
+
+      // Fetch ACS participant data with filters
+      fetchACSParticipantDataFiltered: async (params?: ACSParticipantParams) => {
+        set({ isACSParticipantDataLoading: true });
+
+        try {
+          console.log('Fetching filtered ACS participant data...', params);
+          const result = await fetchACSParticipantData(params);
+
+          set({
+            acsParticipantData: result.data,
+            isACSParticipantDataLoading: false,
+            errors: {
+              ...get().errors,
+              acsParticipantData: result.error,
+            },
+            isDataFromFallback: {
+              ...get().isDataFromFallback,
+              acsParticipantData: result.isFromFallback,
+            },
+            lastFetchTime: Date.now(),
+          });
+        } catch (error) {
+          console.error('Error fetching filtered ACS participant data:', error);
+          set({ isACSParticipantDataLoading: false });
+        }
       },
 
       // Clear all data (called on logout)
