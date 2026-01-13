@@ -4,7 +4,7 @@ import { Building2, Package, TrendingUp, AlertCircle } from 'lucide-react';
 import { useDataStore } from '@/store/dataStore';
 import { useFilterStore } from '@/store/filterStore';
 import { useMemo } from 'react';
-import { generateChartColors } from '@/utils/chartColors';
+import { generateChartColors, getChartColor } from '@/utils/chartColors';
 
 export function OEMPMBAnalysisChart() {
   const { licenseeData } = useDataStore();
@@ -103,6 +103,7 @@ export function OEMPMBAnalysisChart() {
   // Generate colors from shared palette
   const programColors = generateChartColors(programData.length);
   const oemColors = generateChartColors(10);
+  const blueColor = getChartColor(0); // AHRI Blue from palette
 
   const ProgramTooltip = ({ active, payload }: any) => {
     if (active && payload && payload.length) {
@@ -251,7 +252,10 @@ export function OEMPMBAnalysisChart() {
                     className="text-slate-600 dark:text-slate-400"
                   />
                   <Tooltip content={<ProgramTooltip />} />
-                  <Legend wrapperStyle={{ paddingTop: '10px' }} iconType="circle" />
+                  <Legend
+                    wrapperStyle={{ paddingTop: '10px', color: '#006daf' }}
+                    iconType="circle"
+                  />
                   <Bar dataKey="total" name="Total Units" radius={[8, 8, 0, 0]}>
                     {programData.map((_entry, index) => (
                       <Cell key={`cell-${index}`} fill={programColors[index]} />
@@ -353,7 +357,10 @@ export function OEMPMBAnalysisChart() {
                   width={200}
                 />
                 <Tooltip content={<OEMTooltip />} />
-                <Legend wrapperStyle={{ paddingTop: '10px' }} iconType="circle" />
+                <Legend
+                  wrapperStyle={{ paddingTop: '10px', color: '#006daf' }}
+                  iconType="circle"
+                />
                 <Bar dataKey="total" name="Total Units" radius={[0, 8, 8, 0]}>
                   {top10OEMs.map((_entry, index) => (
                     <Cell key={`cell-${index}`} fill={oemColors[index]} />

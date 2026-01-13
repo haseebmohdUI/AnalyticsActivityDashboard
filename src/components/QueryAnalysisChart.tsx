@@ -2,7 +2,10 @@ import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, Responsive
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Database, TrendingUp, Activity, Users, Calendar } from 'lucide-react';
 import { useDataStore } from '@/store/dataStore';
-import { generateChartColors } from '@/utils/chartColors';
+import { getChartColor, generateChartColors } from '@/utils/chartColors';
+
+
+  
 
 export function QueryAnalysisChart() {
   // Get query activity data from store
@@ -78,7 +81,7 @@ export function QueryAnalysisChart() {
     percentage: ((item.count / top10Total) * 100).toFixed(1),
     fill: colors[index]
   }));
-
+  const blueColor = getChartColor(0); // Blue from palette
   return (
     <div className="space-y-3">
       {/* Summary Stats */}
@@ -164,11 +167,8 @@ export function QueryAnalysisChart() {
                     dataKey="count"
                     name="Query Count"
                     radius={[0, 8, 8, 0]}
-                  >
-                    {top15Operations.map((_entry, index) => (
-                      <Cell key={`cell-${index}`} fill={colors[index]} />
-                    ))}
-                  </Bar>
+                    fill={blueColor}
+                  />
                 </BarChart>
               </ResponsiveContainer>
             </div>

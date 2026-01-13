@@ -5,7 +5,9 @@ import { TrendingUp, Users, Building2 } from 'lucide-react';
 import { useFilterStore } from '@/store/filterStore';
 import { useDataStore } from '@/store/dataStore';
 import { filterRawData, aggregateCompanyData } from '@/utils/dataFilters';
-import { generateChartColors } from '@/utils/chartColors';
+import { generateChartColors } from '@/utils/chartColors'
+import { getChartColor } from '@/utils/chartColors';
+;
 
 export function CompanyAnalysisChart() {
   const [viewMode, setViewMode] = useState<'logins' | 'users'>('logins');
@@ -99,7 +101,7 @@ export function CompanyAnalysisChart() {
     percentage: ((item.totalLogins / totalLogins) * 100).toFixed(1),
     fill: barColors[index]
   }));
-
+  const blueColor = getChartColor(0); // Blue from palette
   return (
     <div className="space-y-3">
       {/* Summary Stats */}
@@ -152,7 +154,7 @@ export function CompanyAnalysisChart() {
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart
                   data={chartData}
-                  margin={{ top: 20, right: 30, left: 20, bottom: 100 }}
+                  margin={{ top: 20, right: 30, left: 10, bottom: 50 }}
                   barCategoryGap="5%"
                 >
                   <defs>
@@ -183,7 +185,7 @@ export function CompanyAnalysisChart() {
                   <Tooltip content={<CustomTooltip />} cursor={{ fill: 'rgba(0, 106, 255, 0.05)' }} />
                   <Legend
                     wrapperStyle={{
-                      paddingTop: '20px',
+                      paddingTop: '50px',
                       fontWeight: 600
                     }}
                     iconType="circle"
@@ -195,6 +197,7 @@ export function CompanyAnalysisChart() {
                     maxBarSize={50}
                     animationDuration={800}
                     animationEasing="ease-out"
+                    fill={blueColor}
                   >
                     {chartData.map((_entry, index) => (
                       <Cell
