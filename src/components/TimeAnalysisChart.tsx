@@ -155,7 +155,7 @@ export function TimeAnalysisChart() {
               <TrendingUp className="w-4 h-4 text-blue-600 dark:text-blue-400" />
               Monthly Login Count
             </h3>
-            <p className="text-xs text-slate-600 dark:text-slate-400 mb-2">
+            <p className="text-xs text-slate-600 dark:text-slate-400 mb-3">
               Number of logins per month (0-250 range)
             </p>
             <div className="h-[260px] w-full">
@@ -172,18 +172,18 @@ export function TimeAnalysisChart() {
                     textAnchor="end"
                     height={80}
                     interval={0}
-                    tick={{ fill: 'currentColor', fontSize: 10 }}
+                    tick={{ fill: 'currentColor', fontSize: 11 }}
                     className="text-slate-600 dark:text-slate-400"
                     tickFormatter={formatMonthLabel}
                   />
                   <YAxis
-                    domain={[0, 250]}
+                    domain={[0, 240]}
                     tick={{ fill: 'currentColor' }}
                     className="text-slate-600 dark:text-slate-400"
                     label={{
                       value: 'Number of Logins',
                       angle: -90,
-                      position: 'insideBottomLeft',
+                      position: 'insideLeft',
                       offset: 0,
                       style: { textAnchor: 'middle' }
                     }}
@@ -213,7 +213,7 @@ export function TimeAnalysisChart() {
               <Users className="w-4 h-4 text-blue-600 dark:text-blue-400" />
               Monthly Unique Users
             </h3>
-            <p className="text-xs text-slate-600 dark:text-slate-400 mb-2">
+            <p className="text-xs text-slate-600 dark:text-slate-400 mb-4">
               Number of unique users per month
             </p>
             <div className="h-[280px] w-full">
@@ -230,7 +230,7 @@ export function TimeAnalysisChart() {
                     textAnchor="end"
                     height={80}
                     interval={0}
-                    tick={{ fill: 'currentColor', fontSize: 10 }}
+                    tick={{ fill: 'currentColor', fontSize: 11 }}
                     className="text-slate-600 dark:text-slate-400"
                     tickFormatter={formatMonthLabel}
                   />
@@ -240,7 +240,7 @@ export function TimeAnalysisChart() {
                     label={{
                       value: 'Number of Unique Users',
                       angle: -90,
-                      position: 'insideBottomLeft',
+                      position: 'insideLeft',
                       offset: 0,
                       style: { textAnchor: 'middle' }
                     }}
