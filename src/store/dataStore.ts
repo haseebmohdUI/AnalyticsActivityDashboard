@@ -73,6 +73,13 @@ interface DataStore {
   getLoginData: () => LoginDataEntry[];
   getQueryActivityData: () => QueryActivityEntry[];
   getLicenseeData: () => LicenseeDataEntry[];
+
+  // Get loading status for all data sources
+  getLoadingStatuses: () => Array<{
+    name: string;
+    isLoading: boolean;
+    isCompleted: boolean;
+  }>;
 }
 
 // Stale data threshold (1 hour)
@@ -355,6 +362,33 @@ export const useDataStore = create<DataStore>()(
       getLoginData: () => get().loginData,
       getQueryActivityData: () => get().queryActivityData,
       getLicenseeData: () => get().licenseeData,
+
+      // Get loading statuses for GlobalLoader
+      getLoadingStatuses: () => {
+        const state = get();
+        return [
+          {
+            name: 'Login Activity Data',
+            isLoading: state.isLoginDataLoading,
+            isCompleted: !state.isLoginDataLoading && state.loginData.length > 0
+          },
+          {
+            name: 'Query Activity Data',
+            isLoading: state.isQueryActivityLoading,
+            isCompleted: !state.isQueryActivityLoading && state.queryActivityData.length > 0
+          },
+          {
+            name: 'Licensee Directory Data',
+            isLoading: state.isLicenseeDataLoading,
+            isCompleted: !state.isLicenseeDataLoading && state.licenseeData.length > 0
+          },
+          {
+            name: 'ACS Participant Data',
+            isLoading: state.isACSParticipantDataLoading,
+            isCompleted: !state.isACSParticipantDataLoading && state.acsParticipantData.length > 0
+          }
+        ];
+      },
     }),
     {
       name: 'data-storage', // localStorage key

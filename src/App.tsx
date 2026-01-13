@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import { Dashboard } from '@/components/Dashboard'
 import { Login } from '@/components/Login'
 import { GlobalLoader } from '@/components/GlobalLoader'
@@ -9,8 +9,56 @@ import './App.css'
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false)
   const [isTransitioning, setIsTransitioning] = useState(false)
+  const [showLoader, setShowLoader] = useState(false)
   const { isAuthenticated: isAuthStoreAuthenticated } = useAuthStore()
-  const { isLoading, fetchAllData, isDataStale, loginData } = useDataStore()
+  const {
+    isLoading,
+    fetchAllData,
+    isDataStale,
+    loginData,
+    isLoginDataLoading,
+    isQueryActivityLoading,
+    isLicenseeDataLoading,
+    isACSParticipantDataLoading,
+    queryActivityData,
+    licenseeData,
+    acsParticipantData
+  } = useDataStore()
+
+  // Compute loading statuses with useMemo to avoid unnecessary re-renders
+  const loadingStatuses = useMemo(() => {
+    const statuses = [
+      {
+        name: 'Login Activity Data',
+        isLoading: isLoginDataLoading,
+        isCompleted: !isLoginDataLoading && loginData.length > 0
+      },
+      {
+        name: 'Query Activity Data',
+        isLoading: isQueryActivityLoading,
+        isCompleted: !isQueryActivityLoading && queryActivityData.length > 0
+      },
+      {
+        name: 'Licensee Directory Data',
+        isLoading: isLicenseeDataLoading,
+        isCompleted: !isLicenseeDataLoading && licenseeData.length > 0
+      },
+      {
+        name: 'ACS Participant Data',
+        isLoading: isACSParticipantDataLoading,
+        isCompleted: !isACSParticipantDataLoading && acsParticipantData.length > 0
+      }
+    ];
+
+    // Log status changes for debugging
+    statuses.forEach(status => {
+      if (status.isCompleted) {
+        console.log(`✅ ${status.name} completed`);
+      }
+    });
+
+    return statuses;
+  }, [isLoginDataLoading, isQueryActivityLoading, isLicenseeDataLoading, isACSParticipantDataLoading, loginData.length, queryActivityData.length, licenseeData.length, acsParticipantData.length])
 
   // Check if user is already authenticated on mount
   useEffect(() => {
@@ -41,10 +89,32 @@ function App() {
     }, 600)
   }
 
+  // Control loader visibility
+  useEffect(() => {
+    // Show loader when any data is loading
+    if (isLoading) {
+      setShowLoader(true)
+    } else {
+      // All loading complete, show completion message briefly then hide
+      const allCompleted = loadingStatuses.every(s => s.isCompleted)
+
+      if (allCompleted) {
+        // Keep showing for 1 second to display completion status
+        const timer = setTimeout(() => {
+          setShowLoader(false)
+        }, 1000)
+
+        return () => clearTimeout(timer)
+      } else {
+        setShowLoader(false)
+      }
+    }
+  }, [isLoading, loadingStatuses])
+
   return (
     <div className="relative w-full h-screen overflow-hidden">
       {/* Global Loader */}
-      {isLoading && <GlobalLoader />}
+      {showLoader && <GlobalLoader loadingStatuses={loadingStatuses} />}
 
       {/* Login Page */}
       <div
