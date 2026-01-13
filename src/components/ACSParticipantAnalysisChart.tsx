@@ -272,7 +272,7 @@ export function ACSParticipantAnalysisChart() {
         {/* Top 15 Manufacturers by Tests */}
         <Card className="bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800">
           <CardHeader className="pb-2 pt-3">
-            <CardTitle className="text-lg font-bold bg-gradient-to-r from-slate-900 to-blue-600 dark:from-white dark:to-blue-400 bg-clip-text text-transparent flex items-center gap-2" style={{ fontFamily: "'Raleway', sans-serif" }}>
+            <CardTitle className="text-lg font-bold bg-gradient-to-r from-slate-900 to-blue-600 dark:from-white dark:to-blue-400 bg-clip-text text-transparent flex items-center gap-2" style={{ fontFamily: "'Noto Serif', serif" }}>
               <Building2 className="w-4 h-4 text-blue-600 dark:text-blue-400" />
               Top 15 Manufacturers by Total Tests
             </CardTitle>
@@ -317,7 +317,7 @@ export function ACSParticipantAnalysisChart() {
         {/* Test Distribution Pie Chart */}
         <Card className="bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800">
           <CardHeader className="pb-2 pt-3">
-            <CardTitle className="text-lg font-bold bg-gradient-to-r from-slate-900 to-blue-600 dark:from-white dark:to-blue-400 bg-clip-text text-transparent flex items-center gap-2" style={{ fontFamily: "'Raleway', sans-serif" }}>
+            <CardTitle className="text-lg font-bold bg-gradient-to-r from-slate-900 to-blue-600 dark:from-white dark:to-blue-400 bg-clip-text text-transparent flex items-center gap-2" style={{ fontFamily: "'Noto Serif', serif" }}>
               <Activity className="w-4 h-4 text-blue-600 dark:text-blue-400" />
               Test Distribution (Top 10)
             </CardTitle>
@@ -374,7 +374,7 @@ export function ACSParticipantAnalysisChart() {
         {/* Average Fail Rate by Program */}
         <Card className="bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800">
           <CardHeader className="pb-2 pt-3">
-            <CardTitle className="text-lg font-bold bg-gradient-to-r from-slate-900 to-blue-600 dark:from-white dark:to-blue-400 bg-clip-text text-transparent flex items-center gap-2" style={{ fontFamily: "'Raleway', sans-serif" }}>
+            <CardTitle className="text-lg font-bold bg-gradient-to-r from-slate-900 to-blue-600 dark:from-white dark:to-blue-400 bg-clip-text text-transparent flex items-center gap-2" style={{ fontFamily: "'Noto Serif', serif" }}>
               <Package className="w-4 h-4 text-blue-600 dark:text-blue-400" />
               Average Fail Rate by Program
             </CardTitle>
@@ -419,7 +419,7 @@ export function ACSParticipantAnalysisChart() {
         {/* Top 10 Manufacturers by Fail Rate */}
         <Card className="bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800">
           <CardHeader className="pb-2 pt-3">
-            <CardTitle className="text-lg font-bold bg-gradient-to-r from-slate-900 to-blue-600 dark:from-white dark:to-blue-400 bg-clip-text text-transparent flex items-center gap-2" style={{ fontFamily: "'Raleway', sans-serif" }}>
+            <CardTitle className="text-lg font-bold bg-gradient-to-r from-slate-900 to-blue-600 dark:from-white dark:to-blue-400 bg-clip-text text-transparent flex items-center gap-2" style={{ fontFamily: "'Noto Serif', serif" }}>
               <AlertTriangle className="w-4 h-4 text-blue-600 dark:text-blue-400" />
               Top 10 Manufacturers by Fail Rate
             </CardTitle>

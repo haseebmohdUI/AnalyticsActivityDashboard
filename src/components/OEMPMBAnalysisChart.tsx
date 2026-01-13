@@ -222,7 +222,7 @@ export function OEMPMBAnalysisChart() {
         {/* Program Distribution Bar Chart */}
         <Card className="bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800">
           <CardHeader className="pb-2 pt-3">
-            <CardTitle className="text-lg font-bold bg-gradient-to-r from-slate-900 to-blue-600 dark:from-white dark:to-blue-400 bg-clip-text text-transparent flex items-center gap-2" style={{ fontFamily: "'Raleway', sans-serif" }}>
+            <CardTitle className="text-lg font-bold bg-gradient-to-r from-slate-900 to-blue-600 dark:from-white dark:to-blue-400 bg-clip-text text-transparent flex items-center gap-2" style={{ fontFamily: "'Noto Serif', serif" }}>
               <Package className="w-4 h-4 text-blue-600 dark:text-blue-400" />
               Distribution by Program
             </CardTitle>
@@ -266,7 +266,7 @@ export function OEMPMBAnalysisChart() {
         {/* Status Distribution Pie Chart */}
         <Card className="bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800">
           <CardHeader className="pb-2 pt-3">
-            <CardTitle className="text-lg font-bold bg-gradient-to-r from-slate-900 to-blue-600 dark:from-white dark:to-blue-400 bg-clip-text text-transparent flex items-center gap-2" style={{ fontFamily: "'Raleway', sans-serif" }}>
+            <CardTitle className="text-lg font-bold bg-gradient-to-r from-slate-900 to-blue-600 dark:from-white dark:to-blue-400 bg-clip-text text-transparent flex items-center gap-2" style={{ fontFamily: "'Noto Serif', serif" }}>
               <AlertCircle className="w-4 h-4 text-blue-600 dark:text-blue-400" />
               Status Distribution
             </CardTitle>
@@ -323,7 +323,7 @@ export function OEMPMBAnalysisChart() {
       {/* Top 10 OEMs Bar Chart */}
       <Card className="bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800">
         <CardHeader className="pb-2 pt-3">
-          <CardTitle className="text-lg font-bold bg-gradient-to-r from-slate-900 to-blue-600 dark:from-white dark:to-blue-400 bg-clip-text text-transparent flex items-center gap-2" style={{ fontFamily: "'Raleway', sans-serif" }}>
+          <CardTitle className="text-lg font-bold bg-gradient-to-r from-slate-900 to-blue-600 dark:from-white dark:to-blue-400 bg-clip-text text-transparent flex items-center gap-2" style={{ fontFamily: "'Noto Serif', serif" }}>
             <Building2 className="w-4 h-4 text-blue-600 dark:text-blue-400" />
             Top 10 OEMs by Total Units
           </CardTitle>

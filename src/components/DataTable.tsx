@@ -94,8 +94,8 @@ export function DataTable() {
     <Card className="bg-gradient-to-br from-white to-slate-50/50 dark:from-slate-900 dark:to-slate-800/50 border-slate-200 dark:border-slate-800 shadow-xl">
       <CardHeader className="border-b border-slate-200 dark:border-slate-800 bg-gradient-to-r from-slate-50 to-blue-50/30 dark:from-slate-900/50 dark:to-blue-900/10">
         <div>
-          <CardTitle className="text-2xl font-bold bg-gradient-to-r from-slate-900 to-blue-600 dark:from-white dark:to-blue-400 bg-clip-text text-transparent" style={{ fontFamily: "'Raleway', sans-serif" }}>
-            User Login Data 
+          <CardTitle className="text-2xl font-bold bg-gradient-to-r from-slate-900 to-blue-600 dark:from-white dark:to-blue-400 bg-clip-text text-transparent" style={{ fontFamily: "'Noto Serif', serif" }}>
+            User Login Data
           </CardTitle>
           {/* <CardDescription className="mt-1">
             All login records ({sortedData.length.toLocaleString()} {sortedData.length === 1 ? 'entry' : 'entries'})

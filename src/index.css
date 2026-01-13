@@ -1,5 +1,5 @@
 @import "tailwindcss";
-@import url('https://fonts.googleapis.com/css2?family=Raleway:wght@300;400;500;600;700;800&family=Roboto:wght@300;400;500;700&family=Noto+Serif:wght@400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif:wght@400;700&family=Nunito+Sans:wght@300;400;600;700;800&display=swap');
 
 @layer base {
   :root {
@@ -9,7 +9,7 @@
     --card-foreground: 222.2 84% 4.9%;
     --popover: 0 0% 100%;
     --popover-foreground: 222.2 84% 4.9%;
-    --primary: 221.2 83.2% 53.3%;
+    --primary: 200 100% 34.3%;
     --primary-foreground: 210 40% 98%;
     --secondary: 210 40% 96.1%;
     --secondary-foreground: 222.2 47.4% 11.2%;
@@ -21,13 +21,15 @@
     --destructive-foreground: 210 40% 98%;
     --border: 214.3 31.8% 91.4%;
     --input: 214.3 31.8% 91.4%;
-    --ring: 221.2 83.2% 53.3%;
+    --ring: 200 100% 34.3%;
     --radius: 0.75rem;
 
-    /* Custom colors */
-    --brand-blue: #006aff;
-    --brand-orange: #ee8815;
-    --brand-pink: #f42eed;
+    /* AHRI Brand Colors */
+    --ahri-blue: #006daf;
+    --ahri-orange: #ee8815;
+    --ahri-cream: #f4f2ed;
+    --ahri-blue-dark: #124373;
+    --ahri-orange-dark: #b2421c;
   }
 
   .dark {
@@ -60,11 +62,11 @@
     background-color: hsl(var(--background));
     color: hsl(var(--foreground));
     transition: background-color 0.3s ease, color 0.3s ease;
-    font-family: 'Roboto', sans-serif;
+    font-family: 'Nunito Sans', sans-serif;
   }
 
   h1, h2, h3, h4, h5, h6 {
-    font-family: 'Raleway', sans-serif;
+    font-family: 'Noto Serif', serif;
   }
 
   @keyframes pulse {

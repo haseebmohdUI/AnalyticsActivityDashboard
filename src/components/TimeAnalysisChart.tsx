@@ -151,7 +151,7 @@ export function TimeAnalysisChart() {
         <CardContent className="space-y-4 mt-3">
           {/* Monthly Login Count Chart */}
           <div >
-            <h3 className="text-xl font-bold bg-gradient-to-r from-slate-900 to-blue-600 dark:from-white dark:to-blue-400 bg-clip-text text-transparent mb-1 flex items-center gap-2" style={{ fontFamily: "'Raleway', sans-serif" }}>
+            <h3 className="text-xl font-bold bg-gradient-to-r from-slate-900 to-blue-600 dark:from-white dark:to-blue-400 bg-clip-text text-transparent mb-1 flex items-center gap-2" style={{ fontFamily: "'Noto Serif', serif" }}>
               <TrendingUp className="w-4 h-4 text-blue-600 dark:text-blue-400" />
               Monthly Login Count
             </h3>
@@ -209,7 +209,7 @@ export function TimeAnalysisChart() {
 
           {/* Monthly Unique Users Chart */}
           <div>
-            <h3 className="text-xl font-bold bg-gradient-to-r from-slate-900 to-blue-600 dark:from-white dark:to-blue-400 bg-clip-text text-transparent mb-1 flex items-center gap-2" style={{ fontFamily: "'Raleway', sans-serif" }}>
+            <h3 className="text-xl font-bold bg-gradient-to-r from-slate-900 to-blue-600 dark:from-white dark:to-blue-400 bg-clip-text text-transparent mb-1 flex items-center gap-2" style={{ fontFamily: "'Noto Serif', serif" }}>
               <Users className="w-4 h-4 text-blue-600 dark:text-blue-400" />
               Monthly Unique Users
             </h3>

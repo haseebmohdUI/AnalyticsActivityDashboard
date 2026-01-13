@@ -34,7 +34,7 @@ export function Login({ onLogin }: LoginProps) {
   return (
     <div className="min-h-screen flex items-center justify-center p-4 relative overflow-hidden"
       style={{
-        background: 'linear-gradient(135deg, #64748b 0%, #94a3b8 30%, #006aff 70%, #0080ff 100%)'
+        background: 'linear-gradient(135deg, #64748b 0%, #94a3b8 30%, #006daf 70%, #006daf 100%)'
       }}>
 
       {/* Animated background elements */}
@@ -49,16 +49,16 @@ export function Login({ onLogin }: LoginProps) {
           {/* Header */}
           <div className="p-8 text-center border-b border-slate-200 dark:border-slate-800">
             <div className="mb-4">
-              <h1 className="text-5xl font-black tracking-tight mb-2 text-[#006aff]" style={{
-                fontFamily: "'Raleway', sans-serif",
-                background: 'linear-gradient(135deg, #64748b 0%, #006aff 50%, #0080ff 100%)',
+              <h1 className="text-5xl font-black tracking-tight mb-2 text-[#006daf]" style={{
+                fontFamily: "'Noto Serif', serif",
+                background: 'linear-gradient(135deg, #64748b 0%, #006daf 50%, #006daf 100%)',
                 WebkitBackgroundClip: 'text',
                 WebkitTextFillColor: 'transparent',
                 backgroundClip: 'text'
               }}>
                 AHRI
               </h1>
-              <p className="text-slate-600 dark:text-slate-400 text-sm" style={{ fontFamily: "'Roboto', sans-serif" }}>
+              <p className="text-slate-600 dark:text-slate-400 text-sm" style={{ fontFamily: "'Nunito Sans', sans-serif" }}>
                 Analytics Dashboard
               </p>
             </div>
@@ -87,7 +87,7 @@ export function Login({ onLogin }: LoginProps) {
 
             {/* Username Field */}
             <div className="space-y-2">
-              <label htmlFor="username" className="block text-sm font-semibold text-slate-700 dark:text-slate-300" style={{ fontFamily: "'Raleway', sans-serif" }}>
+              <label htmlFor="username" className="block text-sm font-semibold text-slate-700 dark:text-slate-300" style={{ fontFamily: "'Nunito Sans', sans-serif" }}>
                 Username
               </label>
               <div className="relative">
@@ -100,7 +100,7 @@ export function Login({ onLogin }: LoginProps) {
                   placeholder="Enter your username"
                   className="w-full pl-12 pr-4 py-3.5 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all text-slate-900 dark:text-white placeholder:text-slate-400"
                   style={{
-                    fontFamily: "'Roboto', sans-serif"
+                    fontFamily: "'Nunito Sans', sans-serif"
                   }}
                   required
                 />
@@ -109,7 +109,7 @@ export function Login({ onLogin }: LoginProps) {
 
             {/* Password Field */}
             <div className="space-y-2">
-              <label htmlFor="password" className="block text-sm font-semibold text-slate-700 dark:text-slate-300" style={{ fontFamily: "'Raleway', sans-serif" }}>
+              <label htmlFor="password" className="block text-sm font-semibold text-slate-700 dark:text-slate-300" style={{ fontFamily: "'Nunito Sans', sans-serif" }}>
                 Password
               </label>
               <div className="relative">
@@ -121,7 +121,7 @@ export function Login({ onLogin }: LoginProps) {
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="Enter your password"
                   className="w-full pl-12 pr-12 py-3.5 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-offset-2 transition-all text-slate-900 dark:text-white placeholder:text-slate-400"
-                  style={{ fontFamily: "'Roboto', sans-serif" }}
+                  style={{ fontFamily: "'Nunito Sans', sans-serif" }}
                   required
                 />
                 <button
@@ -154,8 +154,8 @@ export function Login({ onLogin }: LoginProps) {
               disabled={isLoading}
               className="w-full py-3.5 rounded-xl text-white font-semibold text-base shadow-lg hover:shadow-xl transform hover:scale-[1.02] active:scale-[0.98] transition-all duration-200 flex items-center justify-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed"
               style={{
-                background: 'linear-gradient(135deg, #64748b 0%, #006aff 50%, #0080ff 100%)',
-                fontFamily: "'Raleway', sans-serif"
+                background: 'linear-gradient(135deg, #64748b 0%, #006daf 50%, #006daf 100%)',
+                fontFamily: "'Nunito Sans', sans-serif"
               }}
             >
               {isLoading ? (

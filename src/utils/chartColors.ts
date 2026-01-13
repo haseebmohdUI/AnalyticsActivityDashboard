@@ -1,20 +1,21 @@
 /**
  * Shared color palette for all charts
+ * Based on AHRI Visual Identity Guide
  * 10 distinct colors optimized for data visualization
- * Note: Red and pink colors excluded per user preference
+ * Primary colors: AHRI Blue (#006daf) and AHRI Orange (#ee8815)
  */
 
 export const CHART_COLORS = [
-  '#3b82f6', // Blue
-  '#10b981', // Green
-  '#f59e0b', // Orange
-  '#8b5cf6', // Purple
-  '#06b6d4', // Cyan
-  '#84cc16', // Lime
-  '#f97316', // Deep Orange
-  '#6366f1', // Indigo
-  '#14b8a6', // Teal
-  '#a78bfa', // Violet
+  '#006daf', // AHRI Blue (Primary)
+  '#ee8815', // AHRI Orange (Primary)
+  '#006a9f', // Contrast darker blue
+  '#f8b146', // Contrast lighter orange
+  '#006d6d', // Teal
+  '#2a9d94', // Cyan-teal
+  '#c1cd48', // Lime
+  '#e16722', // Deep Orange
+  '#00757d', // Dark Teal
+  '#fcb15b', // Light Orange
 ] as const;
 
 /**
