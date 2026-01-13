@@ -188,7 +188,7 @@ export function CompanyAnalysisChart() {
                       paddingTop: '50px',
                       fontWeight: 600
                     }}
-                    iconType="circle"
+                    iconSize={0}
                   />
                   <Bar
                     dataKey={viewMode === 'logins' ? 'totalLogins' : 'uniqueUsers'}

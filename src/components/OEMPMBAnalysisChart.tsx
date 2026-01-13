@@ -4,7 +4,7 @@ import { Building2, Package, TrendingUp, AlertCircle } from 'lucide-react';
 import { useDataStore } from '@/store/dataStore';
 import { useFilterStore } from '@/store/filterStore';
 import { useMemo } from 'react';
-import { generateChartColors, getChartColor } from '@/utils/chartColors';
+import { generateChartColors } from '@/utils/chartColors';
 
 export function OEMPMBAnalysisChart() {
   const { licenseeData } = useDataStore();
@@ -92,18 +92,19 @@ export function OEMPMBAnalysisChart() {
       obsolete: filteredLicenseeData.reduce((sum, item) => sum + item["Obsolete (min and other)"], 0)
     };
 
+    const statusColors = generateChartColors(4);
+
     return [
-      { status: 'Active', count: total.active, color: '#22c55e' },
-      { status: 'Production Stopped', count: total.productionStopped, color: '#f59e0b' },
-      { status: 'Discontinued', count: total.discontinued, color: '#ef4444' },
-      { status: 'Obsolete', count: total.obsolete, color: '#6b7280' }
+      { status: 'Active', count: total.active, color: statusColors[0] },
+      { status: 'Production Stopped', count: total.productionStopped, color: statusColors[1] },
+      { status: 'Discontinued', count: total.discontinued, color: statusColors[2] },
+      { status: 'Obsolete', count: total.obsolete, color: statusColors[3] }
     ];
   }, [filteredLicenseeData]);
 
   // Generate colors from shared palette
   const programColors = generateChartColors(programData.length);
   const oemColors = generateChartColors(10);
-  const blueColor = getChartColor(0); // AHRI Blue from palette
 
   const ProgramTooltip = ({ active, payload }: any) => {
     if (active && payload && payload.length) {
@@ -236,7 +237,7 @@ export function OEMPMBAnalysisChart() {
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart
                   data={programData}
-                  margin={{ top: 10, right: 30, left: 0, bottom: 80 }}
+                  margin={{ top: 30, right: 30, left: 0, bottom: 20 }}
                 >
                   <CartesianGrid strokeDasharray="3 3" className="stroke-slate-200 dark:stroke-slate-700" />
                   <XAxis
@@ -253,8 +254,8 @@ export function OEMPMBAnalysisChart() {
                   />
                   <Tooltip content={<ProgramTooltip />} />
                   <Legend
-                    wrapperStyle={{ paddingTop: '10px', color: '#006daf' }}
-                    iconType="circle"
+                    wrapperStyle={{ paddingTop: '10px', color: '#006daf', fontWeight: 'bold' }}
+                    iconSize={0}
                   />
                   <Bar dataKey="total" name="Total Units" radius={[8, 8, 0, 0]}>
                     {programData.map((_entry, index) => (
@@ -358,8 +359,8 @@ export function OEMPMBAnalysisChart() {
                 />
                 <Tooltip content={<OEMTooltip />} />
                 <Legend
-                  wrapperStyle={{ paddingTop: '10px', color: '#006daf' }}
-                  iconType="circle"
+                  wrapperStyle={{ paddingTop: '10px', color: '#006daf', fontWeight: 'bold' }}
+                  iconSize={0}
                 />
                 <Bar dataKey="total" name="Total Units" radius={[0, 8, 8, 0]}>
                   {top10OEMs.map((_entry, index) => (

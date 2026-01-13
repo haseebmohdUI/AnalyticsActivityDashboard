@@ -302,7 +302,7 @@ export function ACSParticipantAnalysisChart() {
                     width={220}
                   />
                   <Tooltip content={<ManufacturerTooltip />} />
-                  <Legend wrapperStyle={{ paddingTop: '10px' }} iconType="circle" />
+                  <Legend wrapperStyle={{ paddingTop: '10px', color: '#006daf', fontWeight: 'bold' }} iconSize={0} />
                   <Bar dataKey="total_tests" name="Total Tests" radius={[0, 8, 8, 0]}>
                     {top15Manufacturers.map((_entry, index) => (
                       <Cell key={`cell-${index}`} fill={mfrColors[index]} />
@@ -404,7 +404,7 @@ export function ACSParticipantAnalysisChart() {
                     label={{ value: 'Fail Rate (%)', angle: -90, position: 'insideLeft' }}
                   />
                   <Tooltip content={<ProgramTooltip />} />
-                  <Legend wrapperStyle={{ paddingTop: '10px' }} iconType="circle" />
+                  <Legend wrapperStyle={{ paddingTop: '10px', color: '#006daf', fontWeight: 'bold' }} iconSize={0} />
                   <Bar dataKey="avgFailRate" name="Avg Fail Rate (%)" radius={[8, 8, 0, 0]}>
                     {programFailRates.map((_entry, index) => (
                       <Cell key={`cell-${index}`} fill={programColors[index]} />
@@ -450,7 +450,7 @@ export function ACSParticipantAnalysisChart() {
                     width={200}
                   />
                   <Tooltip content={<FailRateTooltip />} />
-                  <Legend wrapperStyle={{ paddingTop: '10px' }} iconType="circle" />
+                  <Legend wrapperStyle={{ paddingTop: '10px', color: '#006daf', fontWeight: 'bold' }} iconSize={0} />
                   <Bar dataKey="fail_rate" name="Fail Rate (%)" radius={[0, 8, 8, 0]}>
                     {top10ByFailRate.map((_entry, index) => (
                       <Cell key={`cell-${index}`} fill={failRateColors[index]} />

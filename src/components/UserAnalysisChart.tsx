@@ -142,8 +142,8 @@ export function UserAnalysisChart() {
                   />
                   <Tooltip content={<CustomTooltip />} />
                   <Legend
-                    wrapperStyle={{ paddingTop: '20px' }}
-                    iconType="circle"
+                    wrapperStyle={{ paddingTop: '20px', fontWeight: 'bold' }}
+                    iconSize={0}
                   />
                   <Bar
                     dataKey="loginCount"

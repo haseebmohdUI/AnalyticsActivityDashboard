@@ -190,8 +190,8 @@ export function TimeAnalysisChart() {
                   />
                   <Tooltip content={<LoginCountTooltip />} />
                   <Legend
-                    wrapperStyle={{ paddingTop: '10px' }}
-                    iconType="circle"
+                    wrapperStyle={{ paddingTop: '10px', fontWeight: 'bold' }}
+                    iconSize={0}
                   />
                   <Bar
                     dataKey="loginCount"
@@ -247,8 +247,8 @@ export function TimeAnalysisChart() {
                   />
                   <Tooltip content={<UniqueUsersTooltip />} />
                   <Legend
-                    wrapperStyle={{ paddingTop: '10px' }}
-                    iconType="circle"
+                    wrapperStyle={{ paddingTop: '10px', fontWeight: 'bold' }}
+                    iconSize={0}
                   />
                   <Bar
                     dataKey="uniqueUsers"

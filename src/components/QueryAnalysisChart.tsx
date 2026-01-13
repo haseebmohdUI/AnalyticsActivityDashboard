@@ -160,8 +160,8 @@ export function QueryAnalysisChart() {
                   />
                   <Tooltip content={<BarTooltip />} />
                   <Legend
-                    wrapperStyle={{ paddingTop: '10px' }}
-                    iconType="circle"
+                    wrapperStyle={{ paddingTop: '10px', fontWeight: 'bold' }}
+                    iconSize={0}
                   />
                   <Bar
                     dataKey="count"

@@ -51,7 +51,7 @@ export function Dashboard() {
         {/* Header */}
         <header className="sticky top-0 z-10 bg-white dark:bg-slate-900 border-b px-6 py-4">
           <div className="flex items-center justify-between">
-            <h1 className="text-2xl font-bold text-slate-900 dark:text-white">
+            <h1 className="text-2xl font-bold text-[#006daf] dark:text-blue-400">
               Analytics User Activity Dashboard
             </h1>
             <UserProfile />
