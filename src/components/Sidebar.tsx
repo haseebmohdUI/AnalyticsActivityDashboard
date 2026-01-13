@@ -129,6 +129,51 @@ export function Sidebar({ className, activeTab = "time-analysis" }: SidebarProps
           {/* Data Table Filters */}
           {activeTab === "data-table" && (
             <>
+              {/* Date Range */}
+              <div className="group">
+                <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-2 ml-1">
+                  Select Date Range
+                </label>
+                <div className="space-y-3">
+                  <div className="relative">
+                    <input
+                      type="date"
+                      value={startDate}
+                      onChange={(e) => setStartDate(e.target.value)}
+                      placeholder="Start Date"
+                      className="w-full px-4 py-2.5 text-sm rounded-lg
+                                 bg-white dark:bg-slate-800
+                                 border-2 border-slate-300 dark:border-slate-600
+                                 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500
+                                 hover:border-slate-400 dark:hover:border-slate-500
+                                 transition-all duration-200
+                                 cursor-pointer"
+                    />
+                    {startDate && (
+                      <div className="absolute right-3 top-1/2 -translate-y-1/2 w-2 h-2 bg-blue-500 rounded-full"></div>
+                    )}
+                  </div>
+                  <div className="relative">
+                    <input
+                      type="date"
+                      value={endDate}
+                      onChange={(e) => setEndDate(e.target.value)}
+                      placeholder="End Date"
+                      className="w-full px-4 py-2.5 text-sm rounded-lg
+                                 bg-white dark:bg-slate-800
+                                 border-2 border-slate-300 dark:border-slate-600
+                                 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500
+                                 hover:border-slate-400 dark:hover:border-slate-500
+                                 transition-all duration-200
+                                 cursor-pointer"
+                    />
+                    {endDate && (
+                      <div className="absolute right-3 top-1/2 -translate-y-1/2 w-2 h-2 bg-blue-500 rounded-full"></div>
+                    )}
+                  </div>
+                </div>
+              </div>
+
               {/* First Name */}
               <div className="group">
                 <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-2 ml-1">
@@ -352,49 +397,73 @@ export function Sidebar({ className, activeTab = "time-analysis" }: SidebarProps
           {activeTab === "query-activity" && (
             <>
               {/* Date Range */}
-              <div>
-                <label className="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-2">
+              <div className="group">
+                <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-2 ml-1">
                   Select Date Range
                 </label>
-                <div className="space-y-2">
-                  <input
-                    type="date"
-                    value={startDate}
-                    onChange={(e) => setStartDate(e.target.value)}
-                    placeholder="Start Date"
-                    className="w-full px-3 py-2 text-sm rounded-lg
-                               bg-white dark:bg-slate-900
-                               border border-slate-300 dark:border-slate-600
-                               focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  />
-                  <input
-                    type="date"
-                    value={endDate}
-                    onChange={(e) => setEndDate(e.target.value)}
-                    placeholder="End Date"
-                    className="w-full px-3 py-2 text-sm rounded-lg
-                               bg-white dark:bg-slate-900
-                               border border-slate-300 dark:border-slate-600
-                               focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  />
+                <div className="space-y-3">
+                  <div className="relative">
+                    <input
+                      type="date"
+                      value={startDate}
+                      onChange={(e) => setStartDate(e.target.value)}
+                      placeholder="Start Date"
+                      className="w-full px-4 py-2.5 text-sm rounded-lg
+                                 bg-white dark:bg-slate-800
+                                 border-2 border-slate-300 dark:border-slate-600
+                                 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500
+                                 hover:border-slate-400 dark:hover:border-slate-500
+                                 transition-all duration-200
+                                 cursor-pointer"
+                    />
+                    {startDate && (
+                      <div className="absolute right-3 top-1/2 -translate-y-1/2 w-2 h-2 bg-blue-500 rounded-full"></div>
+                    )}
+                  </div>
+                  <div className="relative">
+                    <input
+                      type="date"
+                      value={endDate}
+                      onChange={(e) => setEndDate(e.target.value)}
+                      placeholder="End Date"
+                      className="w-full px-4 py-2.5 text-sm rounded-lg
+                                 bg-white dark:bg-slate-800
+                                 border-2 border-slate-300 dark:border-slate-600
+                                 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500
+                                 hover:border-slate-400 dark:hover:border-slate-500
+                                 transition-all duration-200
+                                 cursor-pointer"
+                    />
+                    {endDate && (
+                      <div className="absolute right-3 top-1/2 -translate-y-1/2 w-2 h-2 bg-blue-500 rounded-full"></div>
+                    )}
+                  </div>
                 </div>
               </div>
 
               {/* Email */}
-              <div>
-                <label className="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-2">
+              <div className="group">
+                <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-2 ml-1">
                   Email
                 </label>
-                <input
-                  type="text"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="Enter email"
-                  className="w-full px-3 py-2 text-sm rounded-lg
-                             bg-white dark:bg-slate-900
-                             border border-slate-300 dark:border-slate-600
-                             focus:outline-none focus:ring-2 focus:ring-blue-500"
-                />
+                <div className="relative">
+                  <input
+                    type="text"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder="Enter email"
+                    className="w-full px-4 py-2.5 text-sm rounded-lg
+                               bg-white dark:bg-slate-800
+                               border-2 border-slate-300 dark:border-slate-600
+                               focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500
+                               hover:border-slate-400 dark:hover:border-slate-500
+                               transition-all duration-200
+                               placeholder:text-slate-400 dark:placeholder:text-slate-500"
+                  />
+                  {email && (
+                    <div className="absolute right-3 top-1/2 -translate-y-1/2 w-2 h-2 bg-blue-500 rounded-full"></div>
+                  )}
+                </div>
               </div>
             </>
           )}
@@ -500,36 +569,52 @@ export function Sidebar({ className, activeTab = "time-analysis" }: SidebarProps
           {!["data-table", "all-licensees", "query-activity", "acs-participant-analysis", "oem-pmb-analysis"].includes(activeTab) && (
             <>
               {/* Date Range */}
-              <div>
-                <label className="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-2">
+              <div className="group">
+                <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-2 ml-1">
                   Select Date Range
                 </label>
-                <div className="space-y-2">
-                  <input
-                    type="date"
-                    value={startDate}
-                    onChange={(e) => setStartDate(e.target.value)}
-                    placeholder="Start Date"
-                    className="w-full px-3 py-2 text-sm rounded-lg
-                               bg-white dark:bg-slate-900
-                               border border-slate-300 dark:border-slate-600
-                               focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  />
-                  <input
-                    type="date"
-                    value={endDate}
-                    onChange={(e) => setEndDate(e.target.value)}
-                    placeholder="End Date"
-                    className="w-full px-3 py-2 text-sm rounded-lg
-                               bg-white dark:bg-slate-900
-                               border border-slate-300 dark:border-slate-600
-                               focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  />
+                <div className="space-y-3">
+                  <div className="relative">
+                    <input
+                      type="date"
+                      value={startDate}
+                      onChange={(e) => setStartDate(e.target.value)}
+                      placeholder="Start Date"
+                      className="w-full px-4 py-2.5 text-sm rounded-lg
+                                 bg-white dark:bg-slate-800
+                                 border-2 border-slate-300 dark:border-slate-600
+                                 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500
+                                 hover:border-slate-400 dark:hover:border-slate-500
+                                 transition-all duration-200
+                                 cursor-pointer"
+                    />
+                    {startDate && (
+                      <div className="absolute right-3 top-1/2 -translate-y-1/2 w-2 h-2 bg-blue-500 rounded-full"></div>
+                    )}
+                  </div>
+                  <div className="relative">
+                    <input
+                      type="date"
+                      value={endDate}
+                      onChange={(e) => setEndDate(e.target.value)}
+                      placeholder="End Date"
+                      className="w-full px-4 py-2.5 text-sm rounded-lg
+                                 bg-white dark:bg-slate-800
+                                 border-2 border-slate-300 dark:border-slate-600
+                                 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500
+                                 hover:border-slate-400 dark:hover:border-slate-500
+                                 transition-all duration-200
+                                 cursor-pointer"
+                    />
+                    {endDate && (
+                      <div className="absolute right-3 top-1/2 -translate-y-1/2 w-2 h-2 bg-blue-500 rounded-full"></div>
+                    )}
+                  </div>
                 </div>
               </div>
 
-              {/* Select Companies - Multi Select (hidden for time-analysis) */}
-              {activeTab !== "time-analysis" && (
+              {/* Select Companies - Multi Select (hidden for time-analysis, user-analysis, and company-analysis) */}
+              {activeTab !== "time-analysis" && activeTab !== "user-analysis" && activeTab !== "company-analysis" && (
                 <div className="relative">
                   <label className="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-2">
                     Select Companies ({selectedCompanies.length} selected)
@@ -575,20 +660,28 @@ export function Sidebar({ className, activeTab = "time-analysis" }: SidebarProps
               )}
 
               {/* Search Username */}
-              <div>
-                <label className="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-2">
+              <div className="group">
+                <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-2 ml-1">
                   Search Username
                 </label>
-                <input
-                  type="text"
-                  value={searchUsername}
-                  onChange={(e) => setSearchUsername(e.target.value)}
-                  placeholder="Enter username"
-                  className="w-full px-3 py-2 text-sm rounded-lg
-                             bg-white dark:bg-slate-900
-                             border border-slate-300 dark:border-slate-600
-                             focus:outline-none focus:ring-2 focus:ring-blue-500"
-                />
+                <div className="relative">
+                  <input
+                    type="text"
+                    value={searchUsername}
+                    onChange={(e) => setSearchUsername(e.target.value)}
+                    placeholder="Enter username"
+                    className="w-full px-4 py-2.5 text-sm rounded-lg
+                               bg-white dark:bg-slate-800
+                               border-2 border-slate-300 dark:border-slate-600
+                               focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500
+                               hover:border-slate-400 dark:hover:border-slate-500
+                               transition-all duration-200
+                               placeholder:text-slate-400 dark:placeholder:text-slate-500"
+                  />
+                  {searchUsername && (
+                    <div className="absolute right-3 top-1/2 -translate-y-1/2 w-2 h-2 bg-blue-500 rounded-full"></div>
+                  )}
+                </div>
               </div>
             </>
           )}

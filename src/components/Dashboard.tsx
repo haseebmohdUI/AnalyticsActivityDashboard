@@ -47,18 +47,13 @@ export function Dashboard() {
   return (
     <div className="flex">
       <Sidebar activeTab={activeTab} />
-      <main className="flex-1 h-screen overflow-auto bg-slate-50 dark:bg-slate-950">
-        {/* Header */}
-        <header className="sticky top-0 z-10 bg-white dark:bg-slate-900 border-b px-6 py-4">
-          <div className="flex items-center justify-between">
-            <h1 className="text-2xl font-bold text-[#006daf] dark:text-blue-400">
-              Analytics User Activity Dashboard
-            </h1>
-            <UserProfile />
-          </div>
-        </header>
+      <main className="flex-1 h-screen overflow-auto bg-slate-50 dark:bg-slate-950 relative">
+        {/* Floating User Profile Button */}
+        <div className="fixed top-3 right-5 z-50">
+          <UserProfile />
+        </div>
 
-      <div className="p-6">
+        <div className="p-6 pt-8">
         {/* Error Banner */}
         <DataErrorBanner
           errors={errors}

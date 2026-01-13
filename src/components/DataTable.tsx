@@ -13,7 +13,7 @@ export function DataTable() {
   const [sortOrder, setSortOrder] = useState<SortOrder>('desc');
   const rowsPerPage = 20;
 
-  const { firstName, lastName, company, username } = useFilterStore();
+  const { firstName, lastName, company, username, startDate, endDate } = useFilterStore();
   const { loginData } = useDataStore();
 
   // Apply filters from sidebar
@@ -24,9 +24,14 @@ export function DataTable() {
       const matchesCompany = !company || record.company.toLowerCase().includes(company.toLowerCase());
       const matchesUsername = !username || record.username.toLowerCase().includes(username.toLowerCase());
 
-      return matchesFirstName && matchesLastName && matchesCompany && matchesUsername;
+      // Date filtering
+      const recordDate = new Date(record.datetime);
+      const matchesStartDate = !startDate || recordDate >= new Date(startDate);
+      const matchesEndDate = !endDate || recordDate <= new Date(endDate + 'T23:59:59');
+
+      return matchesFirstName && matchesLastName && matchesCompany && matchesUsername && matchesStartDate && matchesEndDate;
     });
-  }, [loginData, firstName, lastName, company, username]);
+  }, [loginData, firstName, lastName, company, username, startDate, endDate]);
 
   // Apply sorting
   const sortedData = useMemo(() => {

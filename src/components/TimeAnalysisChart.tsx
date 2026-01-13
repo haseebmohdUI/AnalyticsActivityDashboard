@@ -148,7 +148,7 @@ export function TimeAnalysisChart() {
       {/* Monthly Analysis Charts */}
       <Card className="bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 ">
 
-        <CardContent className="space-y-4 mt-3">
+        <CardContent className="space-y-4 mt-5">
           {/* Monthly Login Count Chart */}
           <div >
             <h3 className="text-xl font-bold bg-gradient-to-r from-slate-900 to-blue-600 dark:from-white dark:to-blue-400 bg-clip-text text-transparent mb-1 flex items-center gap-2" style={{ fontFamily: "'Noto Serif', serif" }}>

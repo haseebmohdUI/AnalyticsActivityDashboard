@@ -27,43 +27,37 @@ export function UserProfile() {
   };
 
   return (
-    <div className="flex items-center gap-2">
-      {/* Settings Icon */}
-      <button className="p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors group">
-        <Settings className="w-4 h-4 text-slate-600 dark:text-slate-400 group-hover:text-slate-900 dark:group-hover:text-white transition-colors" />
+    <div className="relative">
+      {/* Floating User Profile Button */}
+      <button
+        onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+        className="flex items-center gap-2 px-3 py-2 rounded-full bg-white dark:bg-slate-900 border-2 border-slate-200 dark:border-slate-700 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 group"
+      >
+        <div className="w-9 h-9 rounded-full flex items-center justify-center font-bold text-white text-sm shadow-md" style={{
+          background: 'linear-gradient(135deg, #475569 0%, #006aff 100%)'
+        }}>
+          {getUserInitials()}
+        </div>
+        <div className="text-left hidden lg:block">
+          <p className="text-xs font-semibold text-slate-900 dark:text-white">{getUsername()}</p>
+          <p className="text-[10px] text-slate-500 dark:text-slate-400">
+            {user?.hasCeoAccess && user.hasCeoAccess.length > 0 ? 'CEO Access' : 'User'}
+          </p>
+        </div>
+        <ChevronDown className={cn(
+          "w-4 h-4 text-slate-600 dark:text-slate-400 transition-transform duration-200 hidden lg:block",
+          isDropdownOpen && "rotate-180"
+        )} />
       </button>
 
-      {/* User Profile Dropdown */}
-      <div className="relative">
-        <button
-          onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-          className="flex items-center gap-2 px-2 py-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors group"
-        >
-          <div className="w-7 h-7 rounded-full flex items-center justify-center font-bold text-white text-xs shadow-md" style={{
-            background: 'linear-gradient(135deg, #475569 0%, #006aff 100%)'
-          }}>
-            {getUserInitials()}
-          </div>
-          <div className="text-left hidden lg:block">
-            <p className="text-xs font-semibold text-slate-900 dark:text-white">{getUsername()}</p>
-            <p className="text-[10px] text-slate-500 dark:text-slate-400">
-              {user?.hasCeoAccess && user.hasCeoAccess.length > 0 ? 'CEO Access' : 'User'}
-            </p>
-          </div>
-          <ChevronDown className={cn(
-            "w-3.5 h-3.5 text-slate-600 dark:text-slate-400 transition-transform duration-200 hidden lg:block",
-            isDropdownOpen && "rotate-180"
-          )} />
-        </button>
-
-        {/* Dropdown Menu */}
-        {isDropdownOpen && (
-          <>
-            <div
-              className="fixed inset-0 z-10"
-              onClick={() => setIsDropdownOpen(false)}
-            />
-            <div className="absolute right-0 mt-2 w-72 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl shadow-2xl z-20 overflow-hidden">
+      {/* Dropdown Menu */}
+      {isDropdownOpen && (
+        <>
+          <div
+            className="fixed inset-0 z-40"
+            onClick={() => setIsDropdownOpen(false)}
+          />
+          <div className="absolute right-0 mt-3 w-72 bg-white dark:bg-slate-900 border-2 border-slate-200 dark:border-slate-800 rounded-xl shadow-2xl z-50 overflow-hidden">
               {/* User Info Section */}
               <div className="p-4 text-white" style={{
                 background: 'linear-gradient(135deg, #334155 0%, #006aff 60%, #0080ff 100%)'
@@ -116,10 +110,9 @@ export function UserProfile() {
                   <span className="text-sm font-medium">Logout</span>
                 </button>
               </div>
-            </div>
-          </>
-        )}
-      </div>
+          </div>
+        </>
+      )}
     </div>
   );
 }
