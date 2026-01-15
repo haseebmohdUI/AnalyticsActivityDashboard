@@ -1,7 +1,7 @@
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { Users, TrendingUp } from 'lucide-react';
+import { Users, TrendingUp, ChevronDown } from 'lucide-react';
 import { useFilterStore } from '@/store/filterStore';
 import { useDataStore } from '@/store/dataStore';
 import { filterRawData } from '@/utils/dataFilters';
@@ -16,8 +16,9 @@ interface UserData {
 export function UserAnalysisChart() {
   const { startDate, endDate, selectedCompanies, searchUsername } = useFilterStore();
   const { loginData } = useDataStore();
+  const [topLimit, setTopLimit] = useState(15);
 
-  const topUsers = useMemo(() => {
+  const { topUsers, allUsers, totalLogins } = useMemo(() => {
     const filteredData = filterRawData(loginData, startDate, endDate, selectedCompanies, searchUsername);
     const userMap = new Map<string, { firstName: string; lastName: string; count: number }>();
 
@@ -39,8 +40,15 @@ export function UserAnalysisChart() {
       loginCount: data.count,
     }));
 
-    return usersArray.sort((a, b) => b.loginCount - a.loginCount).slice(0, 10);
-  }, [loginData, startDate, endDate, selectedCompanies, searchUsername]);
+    const sorted = usersArray.sort((a, b) => b.loginCount - a.loginCount);
+    const totalLoginCount = usersArray.reduce((sum, user) => sum + user.loginCount, 0);
+
+    return {
+      topUsers: sorted.slice(0, topLimit),
+      allUsers: usersArray,
+      totalLogins: totalLoginCount
+    };
+  }, [loginData, startDate, endDate, selectedCompanies, searchUsername, topLimit]);
 
   const chartData = topUsers.map(user => ({
     username: user.username.length > 25 ? user.username.substring(0, 25) + '...' : user.username,
@@ -74,8 +82,6 @@ export function UserAnalysisChart() {
     return null;
   };
 
-  const totalLogins = topUsers.reduce((sum, user) => sum + user.loginCount, 0);
-
   return (
     <div className="space-y-3">
       {/* Summary Stats */}
@@ -84,15 +90,15 @@ export function UserAnalysisChart() {
           <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-blue-400/0 to-blue-600/0 group-hover:from-blue-400/5 group-hover:to-blue-600/10 transition-all duration-300"></div>
           <div className="relative flex items-center gap-2 mb-1">
             <Users className="w-5 h-5 text-blue-600 dark:text-blue-400" />
-            <p className="text-xs font-semibold text-blue-900 dark:text-blue-300">Top 10 Users</p>
+            <p className="text-xs font-semibold text-blue-900 dark:text-blue-300">Total Users</p>
           </div>
-          <p className="relative text-3xl font-bold text-blue-600 dark:text-blue-400">{topUsers.length}</p>
+          <p className="relative text-3xl font-bold text-blue-600 dark:text-blue-400">{allUsers.length}</p>
         </div>
         <div className="group relative p-4 rounded-xl bg-gradient-to-br from-purple-50 via-purple-100/50 to-pink-50 dark:from-purple-900/30 dark:via-purple-800/20 dark:to-pink-900/20 border border-purple-200/50 dark:border-purple-700/50 hover:border-purple-400 dark:hover:border-purple-500 transition-all shadow hover:shadow-md hover:scale-[1.02] transform duration-300">
           <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-purple-400/0 to-purple-600/0 group-hover:from-purple-400/5 group-hover:to-purple-600/10 transition-all duration-300"></div>
           <div className="relative flex items-center gap-2 mb-1">
             <TrendingUp className="w-5 h-5 text-purple-600 dark:text-purple-400" />
-            <p className="text-xs font-semibold text-purple-900 dark:text-purple-300">Total Logins (Top 10)</p>
+            <p className="text-xs font-semibold text-purple-900 dark:text-purple-300">Total Logins</p>
           </div>
           <p className="relative text-3xl font-bold text-purple-600 dark:text-purple-400">{totalLogins.toLocaleString()}</p>
         </div>
@@ -102,7 +108,7 @@ export function UserAnalysisChart() {
             <TrendingUp className="w-5 h-5 text-green-600 dark:text-green-400" />
             <p className="text-xs font-semibold text-green-900 dark:text-green-300">Avg Logins/User</p>
           </div>
-          <p className="relative text-3xl font-bold text-green-600 dark:text-green-400">{Math.round(totalLogins / topUsers.length)}</p>
+          <p className="relative text-3xl font-bold text-green-600 dark:text-green-400">{Math.round(totalLogins / allUsers.length)}</p>
         </div>
       </div>
 
@@ -111,16 +117,35 @@ export function UserAnalysisChart() {
         {/* Horizontal Bar Chart */}
         <Card className="bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800">
           <CardHeader>
-            <CardTitle className="text-2xl font-bold bg-gradient-to-r from-slate-900 to-blue-600 dark:from-white dark:to-blue-400 bg-clip-text text-transparent flex items-center gap-2" style={{ fontFamily: "'Noto Serif', serif" }}>
-              <Users className="w-5 h-5 text-blue-600 dark:text-blue-400" />
-              Top 10 Users by Login Count
-            </CardTitle>
-            <CardDescription>
-              Users with the most logins
-            </CardDescription>
+            <div className="flex items-center justify-between">
+              <div>
+                <CardTitle className="text-2xl font-bold bg-gradient-to-r from-slate-900 to-blue-600 dark:from-white dark:to-blue-400 bg-clip-text text-transparent flex items-center gap-2" style={{ fontFamily: "'Noto Serif', serif" }}>
+                  <Users className="w-5 h-5 text-blue-600 dark:text-blue-400" />
+                  Top {topLimit} Users by Login Count
+                </CardTitle>
+                <CardDescription>
+                  Users with the most logins
+                </CardDescription>
+              </div>
+              <div className="relative">
+                <select
+                  value={topLimit}
+                  onChange={(e) => setTopLimit(Number(e.target.value))}
+                  className="px-4 py-2 text-sm rounded-lg appearance-none bg-white dark:bg-slate-800 border-2 border-slate-300 dark:border-slate-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 hover:border-slate-400 dark:hover:border-slate-500 transition-all duration-200 cursor-pointer pr-10"
+                >
+                  <option value={5}>Top 5</option>
+                  <option value={10}>Top 10</option>
+                  <option value={15}>Top 15</option>
+                  <option value={20}>Top 20</option>
+                  <option value={25}>Top 25</option>
+                  <option value={30}>Top 30</option>
+                </select>
+                <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500 pointer-events-none" />
+              </div>
+            </div>
           </CardHeader>
           <CardContent>
-            <div className="h-[585px] w-full">
+            <div className="w-full" style={{ height: `${Math.max(400, chartData.length * 35)}px` }}>
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart
                   data={chartData}
@@ -162,7 +187,7 @@ export function UserAnalysisChart() {
           <CardHeader>
             <CardTitle className="text-2xl font-bold bg-gradient-to-r from-slate-900 to-blue-600 dark:from-white dark:to-blue-400 bg-clip-text text-transparent flex items-center gap-2" style={{ fontFamily: "'Noto Serif', serif" }}>
               <TrendingUp className="w-5 h-5 text-blue-600 dark:text-blue-400" />
-              Top 10 Users Details
+              Top {topLimit} Users Details
             </CardTitle>
             <CardDescription>
               Detailed user information

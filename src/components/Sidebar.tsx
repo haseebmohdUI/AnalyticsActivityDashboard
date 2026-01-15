@@ -70,10 +70,6 @@ export function Sidebar({ className, activeTab = "time-analysis" }: SidebarProps
     return programs.sort();
   }, [licenseeData]);
 
-  const uniqueStatuses = useMemo(() => {
-    const statuses = Array.from(new Set(licenseeData.map(item => item.Status))).filter(Boolean);
-    return statuses.sort();
-  }, [licenseeData]);
 
   // Sort companies alphabetically
   const sortedCompanies = [...companyData].sort((a, b) =>
@@ -354,10 +350,9 @@ export function Sidebar({ className, activeTab = "time-analysis" }: SidebarProps
                                transition-all duration-200
                                cursor-pointer"
                   >
-                    <option value="">All Statuses</option>
-                    {uniqueStatuses.map((stat, index) => (
-                      <option key={index} value={stat}>{stat}</option>
-                    ))}
+                    <option value="">Select Status</option>
+                    <option value="Active">Active</option>
+                    <option value="Production Stopped">Production Stopped</option>
                   </select>
                   <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500 pointer-events-none" />
                   {status && (
@@ -517,10 +512,9 @@ export function Sidebar({ className, activeTab = "time-analysis" }: SidebarProps
                                transition-all duration-200
                                cursor-pointer"
                   >
-                    <option value="">All Statuses</option>
-                    {uniqueStatuses.map((stat, index) => (
-                      <option key={index} value={stat}>{stat}</option>
-                    ))}
+                    <option value="">Select Status</option>
+                    <option value="Active">Active</option>
+                    <option value="Production Stopped">Production Stopped</option>
                   </select>
                   <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500 pointer-events-none" />
                   {status && (

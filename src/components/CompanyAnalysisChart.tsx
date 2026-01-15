@@ -1,7 +1,7 @@
 import { useState, useMemo } from 'react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, Cell, PieChart, Pie } from 'recharts';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { TrendingUp, Users, Building2 } from 'lucide-react';
+import { TrendingUp, Users, Building2, ChevronDown } from 'lucide-react';
 import { useFilterStore } from '@/store/filterStore';
 import { useDataStore } from '@/store/dataStore';
 import { filterRawData, aggregateCompanyData } from '@/utils/dataFilters';
@@ -11,10 +11,11 @@ import { getChartColor } from '@/utils/chartColors';
 
 export function CompanyAnalysisChart() {
   const [viewMode, setViewMode] = useState<'logins' | 'users'>('logins');
+  const [topLimit, setTopLimit] = useState(15);
   const { startDate, endDate, selectedCompanies, searchUsername } = useFilterStore();
   const { loginData } = useDataStore();
 
-  const topCompanies = useMemo(() => {
+  const { topCompanies, allCompanies } = useMemo(() => {
     const filteredData = filterRawData(loginData, startDate, endDate, selectedCompanies, searchUsername);
     const companyData = aggregateCompanyData(filteredData);
 
@@ -22,8 +23,11 @@ export function CompanyAnalysisChart() {
       ? [...companyData].sort((a, b) => b.totalLogins - a.totalLogins)
       : [...companyData].sort((a, b) => b.uniqueUsers - a.uniqueUsers);
 
-    return sorted.slice(0, 15);
-  }, [loginData, startDate, endDate, selectedCompanies, searchUsername, viewMode]);
+    return {
+      topCompanies: sorted.slice(0, topLimit),
+      allCompanies: companyData
+    };
+  }, [loginData, startDate, endDate, selectedCompanies, searchUsername, viewMode, topLimit]);
 
   const chartData = topCompanies.map(company => ({
     name: company.company.length > 25 ? company.company.substring(0, 25) + '...' : company.company,
@@ -112,7 +116,7 @@ export function CompanyAnalysisChart() {
             <Building2 className="w-5 h-5 text-blue-600 dark:text-blue-400" />
             <p className="text-xs font-semibold text-blue-900 dark:text-blue-300">Total Companies</p>
           </div>
-          <p className="relative text-3xl font-bold text-blue-600 dark:text-blue-400">{topCompanies.length}</p>
+          <p className="relative text-3xl font-bold text-blue-600 dark:text-blue-400">{allCompanies.length}</p>
         </div>
         <div className="group relative p-4 rounded-xl bg-gradient-to-br from-purple-50 via-purple-100/50 to-pink-50 dark:from-purple-900/30 dark:via-purple-800/20 dark:to-pink-900/20 border border-purple-200/50 dark:border-purple-700/50 hover:border-purple-400 dark:hover:border-purple-500 transition-all shadow hover:shadow-md hover:scale-[1.02] transform duration-300">
           <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-purple-400/0 to-purple-600/0 group-hover:from-purple-400/5 group-hover:to-purple-600/10 transition-all duration-300"></div>
@@ -121,7 +125,7 @@ export function CompanyAnalysisChart() {
             <p className="text-xs font-semibold text-purple-900 dark:text-purple-300">Total Logins</p>
           </div>
           <p className="relative text-3xl font-bold text-purple-600 dark:text-purple-400">
-            {topCompanies.reduce((sum, company) => sum + company.totalLogins, 0).toLocaleString()}
+            {allCompanies.reduce((sum, company) => sum + company.totalLogins, 0).toLocaleString()}
           </p>
         </div>
         <div className="group relative p-4 rounded-xl bg-gradient-to-br from-green-50 via-green-100/50 to-emerald-50 dark:from-green-900/30 dark:via-green-800/20 dark:to-emerald-900/20 border border-green-200/50 dark:border-green-700/50 hover:border-green-400 dark:hover:border-green-500 transition-all shadow hover:shadow-md hover:scale-[1.02] transform duration-300">
@@ -131,7 +135,7 @@ export function CompanyAnalysisChart() {
             <p className="text-xs font-semibold text-green-900 dark:text-green-300">Total Users</p>
           </div>
           <p className="relative text-3xl font-bold text-green-600 dark:text-green-400">
-            {topCompanies.reduce((sum, company) => sum + company.uniqueUsers, 0).toLocaleString()}
+            {allCompanies.reduce((sum, company) => sum + company.uniqueUsers, 0).toLocaleString()}
           </p>
         </div>
       </div>
@@ -141,10 +145,29 @@ export function CompanyAnalysisChart() {
         {/* Bar Chart Card */}
         <Card className="bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800">
           <CardHeader className="pb-2 pt-3">
-            <CardTitle className="text-lg font-bold bg-gradient-to-r from-slate-900 to-blue-600 dark:from-white dark:to-blue-400 bg-clip-text text-transparent flex items-center gap-2" style={{ fontFamily: "'Noto Serif', serif" }}>
-              <Building2 className="w-4 h-4 text-blue-600 dark:text-blue-400" />
-              Top 15 Companies
-            </CardTitle>
+            <div className="flex items-center justify-between mb-2">
+              <div>
+                <CardTitle className="text-lg font-bold bg-gradient-to-r from-slate-900 to-blue-600 dark:from-white dark:to-blue-400 bg-clip-text text-transparent flex items-center gap-2" style={{ fontFamily: "'Noto Serif', serif" }}>
+                  <Building2 className="w-4 h-4 text-blue-600 dark:text-blue-400" />
+                  Top {topLimit} Companies
+                </CardTitle>
+              </div>
+              <div className="relative">
+                <select
+                  value={topLimit}
+                  onChange={(e) => setTopLimit(Number(e.target.value))}
+                  className="px-3 py-1.5 text-xs rounded-lg appearance-none bg-white dark:bg-slate-800 border-2 border-slate-300 dark:border-slate-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 hover:border-slate-400 dark:hover:border-slate-500 transition-all duration-200 cursor-pointer pr-8"
+                >
+                  <option value={5}>Top 5</option>
+                  <option value={10}>Top 10</option>
+                  <option value={15}>Top 15</option>
+                  <option value={20}>Top 20</option>
+                  <option value={25}>Top 25</option>
+                  <option value={30}>Top 30</option>
+                </select>
+                <ChevronDown className="absolute right-2 top-1/2 -translate-y-1/2 w-3 h-3 text-slate-500 pointer-events-none" />
+              </div>
+            </div>
             <CardDescription className="text-xs">
               {viewMode === 'logins' ? 'Companies ranked by total logins' : 'Companies ranked by unique users'}
             </CardDescription>
@@ -251,7 +274,7 @@ export function CompanyAnalysisChart() {
                     align="right"
                     verticalAlign="middle"
                     iconType="circle"
-                    wrapperStyle={{ fontSize: '11px', maxHeight: '500px', overflowY: 'auto' }}
+                    wrapperStyle={{ fontSize: '10px', maxHeight: '500px', overflowY: 'auto' }}
                   />
                 </PieChart>
               </ResponsiveContainer>

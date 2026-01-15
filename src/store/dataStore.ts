@@ -10,7 +10,8 @@ import {
   type LicenseeDataResponse,
   type ACSParticipantDataResponse,
   type LoginDataParams,
-  type ACSParticipantParams
+  type ACSParticipantParams,
+  type LicenseeDataParams
 } from '@/services/dataService';
 import type { ApiError } from '@/services/api';
 
@@ -65,6 +66,7 @@ interface DataStore {
   fetchLoginDataPaginated: (params?: LoginDataParams, append?: boolean) => Promise<void>;
   loadMoreLoginData: () => Promise<void>;
   fetchACSParticipantDataFiltered: (params?: ACSParticipantParams) => Promise<void>;
+  fetchLicenseeDataFiltered: (params?: LicenseeDataParams) => Promise<void>;
   clearData: () => void;
   clearErrors: () => void;
   isDataStale: () => boolean;
@@ -307,6 +309,33 @@ export const useDataStore = create<DataStore>()(
         } catch (error) {
           console.error('Error fetching filtered ACS participant data:', error);
           set({ isACSParticipantDataLoading: false });
+        }
+      },
+
+      // Fetch licensee data with filters
+      fetchLicenseeDataFiltered: async (params?: LicenseeDataParams) => {
+        set({ isLicenseeDataLoading: true });
+
+        try {
+          console.log('Fetching filtered licensee data...', params);
+          const result = await fetchLicenseeData(params);
+
+          set({
+            licenseeData: result.data,
+            isLicenseeDataLoading: false,
+            errors: {
+              ...get().errors,
+              licenseeData: result.error,
+            },
+            isDataFromFallback: {
+              ...get().isDataFromFallback,
+              licenseeData: result.isFromFallback,
+            },
+            lastFetchTime: Date.now(),
+          });
+        } catch (error) {
+          console.error('Error fetching filtered licensee data:', error);
+          set({ isLicenseeDataLoading: false });
         }
       },
 

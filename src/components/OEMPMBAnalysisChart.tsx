@@ -1,16 +1,28 @@
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, Cell, PieChart, Pie } from 'recharts';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { Building2, Package, TrendingUp, AlertCircle } from 'lucide-react';
+import { Building2, Package, TrendingUp, AlertCircle, ChevronDown } from 'lucide-react';
 import { useDataStore } from '@/store/dataStore';
 import { useFilterStore } from '@/store/filterStore';
-import { useMemo } from 'react';
+import { useMemo, useState, useEffect } from 'react';
 import { generateChartColors } from '@/utils/chartColors';
 
 export function OEMPMBAnalysisChart() {
-  const { licenseeData } = useDataStore();
+  const { licenseeData, fetchLicenseeDataFiltered } = useDataStore();
   const { program, status } = useFilterStore();
+  const [oemLimit, setOemLimit] = useState(10);
 
-  // Apply filters
+  // Fetch data when filters change
+  useEffect(() => {
+    // Build params object with only defined values
+    const params: { program?: string; status?: string } = {};
+    if (program) params.program = program;
+    if (status) params.status = status;
+
+    // Call API with filters
+    fetchLicenseeDataFiltered(params);
+  }, [program, status, fetchLicenseeDataFiltered]);
+
+  // Apply filters (now client-side filtering is redundant since API does it, but keeping for safety)
   const filteredLicenseeData = useMemo(() => {
     return licenseeData.filter((item) => {
       const matchesProgram = !program || item.Program === program;
@@ -67,8 +79,8 @@ export function OEMPMBAnalysisChart() {
       .sort((a, b) => b.total - a.total);
   }, [filteredLicenseeData]);
 
-  // Top 10 OEMs by total active units
-  const top10OEMs = useMemo(() => {
+  // Top OEMs by total active units
+  const topOEMs = useMemo(() => {
     const oemMap = new Map<string, number>();
 
     filteredLicenseeData.forEach(item => {
@@ -80,8 +92,8 @@ export function OEMPMBAnalysisChart() {
     return Array.from(oemMap.entries())
       .map(([oem, total]) => ({ oem, total }))
       .sort((a, b) => b.total - a.total)
-      .slice(0, 10);
-  }, [filteredLicenseeData]);
+      .slice(0, oemLimit);
+  }, [filteredLicenseeData, oemLimit]);
 
   // Status breakdown across all data
   const statusData = useMemo(() => {
@@ -104,7 +116,7 @@ export function OEMPMBAnalysisChart() {
 
   // Generate colors from shared palette
   const programColors = generateChartColors(programData.length);
-  const oemColors = generateChartColors(10);
+  const oemColors = generateChartColors(oemLimit);
 
   const ProgramTooltip = ({ active, payload }: any) => {
     if (active && payload && payload.length) {
@@ -325,22 +337,41 @@ export function OEMPMBAnalysisChart() {
         </Card>
       </div>
 
-      {/* Top 10 OEMs Bar Chart */}
+      {/* Top OEMs Bar Chart */}
       <Card className="bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800">
         <CardHeader className="pb-2 pt-3">
-          <CardTitle className="text-lg font-bold bg-gradient-to-r from-slate-900 to-blue-600 dark:from-white dark:to-blue-400 bg-clip-text text-transparent flex items-center gap-2" style={{ fontFamily: "'Noto Serif', serif" }}>
-            <Building2 className="w-4 h-4 text-blue-600 dark:text-blue-400" />
-            Top 10 OEMs by Total Units
-          </CardTitle>
-          <CardDescription className="text-xs">
-            OEMs with highest total active and production stopped units
-          </CardDescription>
+          <div className="flex items-center justify-between mb-2">
+            <div>
+              <CardTitle className="text-lg font-bold bg-gradient-to-r from-slate-900 to-blue-600 dark:from-white dark:to-blue-400 bg-clip-text text-transparent flex items-center gap-2" style={{ fontFamily: "'Noto Serif', serif" }}>
+                <Building2 className="w-4 h-4 text-blue-600 dark:text-blue-400" />
+                Top {oemLimit} OEMs by Total Units
+              </CardTitle>
+              <CardDescription className="text-xs">
+                OEMs with highest total active and production stopped units
+              </CardDescription>
+            </div>
+            <div className="relative">
+              <select
+                value={oemLimit}
+                onChange={(e) => setOemLimit(Number(e.target.value))}
+                className="px-3 py-1.5 text-xs rounded-lg appearance-none bg-white dark:bg-slate-800 border-2 border-slate-300 dark:border-slate-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 hover:border-slate-400 dark:hover:border-slate-500 transition-all duration-200 cursor-pointer pr-8"
+              >
+                <option value={5}>Top 5</option>
+                <option value={10}>Top 10</option>
+                <option value={15}>Top 15</option>
+                <option value={20}>Top 20</option>
+                <option value={25}>Top 25</option>
+                <option value={30}>Top 30</option>
+              </select>
+              <ChevronDown className="absolute right-2 top-1/2 -translate-y-1/2 w-3 h-3 text-slate-500 pointer-events-none" />
+            </div>
+          </div>
         </CardHeader>
         <CardContent className="pb-3">
-          <div className="h-[400px] w-full">
+          <div className={`w-full ${oemLimit <= 10 ? 'h-[400px]' : oemLimit <= 15 ? 'h-[550px]' : oemLimit <= 20 ? 'h-[700px]' : oemLimit <= 25 ? 'h-[850px]' : 'h-[1000px]'}`}>
             <ResponsiveContainer width="100%" height="100%">
               <BarChart
-                data={top10OEMs}
+                data={topOEMs}
                 layout="vertical"
                 margin={{ top: 10, right: 30, left: 0, bottom: 10 }}
               >
@@ -353,9 +384,10 @@ export function OEMPMBAnalysisChart() {
                 <YAxis
                   type="category"
                   dataKey="oem"
-                  tick={{ fill: 'currentColor', fontSize: 11 }}
+                  tick={{ fill: 'currentColor', fontSize: oemLimit > 20 ? 9 : 11 }}
                   className="text-slate-600 dark:text-slate-400"
-                  width={200}
+                  width={oemLimit > 20 ? 180 : 200}
+                  interval={0}
                 />
                 <Tooltip content={<OEMTooltip />} />
                 <Legend
@@ -363,7 +395,7 @@ export function OEMPMBAnalysisChart() {
                   iconSize={0}
                 />
                 <Bar dataKey="total" name="Total Units" radius={[0, 8, 8, 0]}>
-                  {top10OEMs.map((_entry, index) => (
+                  {topOEMs.map((_entry, index) => (
                     <Cell key={`cell-${index}`} fill={oemColors[index]} />
                   ))}
                 </Bar>

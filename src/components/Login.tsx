@@ -1,14 +1,15 @@
-import { useState, useEffect } from 'react';
-import { LogIn, User, Lock, Eye, EyeOff, AlertCircle } from 'lucide-react';
-import { useAuthStore } from '@/store/authStore';
+import { useState, useEffect } from "react";
+import { LogIn, User, Lock, Eye, EyeOff, AlertCircle } from "lucide-react";
+import { useAuthStore } from "@/store/authStore";
+import logoSvg from "@/assets/certLogoTaglineSM2optColor.svg";
 
 interface LoginProps {
   onLogin: () => void;
 }
 
 export function Login({ onLogin }: LoginProps) {
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
 
   const { login, isLoading, error, clearError } = useAuthStore();
@@ -32,10 +33,22 @@ export function Login({ onLogin }: LoginProps) {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4 relative overflow-hidden"
+    <div
+      className="min-h-screen flex items-center justify-center p-4 relative overflow-hidden"
       style={{
-        background: 'linear-gradient(135deg, #64748b 0%, #94a3b8 30%, #006daf 70%, #006daf 100%)'
-      }}>
+        background:
+          "linear-gradient(135deg, #64748b 0%, #006daf 25%, #0080c9 40%, #ee8815 65%, #f5a642 85%, #f8b862 100%)",
+      }}
+    >
+      {/* AHRI Certified Logo - Top Right */}
+      <div className="absolute top-6 right-6 z-20 bg-white/90 dark:bg-slate-800/90 backdrop-blur-sm p-3 rounded-xl shadow-lg border border-white/20">
+        <img
+          src={logoSvg}
+          alt="AHRI Certified Logo"
+          className="h-16 w-auto"
+          style={{ filter: "brightness(0.95)" }}
+        />
+      </div>
 
       {/* Animated background elements */}
       <div className="absolute inset-0 overflow-hidden">
@@ -47,25 +60,29 @@ export function Login({ onLogin }: LoginProps) {
       <div className="w-full max-w-md relative z-10">
         <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-2xl overflow-hidden backdrop-blur-xl">
           {/* Header */}
-          <div className="p-8 text-center border-b border-slate-200 dark:border-slate-800">
+          <div className="p-6 text-center border-b border-slate-200 dark:border-slate-800">
             <div className="mb-4">
-              <h1 className="text-5xl font-black tracking-tight mb-2 text-[#006daf]" style={{
-                fontFamily: "'Noto Serif', serif",
-                background: 'linear-gradient(135deg, #64748b 0%, #006daf 50%, #006daf 100%)',
-                WebkitBackgroundClip: 'text',
-                WebkitTextFillColor: 'transparent',
-                backgroundClip: 'text'
-              }}>
-                AHRI
+              <h1
+                className="text-4xl font-black tracking-tight mb-2"
+                style={{
+                  fontFamily: "'Noto Serif', serif",
+                  background:
+                    "linear-gradient(135deg, #64748b 0%, #006daf 50%, #006daf 100%)",
+                  WebkitBackgroundClip: "text",
+                  WebkitTextFillColor: "transparent",
+                  backgroundClip: "text",
+                }}
+              >
+                AHRI Analytics 
               </h1>
-              <p className="text-slate-600 dark:text-slate-400 text-sm" style={{ fontFamily: "'Nunito Sans', sans-serif" }}>
-                Analytics Dashboard
+
+              <p
+                className="text-slate-600 dark:text-slate-400 text-lg font-semibold"
+                style={{ fontFamily: "'Nunito Sans', sans-serif", marginBottom:'-1rem' }}
+              >
+                User Activity Admin Tool 
               </p>
             </div>
-
-            <p className="text-slate-600 dark:text-slate-400 text-sm">
-              Sign in to access your dashboard
-            </p>
           </div>
 
           {/* Form */}
@@ -87,7 +104,11 @@ export function Login({ onLogin }: LoginProps) {
 
             {/* Username Field */}
             <div className="space-y-2">
-              <label htmlFor="username" className="block text-sm font-semibold text-slate-700 dark:text-slate-300" style={{ fontFamily: "'Nunito Sans', sans-serif" }}>
+              <label
+                htmlFor="username"
+                className="block text-sm font-semibold text-slate-700 dark:text-slate-300"
+                style={{ fontFamily: "'Nunito Sans', sans-serif" }}
+              >
                 Username
               </label>
               <div className="relative">
@@ -100,7 +121,7 @@ export function Login({ onLogin }: LoginProps) {
                   placeholder="Enter your username"
                   className="w-full pl-12 pr-4 py-3.5 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all text-slate-900 dark:text-white placeholder:text-slate-400"
                   style={{
-                    fontFamily: "'Nunito Sans', sans-serif"
+                    fontFamily: "'Nunito Sans', sans-serif",
                   }}
                   required
                 />
@@ -109,14 +130,18 @@ export function Login({ onLogin }: LoginProps) {
 
             {/* Password Field */}
             <div className="space-y-2">
-              <label htmlFor="password" className="block text-sm font-semibold text-slate-700 dark:text-slate-300" style={{ fontFamily: "'Nunito Sans', sans-serif" }}>
+              <label
+                htmlFor="password"
+                className="block text-sm font-semibold text-slate-700 dark:text-slate-300"
+                style={{ fontFamily: "'Nunito Sans', sans-serif" }}
+              >
                 Password
               </label>
               <div className="relative">
                 <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
                 <input
                   id="password"
-                  type={showPassword ? 'text' : 'password'}
+                  type={showPassword ? "text" : "password"}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="Enter your password"
@@ -129,7 +154,11 @@ export function Login({ onLogin }: LoginProps) {
                   onClick={() => setShowPassword(!showPassword)}
                   className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 transition-colors"
                 >
-                  {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                  {showPassword ? (
+                    <EyeOff className="w-5 h-5" />
+                  ) : (
+                    <Eye className="w-5 h-5" />
+                  )}
                 </button>
               </div>
             </div>
@@ -154,8 +183,9 @@ export function Login({ onLogin }: LoginProps) {
               disabled={isLoading}
               className="w-full py-3.5 rounded-xl text-white font-semibold text-base shadow-lg hover:shadow-xl transform hover:scale-[1.02] active:scale-[0.98] transition-all duration-200 flex items-center justify-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed"
               style={{
-                background: 'linear-gradient(135deg, #64748b 0%, #006daf 50%, #006daf 100%)',
-                fontFamily: "'Nunito Sans', sans-serif"
+                background:
+                  "linear-gradient(135deg, #64748b 0%, #006daf 50%, #006daf 100%)",
+                fontFamily: "'Nunito Sans', sans-serif",
               }}
             >
               {isLoading ? (
@@ -171,15 +201,6 @@ export function Login({ onLogin }: LoginProps) {
               )}
             </button>
           </form>
-
-      
-        </div>
-
-        {/* Version Info */}
-        <div className="mt-8 text-center">
-          <p className="text-white/80 text-sm">
-            AHRI Dashboard v1.0.0
-          </p>
         </div>
       </div>
     </div>

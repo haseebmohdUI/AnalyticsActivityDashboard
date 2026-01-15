@@ -66,7 +66,7 @@ export const useAuthStore = create<AuthState>()(
 
           // Decode the JWT token
           const decoded: DecodedToken = jwtDecode(token);
-        
+          
 
           // Check if user has company access
           if (!decoded.company || decoded.company.length === 0) {

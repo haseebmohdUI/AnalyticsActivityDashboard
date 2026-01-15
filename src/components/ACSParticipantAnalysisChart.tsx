@@ -1,15 +1,18 @@
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, Cell, PieChart, Pie } from 'recharts';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { Building2, Package, Activity, AlertTriangle } from 'lucide-react';
+import { Building2, Package, Activity, AlertTriangle, ChevronDown } from 'lucide-react';
 import { useDataStore } from '@/store/dataStore';
 import { useFilterStore } from '@/store/filterStore';
-import { useMemo, useEffect, useRef } from 'react';
+import { useMemo, useEffect, useRef, useState } from 'react';
 import { generateChartColors } from '@/utils/chartColors';
 
 export function ACSParticipantAnalysisChart() {
   const { acsParticipantData, isACSParticipantDataLoading, fetchACSParticipantDataFiltered } = useDataStore();
   const { year } = useFilterStore();
   const hasFetchedRef = useRef(false);
+  const [topLimit, setTopLimit] = useState(10);
+  const [pieLimit, setPieLimit] = useState(10);
+  const [failRateLimit, setFailRateLimit] = useState(10);
 
   // Fetch data when year filter changes
   useEffect(() => {
@@ -47,13 +50,16 @@ export function ACSParticipantAnalysisChart() {
     const uniqueManufacturers = new Set(acsParticipantData.map(item => item.manufacturernamerev)).size;
     const uniquePrograms = new Set(acsParticipantData.map(item => item.programname)).size;
     const totalTests = acsParticipantData.reduce((sum, item) => sum + item.total_tests, 0);
-    const avgFailRate = (acsParticipantData.reduce((sum, item) => sum + item.fail_rate, 0) / acsParticipantData.length).toFixed(1);
+
+    // Calculate weighted average fail rate (weighted by number of tests)
+    const weightedFailRate = acsParticipantData.reduce((sum, item) => sum + (item.fail_rate * item.total_tests), 0);
+    const avgFailRate = totalTests > 0 ? (weightedFailRate / totalTests).toFixed(1) : '0.0';
 
     return { uniqueManufacturers, uniquePrograms, totalTests, avgFailRate };
   }, [acsParticipantData]);
 
-  // Top 15 manufacturers by total tests
-  const top15Manufacturers = useMemo(() => {
+  // Top manufacturers by total tests
+  const topManufacturers = useMemo(() => {
     if (!acsParticipantData || acsParticipantData.length === 0) {
       return [];
     }
@@ -69,23 +75,23 @@ export function ACSParticipantAnalysisChart() {
     return Array.from(manufacturerMap.entries())
       .map(([manufacturer, total_tests]) => ({ manufacturer, total_tests }))
       .sort((a, b) => b.total_tests - a.total_tests)
-      .slice(0, 15);
-  }, [acsParticipantData]);
+      .slice(0, topLimit);
+  }, [acsParticipantData, topLimit]);
 
-  // Top 10 manufacturers for pie chart
-  const top10ManufacturersForPie = useMemo(() => {
-    const top10 = top15Manufacturers.slice(0, 10);
-    const totalTests = top10.reduce((sum, item) => sum + item.total_tests, 0);
-    const colors = generateChartColors(10);
+  // Top manufacturers for pie chart
+  const topManufacturersForPie = useMemo(() => {
+    const topForPie = topManufacturers.slice(0, pieLimit);
+    const totalTests = topForPie.reduce((sum, item) => sum + item.total_tests, 0);
+    const colors = generateChartColors(pieLimit);
 
-    return top10.map((item, index) => ({
+    return topForPie.map((item, index) => ({
       ...item,
       name: item.manufacturer,
       value: item.total_tests,
       percentage: ((item.total_tests / totalTests) * 100).toFixed(1),
       fill: colors[index]
     }));
-  }, [top15Manufacturers]);
+  }, [topManufacturers, pieLimit]);
 
   // Fail rate by program
   const programFailRates = useMemo(() => {
@@ -116,8 +122,8 @@ export function ACSParticipantAnalysisChart() {
       .sort((a, b) => parseFloat(b.avgFailRate) - parseFloat(a.avgFailRate));
   }, [acsParticipantData]);
 
-  // Top 10 manufacturers by fail rate (with minimum 5 tests)
-  const top10ByFailRate = useMemo(() => {
+  // Top manufacturers by fail rate (with minimum 5 tests)
+  const topByFailRate = useMemo(() => {
     if (!acsParticipantData || acsParticipantData.length === 0) {
       return [];
     }
@@ -125,18 +131,18 @@ export function ACSParticipantAnalysisChart() {
     return acsParticipantData
       .filter(item => item.total_tests >= 5) // Only include manufacturers with at least 5 tests
       .sort((a, b) => b.fail_rate - a.fail_rate)
-      .slice(0, 10)
+      .slice(0, failRateLimit)
       .map(item => ({
         manufacturer: item.manufacturernamerev,
         fail_rate: item.fail_rate,
         total_tests: item.total_tests
       }));
-  }, [acsParticipantData]);
+  }, [acsParticipantData, failRateLimit]);
 
   // Generate colors for all charts
-  const mfrColors = generateChartColors(15);
+  const mfrColors = generateChartColors(topLimit);
   const programColors = generateChartColors(programFailRates.length);
-  const failRateColors = generateChartColors(10);
+  const failRateColors = generateChartColors(failRateLimit);
 
   const ManufacturerTooltip = ({ active, payload }: any) => {
     if (active && payload && payload.length) {
@@ -267,24 +273,43 @@ export function ACSParticipantAnalysisChart() {
         </div>
       </div>
 
-      {/* Charts Grid - Top 15 Manufacturers and Pie Chart */}
+      {/* Charts Grid - Top Manufacturers and Pie Chart */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
-        {/* Top 15 Manufacturers by Tests */}
+        {/* Top Manufacturers by Tests */}
         <Card className="bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800">
           <CardHeader className="pb-2 pt-3">
-            <CardTitle className="text-lg font-bold bg-gradient-to-r from-slate-900 to-blue-600 dark:from-white dark:to-blue-400 bg-clip-text text-transparent flex items-center gap-2" style={{ fontFamily: "'Noto Serif', serif" }}>
-              <Building2 className="w-4 h-4 text-blue-600 dark:text-blue-400" />
-              Top 15 Manufacturers by Total Tests
-            </CardTitle>
-            <CardDescription className="text-xs">
-              Manufacturers with highest number of tests conducted
-            </CardDescription>
+            <div className="flex items-center justify-between mb-2">
+              <div>
+                <CardTitle className="text-lg font-bold bg-gradient-to-r from-slate-900 to-blue-600 dark:from-white dark:to-blue-400 bg-clip-text text-transparent flex items-center gap-2" style={{ fontFamily: "'Noto Serif', serif" }}>
+                  <Building2 className="w-4 h-4 text-blue-600 dark:text-blue-400" />
+                  Top {topLimit} Manufacturers by Total Tests
+                </CardTitle>
+                <CardDescription className="text-xs">
+                  Manufacturers with highest number of tests conducted
+                </CardDescription>
+              </div>
+              <div className="relative">
+                <select
+                  value={topLimit}
+                  onChange={(e) => setTopLimit(Number(e.target.value))}
+                  className="px-3 py-1.5 text-xs rounded-lg appearance-none bg-white dark:bg-slate-800 border-2 border-slate-300 dark:border-slate-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 hover:border-slate-400 dark:hover:border-slate-500 transition-all duration-200 cursor-pointer pr-8"
+                >
+                  <option value={5}>Top 5</option>
+                  <option value={10}>Top 10</option>
+                  <option value={15}>Top 15</option>
+                  <option value={20}>Top 20</option>
+                  <option value={25}>Top 25</option>
+                  <option value={30}>Top 30</option>
+                </select>
+                <ChevronDown className="absolute right-2 top-1/2 -translate-y-1/2 w-3 h-3 text-slate-500 pointer-events-none" />
+              </div>
+            </div>
           </CardHeader>
           <CardContent className="pb-3">
-            <div className="h-[630px] w-full">
+            <div className={`w-full ${topLimit <= 10 ? 'h-[420px]' : topLimit <= 15 ? 'h-[630px]' : topLimit <= 20 ? 'h-[840px]' : topLimit <= 25 ? 'h-[1050px]' : 'h-[1260px]'}`}>
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart
-                  data={top15Manufacturers}
+                  data={topManufacturers}
                   layout="vertical"
                   margin={{ top: 10, right: 30, left: 0, bottom: 10 }}
                 >
@@ -297,14 +322,15 @@ export function ACSParticipantAnalysisChart() {
                   <YAxis
                     type="category"
                     dataKey="manufacturer"
-                    tick={{ fill: 'currentColor', fontSize: 10 }}
+                    tick={{ fill: 'currentColor', fontSize: topLimit > 20 ? 8 : 10 }}
                     className="text-slate-600 dark:text-slate-400"
-                    width={220}
+                    width={topLimit > 20 ? 200 : 220}
+                    interval={0}
                   />
                   <Tooltip content={<ManufacturerTooltip />} />
                   <Legend wrapperStyle={{ paddingTop: '10px', color: '#006daf', fontWeight: 'bold' }} iconSize={0} />
                   <Bar dataKey="total_tests" name="Total Tests" radius={[0, 8, 8, 0]}>
-                    {top15Manufacturers.map((_entry, index) => (
+                    {topManufacturers.map((_entry, index) => (
                       <Cell key={`cell-${index}`} fill={mfrColors[index]} />
                     ))}
                   </Bar>
@@ -317,20 +343,39 @@ export function ACSParticipantAnalysisChart() {
         {/* Test Distribution Pie Chart */}
         <Card className="bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800">
           <CardHeader className="pb-2 pt-3">
-            <CardTitle className="text-lg font-bold bg-gradient-to-r from-slate-900 to-blue-600 dark:from-white dark:to-blue-400 bg-clip-text text-transparent flex items-center gap-2" style={{ fontFamily: "'Noto Serif', serif" }}>
-              <Activity className="w-4 h-4 text-blue-600 dark:text-blue-400" />
-              Test Distribution (Top 10)
-            </CardTitle>
-            <CardDescription className="text-xs">
-              Distribution of tests across top 10 manufacturers
-            </CardDescription>
+            <div className="flex items-center justify-between mb-2">
+              <div>
+                <CardTitle className="text-lg font-bold bg-gradient-to-r from-slate-900 to-blue-600 dark:from-white dark:to-blue-400 bg-clip-text text-transparent flex items-center gap-2" style={{ fontFamily: "'Noto Serif', serif" }}>
+                  <Activity className="w-4 h-4 text-blue-600 dark:text-blue-400" />
+                  Test Distribution (Top {pieLimit})
+                </CardTitle>
+                <CardDescription className="text-xs">
+                  Distribution of tests across top {pieLimit} manufacturers
+                </CardDescription>
+              </div>
+              <div className="relative">
+                <select
+                  value={pieLimit}
+                  onChange={(e) => setPieLimit(Number(e.target.value))}
+                  className="px-3 py-1.5 text-xs rounded-lg appearance-none bg-white dark:bg-slate-800 border-2 border-slate-300 dark:border-slate-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 hover:border-slate-400 dark:hover:border-slate-500 transition-all duration-200 cursor-pointer pr-8"
+                >
+                  <option value={5}>Top 5</option>
+                  <option value={10}>Top 10</option>
+                  <option value={15}>Top 15</option>
+                  <option value={20}>Top 20</option>
+                  <option value={25}>Top 25</option>
+                  <option value={30}>Top 30</option>
+                </select>
+                <ChevronDown className="absolute right-2 top-1/2 -translate-y-1/2 w-3 h-3 text-slate-500 pointer-events-none" />
+              </div>
+            </div>
           </CardHeader>
           <CardContent className="pb-3">
             <div className="h-[480px] w-full">
               <ResponsiveContainer width="100%" height="100%">
                 <PieChart>
                   <Pie
-                    data={top10ManufacturersForPie}
+                    data={topManufacturersForPie}
                     cx="50%"
                     cy="50%"
                     labelLine={false}
@@ -342,7 +387,7 @@ export function ACSParticipantAnalysisChart() {
                     animationDuration={800}
                     animationEasing="ease-out"
                   >
-                    {top10ManufacturersForPie.map((entry, index) => (
+                    {topManufacturersForPie.map((entry, index) => (
                       <Cell key={`cell-${index}`} fill={entry.fill} />
                     ))}
                   </Pie>
@@ -416,22 +461,41 @@ export function ACSParticipantAnalysisChart() {
           </CardContent>
         </Card>
 
-        {/* Top 10 Manufacturers by Fail Rate */}
+        {/* Top Manufacturers by Fail Rate */}
         <Card className="bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800">
           <CardHeader className="pb-2 pt-3">
-            <CardTitle className="text-lg font-bold bg-gradient-to-r from-slate-900 to-blue-600 dark:from-white dark:to-blue-400 bg-clip-text text-transparent flex items-center gap-2" style={{ fontFamily: "'Noto Serif', serif" }}>
-              <AlertTriangle className="w-4 h-4 text-blue-600 dark:text-blue-400" />
-              Top 10 Manufacturers by Fail Rate
-            </CardTitle>
-            <CardDescription className="text-xs">
-              Manufacturers with highest failure rates (min. 5 tests)
-            </CardDescription>
+            <div className="flex items-center justify-between mb-2">
+              <div>
+                <CardTitle className="text-lg font-bold bg-gradient-to-r from-slate-900 to-blue-600 dark:from-white dark:to-blue-400 bg-clip-text text-transparent flex items-center gap-2" style={{ fontFamily: "'Noto Serif', serif" }}>
+                  <AlertTriangle className="w-4 h-4 text-blue-600 dark:text-blue-400" />
+                  Top {failRateLimit} Manufacturers by Fail Rate
+                </CardTitle>
+                <CardDescription className="text-xs">
+                  Manufacturers with highest failure rates (min. 5 tests)
+                </CardDescription>
+              </div>
+              <div className="relative">
+                <select
+                  value={failRateLimit}
+                  onChange={(e) => setFailRateLimit(Number(e.target.value))}
+                  className="px-3 py-1.5 text-xs rounded-lg appearance-none bg-white dark:bg-slate-800 border-2 border-slate-300 dark:border-slate-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 hover:border-slate-400 dark:hover:border-slate-500 transition-all duration-200 cursor-pointer pr-8"
+                >
+                  <option value={5}>Top 5</option>
+                  <option value={10}>Top 10</option>
+                  <option value={15}>Top 15</option>
+                  <option value={20}>Top 20</option>
+                  <option value={25}>Top 25</option>
+                  <option value={30}>Top 30</option>
+                </select>
+                <ChevronDown className="absolute right-2 top-1/2 -translate-y-1/2 w-3 h-3 text-slate-500 pointer-events-none" />
+              </div>
+            </div>
           </CardHeader>
           <CardContent className="pb-3">
-            <div className="h-[400px] w-full">
+            <div className={`w-full ${failRateLimit <= 10 ? 'h-[400px]' : failRateLimit <= 15 ? 'h-[550px]' : failRateLimit <= 20 ? 'h-[700px]' : failRateLimit <= 25 ? 'h-[850px]' : 'h-[1000px]'}`}>
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart
-                  data={top10ByFailRate}
+                  data={topByFailRate}
                   layout="vertical"
                   margin={{ top: 10, right: 30, left: 0, bottom: 10 }}
                 >
@@ -445,14 +509,15 @@ export function ACSParticipantAnalysisChart() {
                   <YAxis
                     type="category"
                     dataKey="manufacturer"
-                    tick={{ fill: 'currentColor', fontSize: 10 }}
+                    tick={{ fill: 'currentColor', fontSize: failRateLimit > 20 ? 8 : 10 }}
                     className="text-slate-600 dark:text-slate-400"
-                    width={200}
+                    width={failRateLimit > 20 ? 180 : 200}
+                    interval={0}
                   />
                   <Tooltip content={<FailRateTooltip />} />
                   <Legend wrapperStyle={{ paddingTop: '10px', color: '#006daf', fontWeight: 'bold' }} iconSize={0} />
                   <Bar dataKey="fail_rate" name="Fail Rate (%)" radius={[0, 8, 8, 0]}>
-                    {top10ByFailRate.map((_entry, index) => (
+                    {topByFailRate.map((_entry, index) => (
                       <Cell key={`cell-${index}`} fill={failRateColors[index]} />
                     ))}
                   </Bar>

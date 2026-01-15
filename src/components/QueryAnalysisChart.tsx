@@ -1,22 +1,23 @@
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, Cell, PieChart, Pie } from 'recharts';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { Database, TrendingUp, Activity, Users, Calendar } from 'lucide-react';
+import { Database, TrendingUp, Activity, Users, Calendar, ChevronDown } from 'lucide-react';
 import { useDataStore } from '@/store/dataStore';
 import { getChartColor, generateChartColors } from '@/utils/chartColors';
-
-
-  
+import { useState, useMemo } from 'react';
 
 export function QueryAnalysisChart() {
   // Get query activity data from store
   const { queryActivityData } = useDataStore();
   const queryData = queryActivityData;
+  const [operationsLimit, setOperationsLimit] = useState(15);
+  const [pieLimit, setPieLimit] = useState(10);
 
-  const top15Operations = queryData.slice(0, 15);
-  const top10Operations = queryData.slice(0, 10);
+  const topOperations = useMemo(() => queryData.slice(0, operationsLimit), [queryData, operationsLimit]);
+  const topOperationsForPie = useMemo(() => queryData.slice(0, pieLimit), [queryData, pieLimit]);
 
   // Generate colors from shared palette
-  const colors = generateChartColors(15);
+  const colors = generateChartColors(operationsLimit);
+  const pieColors = generateChartColors(pieLimit);
 
   const BarTooltip = ({ active, payload }: any) => {
     if (active && payload && payload.length) {
@@ -61,7 +62,7 @@ export function QueryAnalysisChart() {
   };
 
   const totalQueries = queryData.reduce((sum, q) => sum + q.count, 0);
-  const top10Total = top10Operations.reduce((sum, q) => sum + q.count, 0);
+  const pieTotal = useMemo(() => topOperationsForPie.reduce((sum, q) => sum + q.count, 0), [topOperationsForPie]);
 
   // Calculate metrics from data
   const uniqueOperations = queryData.length;
@@ -74,13 +75,13 @@ export function QueryAnalysisChart() {
   const daysSpan = Math.ceil((latestDate.getTime() - earliestDate.getTime()) / (1000 * 60 * 60 * 24));
 
   // Prepare pie chart data
-  const pieData = top10Operations.map((item, index) => ({
+  const pieData = useMemo(() => topOperationsForPie.map((item, index) => ({
     ...item,
     name: item.operation, // Add name property for Legend
     value: item.count,
-    percentage: ((item.count / top10Total) * 100).toFixed(1),
-    fill: colors[index]
-  }));
+    percentage: ((item.count / pieTotal) * 100).toFixed(1),
+    fill: pieColors[index]
+  })), [topOperationsForPie, pieTotal, pieColors]);
   const blueColor = getChartColor(0); // Blue from palette
   return (
     <div className="space-y-3">
@@ -128,19 +129,38 @@ export function QueryAnalysisChart() {
         {/* Horizontal Bar Chart */}
         <Card className="bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800">
           <CardHeader className="pb-2 pt-3">
-            <CardTitle className="text-lg font-bold bg-gradient-to-r from-slate-900 to-blue-600 dark:from-white dark:to-blue-400 bg-clip-text text-transparent flex items-center gap-2" style={{ fontFamily: "'Noto Serif', serif" }}>
-              <Database className="w-4 h-4 text-blue-600 dark:text-blue-400" />
-              Top 15 Operations by Query Count
-            </CardTitle>
-            <CardDescription className="text-xs">
-              Most frequently executed operations
-            </CardDescription>
+            <div className="flex items-center justify-between mb-2">
+              <div>
+                <CardTitle className="text-lg font-bold bg-gradient-to-r from-slate-900 to-blue-600 dark:from-white dark:to-blue-400 bg-clip-text text-transparent flex items-center gap-2" style={{ fontFamily: "'Noto Serif', serif" }}>
+                  <Database className="w-4 h-4 text-blue-600 dark:text-blue-400" />
+                  Top {operationsLimit} Operations by Query Count
+                </CardTitle>
+                <CardDescription className="text-xs">
+                  Most frequently executed operations
+                </CardDescription>
+              </div>
+              <div className="relative">
+                <select
+                  value={operationsLimit}
+                  onChange={(e) => setOperationsLimit(Number(e.target.value))}
+                  className="px-3 py-1.5 text-xs rounded-lg appearance-none bg-white dark:bg-slate-800 border-2 border-slate-300 dark:border-slate-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 hover:border-slate-400 dark:hover:border-slate-500 transition-all duration-200 cursor-pointer pr-8"
+                >
+                  <option value={5}>Top 5</option>
+                  <option value={10}>Top 10</option>
+                  <option value={15}>Top 15</option>
+                  <option value={20}>Top 20</option>
+                  <option value={25}>Top 25</option>
+                  <option value={30}>Top 30</option>
+                </select>
+                <ChevronDown className="absolute right-2 top-1/2 -translate-y-1/2 w-3 h-3 text-slate-500 pointer-events-none" />
+              </div>
+            </div>
           </CardHeader>
           <CardContent className="pb-3">
-            <div className="h-[630px] w-full">
+            <div className={`w-full ${operationsLimit <= 10 ? 'h-[420px]' : operationsLimit <= 15 ? 'h-[630px]' : operationsLimit <= 20 ? 'h-[840px]' : operationsLimit <= 25 ? 'h-[1050px]' : 'h-[1260px]'}`}>
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart
-                  data={top15Operations}
+                  data={topOperations}
                   layout="vertical"
                   margin={{ top: 10, right: 30, left: 0, bottom: 10 }}
                 >
@@ -154,9 +174,10 @@ export function QueryAnalysisChart() {
                   <YAxis
                     type="category"
                     dataKey="operation"
-                    tick={{ fill: 'currentColor', fontSize: 12 }}
+                    tick={{ fill: 'currentColor', fontSize: operationsLimit > 20 ? 11 : 12 }}
                     className="text-slate-600 dark:text-slate-400"
-                    width={220}
+                    width={operationsLimit > 20 ? 200 : 220}
+                    interval={0}
                   />
                   <Tooltip content={<BarTooltip />} />
                   <Legend
@@ -167,8 +188,11 @@ export function QueryAnalysisChart() {
                     dataKey="count"
                     name="Query Count"
                     radius={[0, 8, 8, 0]}
-                    fill={blueColor}
-                  />
+                  >
+                    {topOperations.map((_entry, index) => (
+                      <Cell key={`cell-${index}`} fill={colors[index]} />
+                    ))}
+                  </Bar>
                 </BarChart>
               </ResponsiveContainer>
             </div>
@@ -178,13 +202,32 @@ export function QueryAnalysisChart() {
         {/* Pie Chart */}
         <Card className="bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800">
           <CardHeader className="pb-2 pt-3">
-            <CardTitle className="text-lg font-bold bg-gradient-to-r from-slate-900 to-blue-600 dark:from-white dark:to-blue-400 bg-clip-text text-transparent flex items-center gap-2" style={{ fontFamily: "'Noto Serif', serif" }}>
-              <TrendingUp className="w-4 h-4 text-blue-600 dark:text-blue-400" />
-              Query Distribution (Top 10)
-            </CardTitle>
-            <CardDescription className="text-xs">
-              Distribution of queries across top 10 operations
-            </CardDescription>
+            <div className="flex items-center justify-between mb-2">
+              <div>
+                <CardTitle className="text-lg font-bold bg-gradient-to-r from-slate-900 to-blue-600 dark:from-white dark:to-blue-400 bg-clip-text text-transparent flex items-center gap-2" style={{ fontFamily: "'Noto Serif', serif" }}>
+                  <TrendingUp className="w-4 h-4 text-blue-600 dark:text-blue-400" />
+                  Query Distribution (Top {pieLimit})
+                </CardTitle>
+                <CardDescription className="text-xs">
+                  Distribution of queries across top {pieLimit} operations
+                </CardDescription>
+              </div>
+              <div className="relative">
+                <select
+                  value={pieLimit}
+                  onChange={(e) => setPieLimit(Number(e.target.value))}
+                  className="px-3 py-1.5 text-xs rounded-lg appearance-none bg-white dark:bg-slate-800 border-2 border-slate-300 dark:border-slate-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 hover:border-slate-400 dark:hover:border-slate-500 transition-all duration-200 cursor-pointer pr-8"
+                >
+                  <option value={5}>Top 5</option>
+                  <option value={10}>Top 10</option>
+                  <option value={15}>Top 15</option>
+                  <option value={20}>Top 20</option>
+                  <option value={25}>Top 25</option>
+                  <option value={30}>Top 30</option>
+                </select>
+                <ChevronDown className="absolute right-2 top-1/2 -translate-y-1/2 w-3 h-3 text-slate-500 pointer-events-none" />
+              </div>
+            </div>
           </CardHeader>
           <CardContent className="pb-3">
             <div className="h-[480px] w-full">

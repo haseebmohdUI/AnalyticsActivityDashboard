@@ -79,6 +79,14 @@ export interface ACSParticipantParams {
 }
 
 /**
+ * Filter parameters for licensee data
+ */
+export interface LicenseeDataParams {
+  program?: string;
+  status?: string;
+}
+
+/**
  * Pagination and filter parameters for login data
  */
 export interface LoginDataParams {
@@ -296,15 +304,31 @@ export const fetchQueryActivity = async (params: QueryActivityParams = {}): Prom
  * Endpoint: /api/licensee
  * Returns empty array on failure
  */
-export const fetchLicenseeData = async (): Promise<{
+export const fetchLicenseeData = async (params: LicenseeDataParams = {}): Promise<{
   data: LicenseeDataResponse[];
   error: ApiError | null;
   isFromFallback: boolean;
 }> => {
   try {
-    const response = await apiClient.get<ApiResponse<LicenseeDataResponse[]>>('/api/licensee');
+    // Build query params, only include defined values
+    const queryParams: Record<string, string> = {};
+
+    if (params.program) queryParams.program = params.program;
+    if (params.status) queryParams.status = params.status;
+
+    console.log('Fetching licensee data from /api/licensee...', queryParams);
+    const response = await apiClient.get<ApiResponse<LicenseeDataResponse[]>>('/api/licensee', {
+      params: queryParams
+    });
+
+    console.log('Licensee API response:', {
+      success: response.data.success,
+      totalRecords: response.data.total_records,
+      dataLength: response.data.data?.length || 0
+    });
 
     if (response.data.success && response.data.data) {
+      console.log(`Successfully fetched ${response.data.data.length} licensee records`);
       return {
         data: response.data.data,
         error: null,
